@@ -1,0 +1,3 @@
+[submodule "packages/Swaggervel"]
+	path = packages/Swaggervel
+	url = https://github.com/sjje/Swaggervel.git
