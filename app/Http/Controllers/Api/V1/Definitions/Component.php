@@ -8,17 +8,17 @@ namespace Http\Controllers\Api\V1\Definitions;
 class Component
 {
     /**
-     * @SWG\Property(type="string", description="内部名称")
+     * @SWG\Property(type="string", description="业务方内部名称")
      */
     public $inner_name;
 
     /**
-     * @SWG\Property(type="string", description="内部名称")
+     * @SWG\Property(type="string", description="业务方内部描述")
      */
     public $inner_desc;
 
     /**
-     * @SWG\Property(type="string", description="内部名称")
+     * @SWG\Property(type="string", description="业务方内部key")
      */
     public $inner_key;
 
