@@ -17,7 +17,7 @@
         "fideloper/proxy": "~3.3",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
-        "jlapp/swaggervel": "*",
+        "sjje/swaggervel": "*",
         "zircote/swagger-php": "2.0.*"
     },
     "require-dev": {
