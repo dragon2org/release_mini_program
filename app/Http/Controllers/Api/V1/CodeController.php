@@ -15,8 +15,8 @@ class CodeController
      * @SWG\Post(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/commit",
      *     summary="上传代码",
-     *     tags={"代码管理"},
-     *     description="管理三方平台",
+     *     tags={"小程序管理"},
+     *     description="上传代码到微信服务器",
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="componentAppId",
@@ -58,8 +58,8 @@ class CodeController
     /**
      * @SWG\Get(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/qrcode",
-     *     summary="获取体验小程序的体验二维码",
-     *     tags={"代码管理"},
+     *     summary="获取小程序体验二维码",
+     *     tags={"小程序管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -101,8 +101,8 @@ class CodeController
     /**
      * @SWG\Get(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/category",
-     *     summary="获取授权小程序帐号的可选类目",
-     *     tags={"代码管理"},
+     *     summary="获取小程序可选类目",
+     *     tags={"小程序管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -142,8 +142,8 @@ class CodeController
     /**
      * @SWG\Get(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/page",
-     *     summary="获取小程序的第三方提交代码的页面配置",
-     *     tags={"代码管理"},
+     *     summary="获取小程序提交代码的页面配置",
+     *     tags={"小程序管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -183,8 +183,8 @@ class CodeController
     /**
      * @SWG\Post(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/audit",
-     *     summary="将第三方提交的代码包提交审核",
-     *     tags={"代码管理"},
+     *     summary="提交审核",
+     *     tags={"小程序管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -236,8 +236,8 @@ class CodeController
     /**
      * @SWG\Get(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/audit/{audit}",
-     *     summary="获取审核结果",
-     *     tags={"代码管理"},
+     *     summary="获取提交代码的审核结果",
+     *     tags={"小程序管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -287,7 +287,7 @@ class CodeController
      * @SWG\Get(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/last_audit",
      *     summary="查询最新一次提交的审核状态",
-     *     tags={"代码管理"},
+     *     tags={"小程序管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(

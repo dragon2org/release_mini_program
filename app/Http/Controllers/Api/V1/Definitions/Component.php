@@ -52,4 +52,14 @@ class Component
      * @SWG\Property(type="string", description="三方平台消息解密解密Key")
      */
     public $aes_key;
+
+    /**
+     * @SWG\Property(
+     *     type="object",
+     *     description="域名验证信息",
+     *     @SWG\Property(property="filename", type="string", description="域名信息验证文件名"),
+     *     @SWG\Property(property="content", type="string", description="域名信息验证文件内容"),
+     * )
+     */
+    public $validate;
 }

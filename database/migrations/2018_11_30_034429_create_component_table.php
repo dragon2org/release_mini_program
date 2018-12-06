@@ -4,9 +4,9 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateComponentAppTable extends Migration
+class CreateComponentTable extends Migration
 {
-    protected $tableName = 'component_app';
+    protected $tableName = 'component';
 
     protected $tableComment = '三方平台表';
 
@@ -30,6 +30,8 @@ class CreateComponentAppTable extends Migration
             $table->string('verify_token', 45)->default('')->comment('三方平台消息验证token');
             $table->string('verify_ticket', 45)->default('')->comment('三方平台消息验证verify_ticket');
             $table->string('aes_key', 43)->default('')->comment('三方平台消息解密解密Key');
+            $table->string('validate_filename', 43)->default('')->comment('三方平台验证域名-文件名');
+            $table->string('validate_content', 43)->default('')->comment('三方平台验证域名-文件内容');
 
             $table->unique('inner_key', 'uniq_inner_key');
             $table->unique('app_id', 'uniq_app_id');
