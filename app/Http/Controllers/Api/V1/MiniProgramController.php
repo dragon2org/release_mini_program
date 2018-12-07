@@ -11,7 +11,7 @@ namespace App\Http\Controllers\Api\V1;
 /**
  * @SWG\Post(
  *     path="/component/{componentAppId}/bind_component",
- *     summary="绑定小程序到三方平台",
+ *     summary="小程序授权",
  *     tags={"小程序管理"},
  *     description="管理三方平台",
  *     produces={"application/json"},

@@ -122,6 +122,41 @@ class ComponentController
 
     /**
      * @SWG\Post(
+     *     path="/component/:componentAppId/config",
+     *     summary="保存平台发版配置",
+     *     tags={"三方平台管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="data",
+     *         in="body",
+     *         description="表单数据",
+     *         required=true,
+     *         type="object",
+     *         @SWG\Schema(ref="#/definitions/MiniProgramConfig")
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         ref="$/responses/200",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="Object",
+     *                 ref="#/definitions/Component"
+     *             )
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=422,
+     *         description="处理失败的返回",
+     *         ref="$/responses/422",
+     *     ),
+     * )
+     */
+
+    /**
+     * @SWG\Post(
      *     path="/component/{componentAppId}/template/{templateId}/release",
      *     summary="批量发布",
      *     tags={"三方平台管理"},
