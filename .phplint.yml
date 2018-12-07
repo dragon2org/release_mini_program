@@ -1,7 +1,9 @@
 path: ./
 jobs: 10
-cache: .phplint.cache
+cache: .phplint-cache
 extensions:
   - php
 exclude:
   - vendor
+  - bootstrap
+  - resources
