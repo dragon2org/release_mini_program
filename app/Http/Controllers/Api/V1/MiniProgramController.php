@@ -18,7 +18,7 @@ namespace App\Http\Controllers\Api\V1;
  *     @SWG\Parameter(
  *         name="redirect_url",
  *         type="string",
- *         required=true,
+ *         required=false,
  *         in="formData",
  *         description="授权成功的回调地址",
  *     ),
