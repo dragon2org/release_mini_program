@@ -9,9 +9,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 /**
- * @SWG\Post(
- *     path="/component/{componentAppId}/bind_component",
- *     summary="小程序授权",
+ * @SWG\Get(
+ *     path="/component/{componentAppId}/bind_url",
+ *     summary="获取小程序授权地址",
  *     tags={"小程序管理"},
  *     description="管理三方平台",
  *     produces={"application/json"},
@@ -19,12 +19,19 @@ namespace App\Http\Controllers\Api\V1;
  *         name="redirect_url",
  *         type="string",
  *         required=false,
- *         in="formData",
- *         description="授权成功的回调地址",
+ *         in="query",
+ *         description="授权成功的通知地址",
+ *     ),
+ *     @SWG\Parameter(
+ *         name="type",
+ *         type="string",
+ *         required=false,
+ *         in="query",
+ *         description="生成类型:二维码:qrcode；授权连接:url",
  *     ),
  *     @SWG\Response(
  *         response=200,
- *         description="成功返回",
+ *         description="成功返回。type为qrcode直接返回图片",
  *         @SWG\Schema(
  *             @SWG\Property(
  *                 property="status",
@@ -35,7 +42,7 @@ namespace App\Http\Controllers\Api\V1;
  *             @SWG\Property(
  *                 property="data",
  *                 type="Object",
- *                 ref="#/definitions/MiniProgram"
+ *                 @SWG\Property(property="uri", description="授权链接")
  *             )
  *         )
  *     )
@@ -45,7 +52,7 @@ namespace App\Http\Controllers\Api\V1;
 /**
  * @SWG\Get(
  *     path="/component/{componentAppId}/mini_program",
- *     summary="获取小程序列表",
+ *     summary="获取已经授权的小程序列表",
  *     tags={"小程序管理"},
  *     description="管理三方平台",
  *     produces={"application/json"},
@@ -151,12 +158,6 @@ namespace App\Http\Controllers\Api\V1;
  *                     type="Object",
  *                     ref="#/definitions/MiniProgram"
  *                 ),
- *                 @SWG\Property(
- *                     property="config",
- *                     type="Object",
- *                     description="发版信息",
- *                     ref="#/definitions/MiniProgramConfig"
- *                 ),
  *             )
  *         )
  *     )
@@ -211,7 +212,7 @@ namespace App\Http\Controllers\Api\V1;
 
 
 /**
- * @SWG\Get(
+ * @SWG\Post(
  *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/decrypt",
  *     summary="小程序数据解密",
  *     tags={"小程序管理"},
@@ -251,22 +252,14 @@ namespace App\Http\Controllers\Api\V1;
  *             @SWG\Property(
  *                 property="data",
  *                 type="object",
- *                 @SWG\Property(
- *                     property="info",
- *                     type="Object",
- *                     ref="#/definitions/MiniProgram"
- *                 ),
- *                 @SWG\Property(
- *                     property="config",
- *                     type="Object",
- *                     description="发版信息",
- *                     ref="#/definitions/MiniProgramConfig"
- *                 ),
+ *                 description="解密返回的数据"
  *             )
  *         )
  *     )
  * )
  */
+
+
 class MiniProgramController
 {
 

@@ -38,4 +38,18 @@ class Component extends Model
         'aes_key',
     ];
 
+    public function getAuthorizationLaunchPageDomain()
+    {
+        return "http://release.mini-program.com";
+    }
+
+    public function getAuthorizationEventNotifyUrl()
+    {
+        return "http://release.mini-program.com/open_platform/{$this->app_id}/event";
+    }
+
+    public function getMsgEventNotifyUrl()
+    {
+        return "http://release.mini-program.com/open_platform/{$this->app_id}/serve";
+    }
 }
