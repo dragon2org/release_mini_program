@@ -101,55 +101,6 @@ class TemplateController
      */
 
     /**
-     * @SWG\Put(
-     *     path="/component/{componentAppId}/template/{templateId}",
-     *     summary="保存模板信息",
-     *     tags={"模板管理"},
-     *     description="管理三方平台",
-     *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         name="componentAppId",
-     *         in="path",
-     *         description="三方平台AppID",
-     *         required=true,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="templateId",
-     *         in="path",
-     *         description="模板ID",
-     *         required=true,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="config",
-     *         in="body",
-     *         description="模板配置信息",
-     *         required=true,
-     *         type="object",
-     *         @SWG\Schema(ref="#/definitions/MiniProgramConfig")
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="成功返回",
-     *         @SWG\Schema(
-     *             @SWG\Property(
-     *                 property="status",
-     *                 type="string",
-     *                 default="T",
-     *                 description="接口返回状态['T'->成功; 'F'->失败]"
-     *             ),
-     *             @SWG\Property(
-     *                 property="data",
-     *                 type="Object",
-     *                 ref="#/definitions/Component"
-     *             )
-     *         )
-     *     )
-     * )
-     */
-
-    /**
      * @SWG\Get(
      *     path="/component/{componentAppId}/template/{templateId}",
      *     summary="获取模板信息",
