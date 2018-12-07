@@ -160,7 +160,7 @@ class TesterController
      *     ),
      *     @SWG\Parameter(
      *         description="微信号",
-     *         in="formData",
+     *         in="path",
      *         name="wechatid",
      *         required=true,
      *         type="string"

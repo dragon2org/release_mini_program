@@ -111,50 +111,6 @@ namespace App\Http\Controllers\Api\V1;
  * )
  */
 
-/**
- * @SWG\Put(
- *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}",
- *     summary="保存并设置小程序发版信息",
- *     tags={"小程序管理"},
- *     description="管理三方平台",
- *     produces={"application/json"},
- *     @SWG\Parameter(
- *         name="componentAppId",
- *         in="path",
- *         description="三方平台AppID",
- *         required=true,
- *         type="string",
- *     ),
- *     @SWG\Parameter(
- *         name="miniProgramAppId",
- *         in="path",
- *         description="小程序AppId",
- *         required=true,
- *         type="string",
- *     ),
- *     @SWG\Parameter(
- *         name="config",
- *         in="body",
- *         description="模板配置信息",
- *         required=true,
- *         type="object",
- *         @SWG\Schema(ref="#/definitions/MiniProgramConfig")
- *     ),
- *     @SWG\Response(
- *         response=200,
- *         description="成功返回",
- *         @SWG\Schema(
- *             @SWG\Property(
- *                 property="status",
- *                 type="string",
- *                 default="T",
- *                 description="接口返回状态['T'->成功; 'F'->失败]"
- *             )
- *         )
- *     )
- * )
- */
-
 
 /**
  * @SWG\Get(
@@ -207,6 +163,110 @@ namespace App\Http\Controllers\Api\V1;
  * )
  */
 
+
+/**
+ * @SWG\get(
+ *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/session_key",
+ *     summary="获取小程序session_key",
+ *     tags={"小程序管理"},
+ *     description="管理三方平台",
+ *     produces={"application/json"},
+ *     @SWG\Parameter(
+ *         name="componentAppId",
+ *         in="path",
+ *         description="三方平台AppID",
+ *         required=true,
+ *         type="string",
+ *     ),
+ *     @SWG\Parameter(
+ *         name="miniProgramAppId",
+ *         in="path",
+ *         description="小程序AppId",
+ *         required=true,
+ *         type="string",
+ *     ),
+ *     @SWG\Response(
+ *         response=200,
+ *         description="成功返回",
+ *         @SWG\Schema(
+ *             @SWG\Property(
+ *                 property="status",
+ *                 type="string",
+ *                 default="T",
+ *                 description="接口返回状态['T'->成功; 'F'->失败]"
+ *             ),
+ *             @SWG\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @SWG\Property(
+ *                     property="session_key",
+ *                     type="string",
+ *                     description="小程序seesion_key"
+ *                 ),
+ *             )
+ *         )
+ *     )
+ * )
+ */
+
+
+/**
+ * @SWG\Get(
+ *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/decrypt",
+ *     summary="小程序数据解密",
+ *     tags={"小程序管理"},
+ *     description="管理三方平台",
+ *     produces={"application/json"},
+ *     @SWG\Parameter(
+ *         name="componentAppId",
+ *         in="path",
+ *         description="三方平台AppID",
+ *         required=true,
+ *         type="string",
+ *     ),
+ *     @SWG\Parameter(
+ *         name="miniProgramAppId",
+ *         in="path",
+ *         description="小程序AppId",
+ *         required=true,
+ *         type="string",
+ *     ),
+ *     @SWG\Parameter(
+ *         name="iv",
+ *         in="formData",
+ *         description="加密数据",
+ *         required=true,
+ *         type="string",
+ *     ),
+ *     @SWG\Response(
+ *         response=200,
+ *         description="成功返回",
+ *         @SWG\Schema(
+ *             @SWG\Property(
+ *                 property="status",
+ *                 type="string",
+ *                 default="T",
+ *                 description="接口返回状态['T'->成功; 'F'->失败]"
+ *             ),
+ *             @SWG\Property(
+ *                 property="data",
+ *                 type="object",
+ *                 @SWG\Property(
+ *                     property="info",
+ *                     type="Object",
+ *                     ref="#/definitions/MiniProgram"
+ *                 ),
+ *                 @SWG\Property(
+ *                     property="config",
+ *                     type="Object",
+ *                     description="发版信息",
+ *                     ref="#/definitions/MiniProgramConfig"
+ *                 ),
+ *             )
+ *         )
+ *     )
+ * )
+ */
 class MiniProgramController
 {
 
