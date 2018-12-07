@@ -12,3 +12,4 @@ yarn-error.log
 .env
 /packages/*
 /storage/docs/*
+/.php_cs.cache
