@@ -588,4 +588,20 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+
+    public function hostValidate($validateFilename)
+    {
+        $content = Component::where('validate_filename', $validateFilename)->value('validate_content');
+
+        if (empty($content)) {
+            abort(404, 'not found pages');
+        }
+
+        return response($content, 200, [
+            "Content-type" => "application/octet-stream",
+            "Accept-Ranges" => "bytes",
+            "Accept-Length" => strlen($content),
+            "Content-Disposition" => "attachment; filename={$validateFilename}"
+        ]);
+    }
 }

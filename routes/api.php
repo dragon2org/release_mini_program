@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 
+
+
 Route::group([
     'prefix' => 'v1',
     'namespace' => 'Api\V1',
@@ -61,3 +63,5 @@ Route::get('/component/{componentAppId}/mini_program/{miniProgram}/');
 Route::get('/component/{componentAppId}/mini_program/{miniProgram}/tester');
 Route::post('/component/{componentAppId}/mini_program/{miniProgram}/tester');
 Route::delete('/component/{componentAppId}/mini_program/{miniProgram}/tester/{wechatid}');
+
+
