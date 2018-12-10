@@ -14,7 +14,7 @@ namespace App\Http\Controllers\Api\V1\Definitions;
 class Tester
 {
     /**
-     * @SWG\Property(type="string", description="人员对应的唯一字符串")
+     * @SWG\Property(type="string", description="人员对应的唯一字符串, **不是wechatID**,业务方可能需要自己保存体验者的wechatID")
      */
     public $userstr;
 }

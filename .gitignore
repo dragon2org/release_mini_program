@@ -2,7 +2,6 @@
 /public/hot
 /public/storage
 /storage/*.key
-/vendor
 /.idea
 /.vagrant
 Homestead.json
@@ -12,3 +11,6 @@ yarn-error.log
 .env
 /packages/*
 /storage/docs/*
+/.php_cs.cache
+/.phplint.cache
+/.phplint-cache

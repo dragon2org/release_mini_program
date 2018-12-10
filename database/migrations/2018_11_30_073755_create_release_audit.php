@@ -13,7 +13,7 @@ class CreateReleaseAudit extends Migration
      */
     protected $tableName = 'release_audit';
 
-    protected $tableComment = '发版审核表';
+    protected $tableComment = '发版审核申请结果表';
 
     /**
      * Run the migrations.

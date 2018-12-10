@@ -2,34 +2,19 @@
 
 use Illuminate\Http\Request;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group([
+    'prefix' => 'v1',
+    'namespace' => 'Api\V1',
+],  function(){
+    /**
+     * 三方平台管理
+     */
+    Route::post('/component', 'ComponentController@create');
+    Route::get('/component');
+    Route::get('/component/{componentAppId}');
+    Route::put('/component/{componentAppId}');
+    Route::delete('/component/{componentAppId}');
 });
-
-/**
- * 平台授权授权
- */
-Route::post('/oatuth/token');
-
-/**
- * 三方平台管理
- */
-Route::post('/component');
-Route::get('/component');
-Route::get('/component/{componentAppId}');
-Route::put('/component/{componentAppId}');
-Route::delete('/component/{componentAppId}');
 
 /**
  * 模板管理

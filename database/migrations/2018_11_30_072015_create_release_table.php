@@ -8,7 +8,7 @@ class CreateReleaseTable extends Migration
 {
     protected $tableName = 'release';
 
-    protected $tableComment = '发版记录表';
+    protected $tableComment = '发版申请记录表';
 
     /**
      * Run the migrations.

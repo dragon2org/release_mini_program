@@ -29,7 +29,7 @@ class MiniProgramConfig
     public $tester;
 
     /**
-     * @SWG\Property(type="string", description="小程序ext_json配置")
+     * @SWG\Property(type="string", description="小程序ext_json配置: 替换变量, 小程序app_id {$app_id}, 公司id {$company_id}")
      */
     public $ext_json;
 
