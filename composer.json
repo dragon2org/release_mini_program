@@ -4,12 +4,6 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
-    "repositories": [
-        {
-            "type": "path",
-            "url": "./packages/Swaggervel"
-        }
-    ],
     "require": {
         "php": ">=7.0.0",
         "barryvdh/laravel-ide-helper": "^2.5",
