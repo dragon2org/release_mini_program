@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "content-hash": "523f9faa6772a6558f0212c7b1647fdb",
@@ -985,6 +985,8 @@
                 "validator"
             ],
             "time": "2018-12-04T22:38:24+00:00"
+<<<<<<< HEAD
+=======
         },
         {
             "name": "ellipsesynergie/api-response",
@@ -1046,6 +1048,7 @@
                 "json"
             ],
             "time": "2017-07-06T13:01:20+00:00"
+>>>>>>> 89f9e245a762ecb8c3f31fdae62fbeb1603b9dba
         },
         {
             "name": "erusev/parsedown",
@@ -2852,6 +2855,59 @@
                 "phra"
             ],
             "time": "2015-10-13T18:44:15+00:00"
+        },
+        {
+            "name": "sjje/swaggervel",
+            "version": "v3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sjje/Swaggervel.git",
+                "reference": "9f7f23e1bb4e82badf8da9952541b9318740c5cc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sjje/Swaggervel/zipball/9f7f23e1bb4e82badf8da9952541b9318740c5cc",
+                "reference": "9f7f23e1bb4e82badf8da9952541b9318740c5cc",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "zircote/swagger-php": "*"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Sjje\\Swaggervel\\SwaggervelServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Sjje\\Swaggervel": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "sjje",
+                    "email": "377304925@qq.com"
+                }
+            ],
+            "description": "A great way to integrate Swagger into Laravel",
+            "keywords": [
+                "L4",
+                "api",
+                "documentation",
+                "l5",
+                "laravel",
+                "openapi",
+                "swagger"
+            ],
+            "time": "2018-12-07T03:51:49+00:00"
         },
         {
             "name": "sjje/swaggervel",
