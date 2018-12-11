@@ -40,18 +40,20 @@ class Component extends Model
 
     public function getAuthorizationLaunchPageDomain()
     {
-        return env('APP_URL');
+        return url('');
     }
 
     public function getAuthorizationEventNotifyUrl()
     {
-        return env('APP_URL') .
-            "/component/{$this->app_id}/serve";
+        return route('componentServe', ['componentAppId' => $this->app_id]);
     }
 
     public function getMsgEventNotifyUrl()
     {
-        return env('APP_URL') .
-            "component/{$this->app_id}" . '/mini_program/$APPID$/serve';
+        $route = route('componentMiniProgramServe', [
+            'componentAppId' => $this->app_id,
+            'miniProgram' => 'AAAAA'
+            ]);
+        return str_replace('AAAAA', '$APPID$', $route);
     }
 }

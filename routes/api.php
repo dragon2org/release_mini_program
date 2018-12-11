@@ -2,10 +2,16 @@
 
 use Illuminate\Http\Request;
 
+Route::pattern('validateFilename', '[A-Za-z0-9_]+\.txt$');
+Route::get('/{validateFilename}', 'ComponentController@hostValidate');
+
+
+Route::any('/component/{componentAppId}/mini_program/{miniProgram}/serve', 'ComponentController@serve')->name('componentMiniProgramServe');
+Route::post('/component/{componentAppId}/serve', 'MiniProgramController@serve')->name('componentServe');;
 
 
 Route::group([
-    'prefix' => 'v1',
+    'prefix' => 'api/v1',
     'namespace' => 'Api\V1',
 ],  function(){
     /**

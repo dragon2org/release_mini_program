@@ -15,17 +15,3 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::pattern('validateFilename', '[A-Za-z0-9_]+\.txt$');
-Route::get('/{validateFilename}', '\App\Http\Controllers\Api\V1\ComponentController@hostValidate');
-
-
-/**
- * 通过该URL接收公众号或小程序消息和事件推送
- * component/wx1a7a535c6aeef8aa/mini_program/$APPID$/serve
- */
-Route::any('/component/{componentAppId}/mini_program/{miniProgram}/serve', 'ComponentController@serve');
-/**
- * 授权事件和component_verify_ticket推送地址
- * /component/wx1a7a535c6aeef8aa/serve
- */
-Route::post('/component/{componentAppId}/serve', 'MiniProgramController@serve');
