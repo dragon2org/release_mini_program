@@ -1,8 +1,9 @@
 <?php
 
 $rawInput = file_get_contents('php://input');
+$path = dirname(__DIR__) .'/'. 'wechat_request_data_' . date('Ymd') .'.log';
 file_put_contents(
-    dirname(__DIR__) .'/'. 'wechat_request_data_' . date('Ymd'),
+    $path,
     $rawInput .PHP_EOL,
     FILE_APPEND
     );
