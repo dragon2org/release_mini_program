@@ -9,7 +9,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 
-class MiniProgramController
+use App\Models\Component;
+use App\Models\MiniProgram;
+use EasyWeChat\Factory;
+
+class MiniProgramController extends Controller
 {
     /**
      * @SWG\Get(
@@ -30,7 +34,7 @@ class MiniProgramController
      *         type="string",
      *         required=false,
      *         in="query",
-     *         description="生成类型:二维码:qrcode；授权连接:url",
+     *         description="生成类型:移动端: mobile；电脑端:pc",
      *     ),
      *     @SWG\Response(
      *         response=200,
@@ -51,9 +55,50 @@ class MiniProgramController
      *     )
      * )
      */
-    public function bindUrl()
+    public function bindUrl($componentAppId)
     {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $callbackUrl = Route('MiniProgramBindCallback', [
+            'componentAppId'=> $componentAppId,
+            'inner_name' => '',
+            'inner_desc' => '',
+            'inner_key' => '',
+        ]);
+        $uri = request()->query('type') === 'mobile' ? $openPlatform->getPreAuthorizationUrl($callbackUrl) : $openPlatform->getMobilePreAuthorizationUrl($callbackUrl);
 
+        return $this->response->withArray(['data' => [
+                'uri' => $uri
+            ]]
+        );
+    }
+
+    public function bindCallback($componentAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $res = $openPlatform->handleAuthorize();
+
+        //TODO::判断function_info
+        $miniProgram = new MiniProgram();
+        $miniProgram->component_app_id = $componentAppId;
+        $miniProgram->company_id = request()->query('company_id');
+        $miniProgram->inner_name = request()->query('company_id');
+        $miniProgram->inner_desc = request()->query('company_id');
+        $miniProgram->inner_key = request()->query('inner_key') ??  $res['authorizer_appid'];
+        $miniProgram->authorizer_refresh_token = $res['authorizer_refresh_token'];
+        $miniProgram->save();
+
+        //拉取基础信息
+        $info = $openPlatform->getAuthorizer($res['authorizer_appid']);
+        $miniProgram->nick_name = $info['nick_name'];
+        $miniProgram->head_img = $info['head_img'];
+        $miniProgram->user_name = $info['user_name'];
+        $miniProgram->principal_name = $info['principal_name'];
+        $miniProgram->qrcode_url = $info['qrcode_url'];
+        $miniProgram->save();
+
+        echo 'success';
     }
 
 /**
