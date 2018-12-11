@@ -1,5 +1,12 @@
 <?php
 
+$rawInput = file_get_contents('php://input');
+file_put_contents(
+    dirname(__DIR__) .'/'. 'wechat_request_data_' . date('Ymd'),
+    $rawInput .PHP_EOL,
+    FILE_APPEND
+    );
+
 /**
  * Laravel - A PHP Framework For Web Artisans
  *

@@ -22,6 +22,15 @@ Route::group([
     Route::get('/component/{componentAppId}');
     Route::put('/component/{componentAppId}');
     Route::delete('/component/{componentAppId}');
+
+    /**
+     * 小程序管理
+     */
+    Route::get('/component/{componentAppId}/bind_component', 'MiniProgramController@bind_component');
+    Route::get('/component/{componentAppId}/mini_program');
+    Route::post('/component/{componentAppId}/domain');
+    Route::post('/component/{componentAppId}/web_view_domain');
+    Route::put('/component/{componentAppId}/mini_program/{miniProgramAppId}');
 });
 
 /**
@@ -33,14 +42,7 @@ Route::delete('/component/{componentAppId}/template/{templateId}');
 Route::post('/component/{componentAppId}/template');
 Route::post('/component/{componentAppId}/template/{templateId}/release');
 
-/**
- * 小程序管理
- */
-Route::post('/component/{componentAppId}/bind_component');
-Route::get('/component/{componentAppId}/mini_program');
-Route::post('/component/{componentAppId}/domain');
-Route::post('/component/{componentAppId}/web_view_domain');
-Route::put('/component/{componentAppId}/mini_program/{miniProgramAppId}');
+
 
 
 /**
