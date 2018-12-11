@@ -22,6 +22,7 @@ Route::group([
     Route::get('/component/{componentAppId}');
     Route::put('/component/{componentAppId}');
     Route::delete('/component/{componentAppId}');
+    Route::get('/component/{componentAppId}/component_verify_ticket', 'ComponentController@componentVerifyTicket')->name('getComponentVerifyTicket');
 
     /**
      * 小程序管理

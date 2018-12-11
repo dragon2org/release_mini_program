@@ -12,11 +12,11 @@ namespace App\Http\Controllers;
 use App\Models\Component;
 use EasyWeChat\Factory;
 use EasyWeChat\OpenPlatform\Server\Guard;
+use Illuminate\Support\Facades\Cache;
 use Log;
 
 class ComponentController extends Controller
 {
-
     public function serve($componentAppId)
     {
         $component = Component::where('app_id', $componentAppId)->first();
@@ -44,7 +44,7 @@ class ComponentController extends Controller
             Log::info('ComponentVerifyTicket:', $message);
             $component->verify_ticket = $message['ComponentVerifyTicket'];
             $component->save();
-
+            Cache::forget(Component::getCacheKey($component->app_id));
         }, Guard::EVENT_COMPONENT_VERIFY_TICKET);
 
         return $server->serve();

@@ -434,7 +434,6 @@ class ComponentController extends Controller
      */
 
 
-
     /**
      * @SWG\Post(
      *     path="/component/:componentAppId/template/:templateId/release",
@@ -479,7 +478,7 @@ class ComponentController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/component/:componentAppId/component_verify_ticket",
+     *     path="/component/{componentAppId}/component_verify_ticket",
      *     summary="获取三方平台 component_verify_ticket",
      *     tags={"测试接口"},
      *     description="管理三方平台",
@@ -511,6 +510,14 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+
+    public function componentVerifyTicket($componentAppId)
+    {
+        return $this->response->withArray(['data' => [
+                'component_verify_ticket' => Component::getConfig($componentAppId)['component_verify_ticket']
+            ]]
+        );
+    }
 
     /**
      * @SWG\Get(

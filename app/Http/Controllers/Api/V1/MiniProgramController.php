@@ -8,46 +8,53 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-/**
- * @SWG\Get(
- *     path="/component/{componentAppId}/bind_url",
- *     summary="获取小程序授权地址",
- *     tags={"小程序管理"},
- *     description="管理三方平台",
- *     produces={"application/json"},
- *     @SWG\Parameter(
- *         name="redirect_url",
- *         type="string",
- *         required=false,
- *         in="query",
- *         description="授权成功的通知地址",
- *     ),
- *     @SWG\Parameter(
- *         name="type",
- *         type="string",
- *         required=false,
- *         in="query",
- *         description="生成类型:二维码:qrcode；授权连接:url",
- *     ),
- *     @SWG\Response(
- *         response=200,
- *         description="成功返回。type为qrcode直接返回图片",
- *         @SWG\Schema(
- *             @SWG\Property(
- *                 property="status",
- *                 type="string",
- *                 default="T",
- *                 description="接口返回状态['T'->成功; 'F'->失败]"
- *             ),
- *             @SWG\Property(
- *                 property="data",
- *                 type="Object",
- *                 @SWG\Property(property="uri", description="授权链接")
- *             )
- *         )
- *     )
- * )
- */
+
+class MiniProgramController
+{
+    /**
+     * @SWG\Get(
+     *     path="/component/{componentAppId}/bind_url",
+     *     summary="获取小程序授权地址",
+     *     tags={"小程序管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="redirect_url",
+     *         type="string",
+     *         required=false,
+     *         in="query",
+     *         description="授权成功的通知地址",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="type",
+     *         type="string",
+     *         required=false,
+     *         in="query",
+     *         description="生成类型:二维码:qrcode；授权连接:url",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回。type为qrcode直接返回图片",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="Object",
+     *                 @SWG\Property(property="uri", description="授权链接")
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function bindUrl()
+    {
+
+    }
 
 /**
  * @SWG\Get(
@@ -259,8 +266,5 @@ namespace App\Http\Controllers\Api\V1;
  * )
  */
 
-
-class MiniProgramController
-{
 
 }
