@@ -56,4 +56,14 @@ class Component extends Model
             ]);
         return str_replace('AAAAA', '$APPID$', $route);
     }
+
+    public function getConfig()
+    {
+        return [
+            'app_id' => $this->app_id,
+            'secret' => $this->app_secret,
+            'token' => $this->verify_token,
+            'aes_key' => $this->aes_key,
+        ];
+    }
 }
