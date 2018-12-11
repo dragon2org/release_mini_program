@@ -40,16 +40,18 @@ class Component extends Model
 
     public function getAuthorizationLaunchPageDomain()
     {
-        return "http://release.mini-program.com";
+        return env('APP_URL');
     }
 
     public function getAuthorizationEventNotifyUrl()
     {
-        return "http://release.mini-program.com/open_platform/{$this->app_id}/event";
+        return env('APP_URL') .
+            "/component/{$this->app_id}/serve";
     }
 
     public function getMsgEventNotifyUrl()
     {
-        return "http://release.mini-program.com/open_platform/{$this->app_id}/serve";
+        return env('APP_URL') .
+            "component/{$this->app_id}" . '/mini_program/$APPID$/serve';
     }
 }
