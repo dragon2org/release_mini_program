@@ -104,10 +104,7 @@ class MiniProgramController extends Controller
 
         $uri = request()->query('type') === 'mobile' ? $openPlatform->getMobilePreAuthorizationUrl($callbackUrl) : $openPlatform->getPreAuthorizationUrl($callbackUrl);
 
-        return $this->response->withArray(['data' => [
-                'uri' => $uri
-            ]]
-        );
+        return view('authorize_boot_page', ['uri' => $uri]);
     }
 
     public function bindCallback($componentAppId)
