@@ -1,8 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\V1;
+namespace App\Http\Controllers\Api\V1;
 
-class TemplateController
+
+use App\Models\Component;
+use EasyWeChat\Factory;
+
+class TemplateController extends Controller
 {
     /**
      * @SWG\Get(
@@ -222,30 +226,6 @@ class TemplateController
      *         description="成功返回",
      *         @SWG\Schema(
      *             @SWG\Property(
-     *                 property="pagination",
-     *                 type="object",
-     *                 @SWG\Property(
-     *                     property="total",
-     *                     type="integer",
-     *                     description="总的数据条数 "
-     *                 ),
-     *                 @SWG\Property(
-     *                     property="per_page",
-     *                     type="integer",
-     *                     description="每页的数据条数"
-     *                 ),
-     *                 @SWG\Property(
-     *                     property="current_page",
-     *                     type="integer",
-     *                     description="当前是第几页"
-     *                 ),
-     *                 @SWG\Property(
-     *                     property="last_page",
-     *                     type="integer",
-     *                     description="最大页数"
-     *                 ),
-     *             ),
-     *             @SWG\Property(
      *                 property="status",
      *                 type="string",
      *                 default="T",
@@ -260,5 +240,17 @@ class TemplateController
      *     )
      * )
      */
+
+    public function index($componentAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+
+        $data = $openPlatform->code_template->list();
+
+        return $this->response->withArray([
+            'data'=> $data['template_list'] ?? []
+        ]);
+    }
 
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Requests\Api\ComponentRequest;
 use App\Http\Transformer\ComponentTransformer;
 use App\Models\Component;
+use EasyWeChat\Factory;
 
 class ComponentController extends Controller
 {
@@ -480,7 +481,7 @@ class ComponentController extends Controller
      * @SWG\Get(
      *     path="/component/{componentAppId}/component_verify_ticket",
      *     summary="获取三方平台 component_verify_ticket",
-     *     tags={"测试接口"},
+     *     tags={"三方平台管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -523,7 +524,7 @@ class ComponentController extends Controller
      * @SWG\Get(
      *     path="/component/{componentAppId}/component_access_token",
      *     summary="获取三方平台 component_access_token",
-     *     tags={"测试接口"},
+     *     tags={"三方平台管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -543,6 +544,7 @@ class ComponentController extends Controller
      *                 type="object",
      *                 description="返回数据包",
      *                 @SWG\Property(property="component_access_token", type="string", description="三方平台自己的接口调用凭据"),
+     *                 @SWG\Property(property="expires_in", type="integer", description="有效期"),
      *             ),
      *         )
      *     ),
@@ -553,46 +555,14 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+    public function componentAccessToken($componentAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
 
-    /**
-     * @SWG\Get(
-     *     path="/component/:componentAppId}/mini_program/:miniProgramAppId/access_token",
-     *     summary="获取小程序的access_token",
-     *     tags={"测试接口"},
-     *     description="管理三方平台",
-     *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         name="componentAppId",
-     *         in="path",
-     *         description="三方平台AppID",
-     *         required=true,
-     *         type="string"
-     *     ),
-     *     @SWG\Parameter(
-     *         name="miniProgramAppId",
-     *         in="path",
-     *         description="小程序AppId",
-     *         required=true,
-     *         type="string"
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="处理成功返回",
-     *         ref="$/responses/200",
-     *         @SWG\Schema(
-     *             @SWG\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 description="返回数据包",
-     *                 @SWG\Property(property="access_token", type="string", description="三方平台的小程序的access_token"),
-     *             ),
-     *         )
-     *     ),
-     *     @SWG\Response(
-     *         response=422,
-     *         description="处理失败的返回",
-     *         ref="$/responses/422",
-     *     ),
-     * )
-     */
+        return $this->response->withArray(['data' =>$openPlatform['access_token']->getToken()]
+        );
+    }
+
+
 }

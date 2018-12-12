@@ -19,7 +19,7 @@ class CreateMiniProgramTable extends Migration
     {
         Schema::create($this->tableName, function (Blueprint $table) {
             $table->increments($this->tableName . '_id')->unsigned()->comment('自增id');
-            $table->integer('component_app_id')->default(0)->unsigned()->comment('关联的三方平台ID');
+            $table->integer('component_id')->default(0)->unsigned()->comment('关联的三方平台ID');
             $table->integer('company_id')->default(0)->unsigned()->comment('公司id');
             $table->string('inner_name', 45)->default('')->comment('内部名称');
             $table->string('inner_desc', 45)->default('')->comment('内部描述');
@@ -30,8 +30,8 @@ class CreateMiniProgramTable extends Migration
             $table->string('user_name', 45)->default('')->comment('原始ID,审核推送要用');
             $table->string('principal_name', 45)->default('')->comment('小程序主体名称');
             $table->string('qrcode_url')->default('')->comment('二维码图片的URL');
-            $table->string('desc', 45)->default('')->comment('小程序平台描述');
-            $table->string('authorizer_refresh_token', 43)->default('')->comment('获取（刷新）授权公众号或小程序的接口调用凭据');
+            $table->string('desc')->default('')->comment('小程序平台描述');
+            $table->string('authorizer_refresh_token', 100)->default('')->comment('获取（刷新）授权公众号或小程序的接口调用凭据');
             $table->string('user_version', 43)->default('')->comment('当前版本');
 
             $table->index('app_id', 'idx_app_id');

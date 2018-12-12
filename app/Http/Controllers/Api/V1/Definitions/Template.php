@@ -8,14 +8,14 @@ namespace Http\Controllers\Api\V1\Definitions;
 class Template
 {
     /**
-     * @SWG\Property(type="string", description="三方平台ID")
+     * @SWG\Property(type="integer", description="创建时间")
      */
-    public $component_app_id;
+    public $create_time;
 
     /**
-     * @SWG\Property(type="string", description="草稿id")
+     * @SWG\Property(type="string", description="模板id")
      */
-    public $draft_id;
+    public $template_id;
 
     /**
      * @SWG\Property(type="string", description="模版版本号")
@@ -28,13 +28,17 @@ class Template
     public $user_desc;
 
     /**
-     * @SWG\Property(type="string", description="开发者上传草稿时间")
+     * @SWG\Property(type="string", description="来源小程序appid")
      */
-    public $create_time;
+    public $source_miniprogram_appid;
 
     /**
-     * @SWG\Property(type="string", description="备注")
+     * @SWG\Property(type="string", description="来源小程序名字")
      */
-    public $desc;
+    public $source_miniprogram;
 
+    /**
+     * @SWG\Property(type="string", description="开发者")
+     */
+    public $developer;
 }

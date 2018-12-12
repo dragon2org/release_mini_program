@@ -90,9 +90,8 @@ class MiniProgramController extends Controller
     {
         $config = Component::getConfig($componentAppId);
         $openPlatform = Factory::openPlatform($config);
-        $openPlatform['verify_ticket']->setTicket($config['component_verify_ticket']);
         $callbackUrl = Route('MiniProgramBindCallback', [
-            'componentAppId'=> $componentAppId,
+            'componentAppId' => $componentAppId,
         ]);
 
         $params = [
@@ -102,7 +101,7 @@ class MiniProgramController extends Controller
             'redirect_uri' => request()->query('redirect_uri'),
         ];
 
-        $callbackUrl .= '?'. http_build_query($params);
+        $callbackUrl .= '?' . http_build_query($params);
 
         $uri = request()->query('type') === 'mobile' ? $openPlatform->getMobilePreAuthorizationUrl($callbackUrl) : $openPlatform->getPreAuthorizationUrl($callbackUrl);
 
@@ -141,221 +140,272 @@ class MiniProgramController extends Controller
         $miniProgram->desc = $info['signature'];
         $miniProgram->save();
 
-        if($redirectUri = request()->query('redirect_uri')){
+        if ($redirectUri = request()->query('redirect_uri')) {
             return response()->redirectTo($redirectUri);
         }
         return view('authorize_success');
     }
 
-/**
- * @SWG\Get(
- *     path="/component/{componentAppId}/mini_program",
- *     summary="获取已经授权的小程序列表",
- *     tags={"小程序管理"},
- *     description="管理三方平台",
- *     produces={"application/json"},
- *     @SWG\Parameter(
- *         description="第几页，默认第一页",
- *         in="query",
- *         name="page",
- *         required=false,
- *         type="integer",
- *         format="int64",
- *         default="1"
- *     ),
- *     @SWG\Parameter(
- *         description="每页数量，默认为15",
- *         in="query",
- *         name="pageSize",
- *         required=false,
- *         type="integer",
- *         format="int64",
- *         default="5"
- *     ),
- *     @SWG\Response(
- *         response=200,
- *         description="成功返回",
- *         @SWG\Schema(
- *             @SWG\Property(
- *                 property="pagination",
- *                 type="object",
- *                 @SWG\Property(
- *                     property="total",
- *                     type="integer",
- *                     description="总的数据条数 "
- *                 ),
- *                 @SWG\Property(
- *                     property="per_page",
- *                     type="integer",
- *                     description="每页的数据条数"
- *                 ),
- *                 @SWG\Property(
- *                     property="current_page",
- *                     type="integer",
- *                     description="当前是第几页"
- *                 ),
- *                 @SWG\Property(
- *                     property="last_page",
- *                     type="integer",
- *                     description="最大页数"
- *                 ),
- *             ),
- *             @SWG\Property(
- *                 property="status",
- *                 type="string",
- *                 default="T",
- *                 description="接口返回状态['T'->成功; 'F'->失败]"
- *             ),
- *             @SWG\Property(
- *                 property="data",
- *                 type="array",
- *                 @SWG\Items(ref="#/definitions/MiniProgram")
- *             ),
- *         )
- *     )
- * )
- */
+    /**
+     * @SWG\Get(
+     *     path="/component/{componentAppId}/mini_program",
+     *     summary="获取已经授权的小程序列表",
+     *     tags={"小程序管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         description="第几页，默认第一页",
+     *         in="query",
+     *         name="page",
+     *         required=false,
+     *         type="integer",
+     *         format="int64",
+     *         default="1"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="每页数量，默认为15",
+     *         in="query",
+     *         name="pageSize",
+     *         required=false,
+     *         type="integer",
+     *         format="int64",
+     *         default="5"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="pagination",
+     *                 type="object",
+     *                 @SWG\Property(
+     *                     property="total",
+     *                     type="integer",
+     *                     description="总的数据条数 "
+     *                 ),
+     *                 @SWG\Property(
+     *                     property="per_page",
+     *                     type="integer",
+     *                     description="每页的数据条数"
+     *                 ),
+     *                 @SWG\Property(
+     *                     property="current_page",
+     *                     type="integer",
+     *                     description="当前是第几页"
+     *                 ),
+     *                 @SWG\Property(
+     *                     property="last_page",
+     *                     type="integer",
+     *                     description="最大页数"
+     *                 ),
+     *             ),
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @SWG\Items(ref="#/definitions/MiniProgram")
+     *             ),
+     *         )
+     *     )
+     * )
+     */
 
 
-/**
- * @SWG\Get(
- *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}",
- *     summary="获取小程序信息",
- *     tags={"小程序管理"},
- *     description="管理三方平台",
- *     produces={"application/json"},
- *     @SWG\Parameter(
- *         name="componentAppId",
- *         in="path",
- *         description="三方平台AppID",
- *         required=true,
- *         type="string",
- *     ),
- *     @SWG\Parameter(
- *         name="miniProgramAppId",
- *         in="path",
- *         description="小程序AppId",
- *         required=true,
- *         type="string",
- *     ),
- *     @SWG\Response(
- *         response=200,
- *         description="成功返回",
- *         @SWG\Schema(
- *             @SWG\Property(
- *                 property="status",
- *                 type="string",
- *                 default="T",
- *                 description="接口返回状态['T'->成功; 'F'->失败]"
- *             ),
- *             @SWG\Property(
- *                 property="data",
- *                 type="object",
- *                 @SWG\Property(
- *                     property="info",
- *                     type="Object",
- *                     ref="#/definitions/MiniProgram"
- *                 ),
- *             )
- *         )
- *     )
- * )
- */
+    /**
+     * @SWG\Get(
+     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}",
+     *     summary="获取小程序信息",
+     *     tags={"小程序管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         description="三方平台AppID",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="miniProgramAppId",
+     *         in="path",
+     *         description="小程序AppId",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @SWG\Property(
+     *                     property="info",
+     *                     type="Object",
+     *                     ref="#/definitions/MiniProgram"
+     *                 ),
+     *             )
+     *         )
+     *     )
+     * )
+     */
 
 
-/**
- * @SWG\get(
- *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/session_key",
- *     summary="获取小程序session_key",
- *     tags={"小程序管理"},
- *     description="管理三方平台",
- *     produces={"application/json"},
- *     @SWG\Parameter(
- *         name="componentAppId",
- *         in="path",
- *         description="三方平台AppID",
- *         required=true,
- *         type="string",
- *     ),
- *     @SWG\Parameter(
- *         name="miniProgramAppId",
- *         in="path",
- *         description="小程序AppId",
- *         required=true,
- *         type="string",
- *     ),
- *     @SWG\Response(
- *         response=200,
- *         description="成功返回",
- *         @SWG\Schema(
- *             @SWG\Property(
- *                 property="status",
- *                 type="string",
- *                 default="T",
- *                 description="接口返回状态['T'->成功; 'F'->失败]"
- *             ),
- *             @SWG\Property(
- *                 property="data",
- *                 type="object",
- *                 @SWG\Property(
- *                     property="session_key",
- *                     type="string",
- *                     description="小程序seesion_key"
- *                 ),
- *             )
- *         )
- *     )
- * )
- */
+    /**
+     * @SWG\get(
+     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/session_key",
+     *     summary="获取小程序session_key",
+     *     tags={"小程序管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         description="三方平台AppID",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="miniProgramAppId",
+     *         in="path",
+     *         description="小程序AppId",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @SWG\Property(
+     *                     property="session_key",
+     *                     type="string",
+     *                     description="小程序seesion_key"
+     *                 ),
+     *             )
+     *         )
+     *     )
+     * )
+     */
 
 
-/**
- * @SWG\Post(
- *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/decrypt",
- *     summary="小程序数据解密",
- *     tags={"小程序管理"},
- *     description="管理三方平台",
- *     produces={"application/json"},
- *     @SWG\Parameter(
- *         name="componentAppId",
- *         in="path",
- *         description="三方平台AppID",
- *         required=true,
- *         type="string",
- *     ),
- *     @SWG\Parameter(
- *         name="miniProgramAppId",
- *         in="path",
- *         description="小程序AppId",
- *         required=true,
- *         type="string",
- *     ),
- *     @SWG\Parameter(
- *         name="iv",
- *         in="formData",
- *         description="加密数据",
- *         required=true,
- *         type="string",
- *     ),
- *     @SWG\Response(
- *         response=200,
- *         description="成功返回",
- *         @SWG\Schema(
- *             @SWG\Property(
- *                 property="status",
- *                 type="string",
- *                 default="T",
- *                 description="接口返回状态['T'->成功; 'F'->失败]"
- *             ),
- *             @SWG\Property(
- *                 property="data",
- *                 type="object",
- *                 description="解密返回的数据"
- *             )
- *         )
- *     )
- * )
- */
+    /**
+     * @SWG\Post(
+     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/decrypt",
+     *     summary="小程序数据解密",
+     *     tags={"小程序管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         description="三方平台AppID",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="miniProgramAppId",
+     *         in="path",
+     *         description="小程序AppId",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="iv",
+     *         in="formData",
+     *         description="加密数据",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 description="解密返回的数据"
+     *             )
+     *         )
+     *     )
+     * )
+     */
 
+    /**
+     * @SWG\Get(
+     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/access_token",
+     *     summary="获取小程序的access_token",
+     *     tags={"小程序管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         description="三方平台AppID",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="miniProgramAppId",
+     *         in="path",
+     *         description="小程序AppId",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="处理成功返回",
+     *         ref="$/responses/200",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 description="返回数据包",
+     *                 @SWG\Property(property="authorizer_access_token", type="string", description="授权方令牌"),
+     *                 @SWG\Property(property="expires_in", type="string", description="有效期，为2小时"),
+     *             ),
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=422,
+     *         description="处理失败的返回",
+     *         ref="$/responses/422",
+     *     ),
+     * )
+     */
+    public function accessToken($componentAppId, $miniProgramAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
+        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
+
+        return $this->response->withArray(['data' => $miniProgramApp->access_token->getToken()]);
+    }
 
 }

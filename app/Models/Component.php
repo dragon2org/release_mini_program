@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use EasyWeChat\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
@@ -77,6 +78,8 @@ class Component extends Model
                 $res = json_decode($res);
                 if(isset($res->data)){
                     $config['component_verify_ticket'] = $res->data->component_verify_ticket;
+                    $openPlatform = Factory::openPlatform($config);
+                    $openPlatform['verify_ticket']->setTicket($config['component_verify_ticket']);
                 }
                 return $config;
             } catch (\Exception $e) {
@@ -94,6 +97,8 @@ class Component extends Model
                 'aes_key' => $component->aes_key,
                 'component_verify_ticket' => $component->verify_ticket,
             ];
+            $openPlatform = Factory::openPlatform($config);
+            $openPlatform['verify_ticket']->setTicket($config['component_verify_ticket']);
             return $config;
         });
     }

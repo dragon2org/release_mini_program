@@ -23,6 +23,7 @@ Route::group([
     Route::put('/component/{componentAppId}');
     Route::delete('/component/{componentAppId}');
     Route::get('/component/{componentAppId}/component_verify_ticket', 'ComponentController@componentVerifyTicket')->name('getComponentVerifyTicket');
+    Route::get('/component/{componentAppId}/component_access_token', 'ComponentController@componentAccessToken');
 
     /**
      * 小程序管理
@@ -33,16 +34,19 @@ Route::group([
     Route::post('/component/{componentAppId}/domain');
     Route::post('/component/{componentAppId}/web_view_domain');
     Route::put('/component/{componentAppId}/mini_program/{miniProgramAppId}');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/access_token', 'MiniProgramController@accessToken');
+
+    /**
+     * 模板管理
+     */
+    Route::get('/component/{componentAppId}/draft');
+    Route::get('/component/{componentAppId}/template', 'TemplateController@index');
+    Route::delete('/component/{componentAppId}/template/{templateId}');
+    Route::post('/component/{componentAppId}/template');
+    Route::post('/component/{componentAppId}/template/{templateId}/release');
 });
 
-/**
- * 模板管理
- */
-Route::get('/component/{componentAppId}/draft');
-Route::get('/component/{componentAppId}/template');
-Route::delete('/component/{componentAppId}/template/{templateId}');
-Route::post('/component/{componentAppId}/template');
-Route::post('/component/{componentAppId}/template/{templateId}/release');
+
 
 
 
