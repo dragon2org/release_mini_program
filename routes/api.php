@@ -24,6 +24,7 @@ Route::group([
     Route::delete('/component/{componentAppId}');
     Route::get('/component/{componentAppId}/component_verify_ticket', 'ComponentController@componentVerifyTicket')->name('getComponentVerifyTicket');
     Route::get('/component/{componentAppId}/component_access_token', 'ComponentController@componentAccessToken');
+    Route::put('/component/{componentAppId}/ext_json', 'ComponentController@extJson');
 
     /**
      * 小程序管理

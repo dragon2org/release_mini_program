@@ -27,7 +27,7 @@ class CreateTemplateExt extends Migration
             $table->integer('component_app_id')->default(0)->unsigned()->comment('关联的三方平台ID');
             $table->integer('template_id')->default(0)->unsigned()->comment('模板id');
 
-            $table->text('config')->comment('自定义配置');
+            $table->json('config')->comment('自定义配置');
 
             $table->string('field1', 45)->default('')->comment('备用字段');
             $table->string('field2', 45)->default('')->comment('备用字段2');

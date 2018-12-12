@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Requests\Api\ComponentRequest;
 use App\Http\Transformer\ComponentTransformer;
 use App\Models\Component;
+use App\Models\ComponentExt;
 use EasyWeChat\Factory;
 
 class ComponentController extends Controller
@@ -368,7 +369,7 @@ class ComponentController extends Controller
 
     /**
      * @SWG\Put(
-     *     path="/component/:componentAppId/page_list",
+     *     path="/component/{componentAppId}/ext_json",
      *     summary="更新平台发版配置-ext_json",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
@@ -405,7 +406,26 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+    public function extJson($componentAppId)
+    {
+        $component = Component::where('app_id', $componentAppId)->first();
+        $a = request()->getContent();
+        $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
+        $config = $componentExt->config;
 
+        $data = [
+            'tests' => ['aaa', 'vbbb'],
+            'ext_json' => [
+                'app_id' => '123123',
+                'cccc' => '222'
+            ]
+        ];
+        $componentExt->config = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $componentExt->save();
+
+        return $this->response->withArray(['data' => $componentExt->config ]);
+
+    }
 
     /**
      * @SWG\get(
