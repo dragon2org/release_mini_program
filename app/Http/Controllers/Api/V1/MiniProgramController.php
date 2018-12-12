@@ -94,13 +94,13 @@ class MiniProgramController extends Controller
             'componentAppId'=> $componentAppId,
         ]);
 
-        $params = [
-            'inner_name' => request()->query('inner_name'),
-            'inner_desc' => request()->query('inner_desc'),
-            'company_id' => request()->query('company_id'),
-        ];
+//        $params = [
+//            'inner_name' => request()->query('inner_name'),
+//            'inner_desc' => request()->query('inner_desc'),
+//            'company_id' => request()->query('company_id'),
+//        ];
 
-        $callbackUrl .= '?'. http_build_query($params);
+//        $callbackUrl .= '?'. http_build_query($params);
 
         $uri = request()->query('type') === 'mobile' ? $openPlatform->getMobilePreAuthorizationUrl($callbackUrl) : $openPlatform->getPreAuthorizationUrl($callbackUrl);
 
