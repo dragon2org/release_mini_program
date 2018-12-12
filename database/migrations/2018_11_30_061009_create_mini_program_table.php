@@ -23,7 +23,6 @@ class CreateMiniProgramTable extends Migration
             $table->integer('company_id')->default(0)->unsigned()->comment('公司id');
             $table->string('inner_name', 45)->default('')->comment('内部名称');
             $table->string('inner_desc', 45)->default('')->comment('内部描述');
-            $table->string('inner_key', 45)->default('')->comment('内部key');
 
             $table->string('nick_name', 45)->default('')->comment('授权方昵称');
             $table->string('head_img')->default('')->comment('小程序头像');
@@ -35,7 +34,6 @@ class CreateMiniProgramTable extends Migration
             $table->string('authorizer_refresh_token', 43)->default('')->comment('获取（刷新）授权公众号或小程序的接口调用凭据');
             $table->string('user_version', 43)->default('')->comment('当前版本');
 
-            $table->unique('inner_key', 'uniq_inner_key');
             $table->index('app_id', 'idx_app_id');
             $table->index('user_name', 'idx_user_name');
             $table->index('user_name', 'authorizer_refresh_token');

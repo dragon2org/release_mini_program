@@ -59,11 +59,11 @@ class MiniProgramController extends Controller
     {
         $config = Component::getConfig($componentAppId);
         $openPlatform = Factory::openPlatform($config);
+        $openPlatform['verify_ticket']->setTicket($config['component_verify_ticket']);
         $callbackUrl = Route('MiniProgramBindCallback', [
             'componentAppId'=> $componentAppId,
-            'inner_name' => '',
-            'inner_desc' => '',
-            'inner_key' => '',
+            'inner_name' => '测试绑定的效果小程序/公众号',
+            'inner_desc' => '这就是测试',
         ]);
         $uri = request()->query('type') === 'mobile' ? $openPlatform->getPreAuthorizationUrl($callbackUrl) : $openPlatform->getMobilePreAuthorizationUrl($callbackUrl);
 
@@ -85,7 +85,6 @@ class MiniProgramController extends Controller
         $miniProgram->company_id = request()->query('company_id');
         $miniProgram->inner_name = request()->query('company_id');
         $miniProgram->inner_desc = request()->query('company_id');
-        $miniProgram->inner_key = request()->query('inner_key') ??  $res['authorizer_appid'];
         $miniProgram->authorizer_refresh_token = $res['authorizer_refresh_token'];
         $miniProgram->save();
 

@@ -21,7 +21,6 @@ class CreateComponentTable extends Migration
             $table->increments($this->tableName . '_id')->unsigned()->comment('自增id');
             $table->string('inner_name', 45)->default('')->comment('内部名称');
             $table->string('inner_desc', 45)->default('')->comment('内部描述');
-            $table->string('inner_key', 45)->default('')->comment('内部key');
             $table->string('name', 45)->default('')->comment('三方平台名称');
             $table->string('desc', 45)->default('')->comment('三方平台描述');
 
@@ -33,7 +32,6 @@ class CreateComponentTable extends Migration
             $table->string('validate_filename', 43)->default('')->comment('三方平台验证域名-文件名');
             $table->string('validate_content', 43)->default('')->comment('三方平台验证域名-文件内容');
 
-            $table->unique('inner_key', 'uniq_inner_key');
             $table->unique('app_id', 'uniq_app_id');
 
             $table->string('field1', 45)->default('')->comment('备用字段');
