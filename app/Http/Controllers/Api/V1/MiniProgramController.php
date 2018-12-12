@@ -12,27 +12,57 @@ namespace App\Http\Controllers\Api\V1;
 use App\Models\Component;
 use App\Models\MiniProgram;
 use EasyWeChat\Factory;
+use Illuminate\Support\Facades\Log;
 
 class MiniProgramController extends Controller
 {
     /**
      * @SWG\Get(
      *     path="/component/{componentAppId}/bind_url",
-     *     summary="获取小程序授权地址",
+     *     summary="添加(绑定)小程序",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="redirect_url",
+     *         name="redirect_uri",
      *         type="string",
      *         required=false,
      *         in="query",
-     *         description="授权成功的通知地址",
+     *         description="授权成功的跳转地址",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="inner_name",
+     *         type="string",
+     *         required=false,
+     *         in="query",
+     *         description="内部名称",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="inner_desc",
+     *         type="string",
+     *         required=false,
+     *         in="query",
+     *         description="内部描述",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="company_id",
+     *         type="integer",
+     *         required=true,
+     *         in="query",
+     *         description="公司id",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="biz_appid",
+     *         type="string",
+     *         required=false,
+     *         in="query",
+     *         description="指定要绑定的app_id",
      *     ),
      *     @SWG\Parameter(
      *         name="type",
      *         type="string",
      *         required=false,
+     *         default="pc",
      *         in="query",
      *         description="生成类型:移动端: mobile；电脑端:pc",
      *     ),
@@ -62,11 +92,19 @@ class MiniProgramController extends Controller
         $openPlatform['verify_ticket']->setTicket($config['component_verify_ticket']);
         $callbackUrl = Route('MiniProgramBindCallback', [
             'componentAppId'=> $componentAppId,
-            'inner_name' => '测试绑定的效果小程序/公众号',
-            'inner_desc' => '这就是测试',
         ]);
-        $uri = request()->query('type') === 'mobile' ? $openPlatform->getPreAuthorizationUrl($callbackUrl) : $openPlatform->getMobilePreAuthorizationUrl($callbackUrl);
 
+        $params = [
+            'inner_name' => request()->query('inner_name'),
+            'inner_desc' => request()->query('inner_desc'),
+            'company_id' => request()->query('company_id'),
+        ];
+
+        $callbackUrl .= '?'. http_build_query($params);
+
+        $uri = request()->query('type') === 'mobile' ? $openPlatform->getMobilePreAuthorizationUrl($callbackUrl) : $openPlatform->getPreAuthorizationUrl($callbackUrl);
+
+        return response()->redirectTo($uri);
         return $this->response->withArray(['data' => [
                 'uri' => $uri
             ]]
@@ -78,13 +116,14 @@ class MiniProgramController extends Controller
         $config = Component::getConfig($componentAppId);
         $openPlatform = Factory::openPlatform($config);
         $res = $openPlatform->handleAuthorize();
+        Log::info('bindCallbackAuthorize:', $res);
 
         //TODO::判断function_info
         $miniProgram = new MiniProgram();
         $miniProgram->component_app_id = $componentAppId;
         $miniProgram->company_id = request()->query('company_id');
-        $miniProgram->inner_name = request()->query('company_id');
-        $miniProgram->inner_desc = request()->query('company_id');
+        $miniProgram->inner_name = request()->query('inner_name');
+        $miniProgram->inner_desc = request()->query('inner_desc');
         $miniProgram->authorizer_refresh_token = $res['authorizer_refresh_token'];
         $miniProgram->save();
 

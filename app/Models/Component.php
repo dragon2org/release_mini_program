@@ -60,7 +60,7 @@ class Component extends Model
 
     public static function getConfig($appId)
     {
-        return Cache::remember(self::getCacheKey($appId), 6000, function() use ($appId){
+        if(in_array(env('APP_ENV'), ['local'])){
             $component = Component::where('app_id', $appId)->first();
             $config = [
                 'app_id' => $component->app_id,
@@ -70,21 +70,28 @@ class Component extends Model
                 'component_verify_ticket' => $component->verify_ticket,
             ];
 
-            if(in_array(env('APP_ENV'), ['local'])){
-                if(request()->query('remote')){
-                    return $config;
+            try {
+                $uri = route('getComponentVerifyTicket', ['componentAppId' => $component->app_id], false) . '?remote=1';
+                $res = file_get_contents(env('WECAHT_RECEIVE_MSG_GATEWAY_HOST') . $uri);
+                $res = json_decode($res);
+                if(isset($res->data)){
+                    $config['component_verify_ticket'] = $res->data->component_verify_ticket;
                 }
-                try {
-                    $uri = route('getComponentVerifyTicket', ['componentAppId' => $component->app_id], false) . '?remote=1';
-                    $res = file_get_contents(env('WECAHT_RECEIVE_MSG_GATEWAY_HOST') . $uri);
-                    $res = json_decode($res);
-                    if(isset($res->data)){
-                        $config['component_verify_ticket'] = $res->data->component_verify_ticket;
-                    }
-                } catch (\App\Exceptions\InternalException $e) {
-                    throw new \App\Exceptions\InternalException('拉取网关component_verify_ticket失败');
-                }
+                return $config;
+            } catch (\Exception $e) {
+                throw new \App\Exceptions\InternalException('拉取网关component_verify_ticket失败');
             }
+        }
+
+        return Cache::remember(self::getCacheKey($appId), 6000, function() use ($appId){
+            $component = Component::where('app_id', $appId)->first();
+            $config = [
+                'app_id' => $component->app_id,
+                'secret' => $component->app_secret,
+                'token' => $component->verify_token,
+                'aes_key' => $component->aes_key,
+                'component_verify_ticket' => $component->verify_ticket,
+            ];
             return $config;
         });
     }
