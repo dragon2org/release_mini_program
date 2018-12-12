@@ -20,7 +20,7 @@ class ComponentController extends Controller
     public function serve($componentAppId)
     {
         $component = Component::where('app_id', $componentAppId)->first();
-        $config = $component->getConfig();
+        $config = Component::getConfig($componentAppId);
         $openPlatform = Factory::openPlatform($config);
         $server = $openPlatform->server;
 
