@@ -63,6 +63,7 @@ class Component extends Model
         if(in_array(env('APP_ENV'), ['local'])){
             $component = Component::where('app_id', $appId)->first();
             $config = [
+                'component_id' => $component->component_id,
                 'app_id' => $component->app_id,
                 'secret' => $component->app_secret,
                 'token' => $component->verify_token,
@@ -86,6 +87,7 @@ class Component extends Model
         return Cache::remember(self::getCacheKey($appId), 6000, function() use ($appId){
             $component = Component::where('app_id', $appId)->first();
             $config = [
+                'component_id' => $component->component_id,
                 'app_id' => $component->app_id,
                 'secret' => $component->app_secret,
                 'token' => $component->verify_token,

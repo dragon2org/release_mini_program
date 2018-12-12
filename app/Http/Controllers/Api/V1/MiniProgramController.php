@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Models\Component;
 use App\Models\MiniProgram;
 use EasyWeChat\Factory;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class MiniProgramController extends Controller
@@ -98,6 +99,7 @@ class MiniProgramController extends Controller
             'inner_name' => request()->query('inner_name'),
             'inner_desc' => request()->query('inner_desc'),
             'company_id' => request()->query('company_id'),
+            'redirect_uri' => request()->query('redirect_uri'),
         ];
 
         $callbackUrl .= '?'. http_build_query($params);
@@ -107,32 +109,42 @@ class MiniProgramController extends Controller
         return view('authorize_boot_page', ['uri' => $uri]);
     }
 
-    public function bindCallback($componentAppId)
+    public function bindCallback($componentAppId, Request $request)
     {
         $config = Component::getConfig($componentAppId);
         $openPlatform = Factory::openPlatform($config);
-        $res = $openPlatform->handleAuthorize();
-        Log::info('bindCallbackAuthorize:', $res);
+        $authorization = $openPlatform->handleAuthorize();
+        Log::info('bindCallbackAuthorize:', $authorization);
 
+        $miniProgramAppId = $authorization['authorization_info']['authorizer_appid'];
+        $refreshToken = $authorization['authorization_info']['authorizer_refresh_token'];
         //TODO::判断function_info
         $miniProgram = new MiniProgram();
-        $miniProgram->component_app_id = $componentAppId;
-        $miniProgram->company_id = request()->query('company_id');
-        $miniProgram->inner_name = request()->query('inner_name');
-        $miniProgram->inner_desc = request()->query('inner_desc');
-        $miniProgram->authorizer_refresh_token = $res['authorizer_refresh_token'];
+        $miniProgram->component_id = $config['component_id'];
+        $miniProgram->app_id = $miniProgramAppId;
+        $miniProgram->company_id = request()->query('company_id', 0);
+        $miniProgram->inner_name = request()->query('inner_name', '');
+        $miniProgram->inner_desc = request()->query('inner_desc', '');
+        $miniProgram->authorizer_refresh_token = $refreshToken;
         $miniProgram->save();
 
         //拉取基础信息
-        $info = $openPlatform->getAuthorizer($res['authorizer_appid']);
+        $miniProgramAuthorizer = $openPlatform->getAuthorizer($miniProgramAppId);
+        $info = $miniProgramAuthorizer['authorizer_info'];
+
+        Log::info('miniProgramInfo:', $info);
         $miniProgram->nick_name = $info['nick_name'];
         $miniProgram->head_img = $info['head_img'];
         $miniProgram->user_name = $info['user_name'];
         $miniProgram->principal_name = $info['principal_name'];
         $miniProgram->qrcode_url = $info['qrcode_url'];
+        $miniProgram->desc = $info['signature'];
         $miniProgram->save();
 
-        echo 'success';
+        if($redirectUri = request()->query('redirect_uri')){
+            return response()->redirectTo($redirectUri);
+        }
+        return view('authorize_success');
     }
 
 /**
