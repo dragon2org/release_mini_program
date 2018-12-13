@@ -450,7 +450,7 @@ class CodeController extends Controller
      * @SWG\Post(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/release",
      *     summary="发布已通过审核的小程序",
-     *     tags={"代码管理"},
+     *     tags={"小程序管理-代码管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -497,7 +497,7 @@ class CodeController extends Controller
      * @SWG\Post(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/visit_status",
      *     summary="修改小程序线上代码的可见状态",
-     *     tags={"代码管理"},
+     *     tags={"小程序管理-代码管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -547,7 +547,7 @@ class CodeController extends Controller
      * @SWG\Post(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/revert_code_release",
      *     summary="小程序版本回退",
-     *     tags={"代码管理"},
+     *     tags={"小程序管理-代码管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -593,7 +593,7 @@ class CodeController extends Controller
      * @SWG\Post(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/support_version",
      *     summary="设置最低基础库版本",
-     *     tags={"代码管理"},
+     *     tags={"小程序管理-代码管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -638,4 +638,27 @@ class CodeController extends Controller
      *     )
      * )
      */
+    public function SetSupportVersion($componentAppId, $miniProgramAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
+        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
+        $response = $miniProgramApp->code->setSupportVersion(
+            request()->input('version')
+        );
+
+        return $this->response->withArray(['data' => $response]);
+    }
+
+    public function supportVersion($componentAppId, $miniProgramAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
+        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
+        $response = $miniProgramApp->code->getSupportVersion();
+
+        return $this->response->withArray(['data' => $response]);
+    }
 }

@@ -607,7 +607,7 @@ class MiniProgramController extends Controller
      * @SWG\Get(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/tester",
      *     summary="获取体验者列表",
-     *     tags={"成员管理"},
+     *     tags={"小程序管理-成员管理"},
      *     description="获取已经设置了的体验者列表",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -700,7 +700,7 @@ class MiniProgramController extends Controller
      * @SWG\Post(
      *     path="/component/{componentAppId}/mini_program/{miniProgram}/tester",
      *     summary="绑定体验者",
-     *     tags={"成员管理"},
+     *     tags={"小程序管理-成员管理"},
      *     description="绑定体验者",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -762,7 +762,7 @@ class MiniProgramController extends Controller
      * @SWG\Delete(
      *     path="/component/{componentAppId}/mini_program/{miniProgram}/tester/{wechatid}",
      *     summary="解绑体验者",
-     *     tags={"成员管理"},
+     *     tags={"小程序管理-成员管理"},
      *     description="绑定体验者",
      *     produces={"application/json"},
      *     @SWG\Parameter(

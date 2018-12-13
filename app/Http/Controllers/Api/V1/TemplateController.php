@@ -12,8 +12,8 @@ class TemplateController extends Controller
      * @SWG\Get(
      *     path="/component/{componentAppId}/draft",
      *     summary="获取草稿箱列表",
-     *     tags={"模板管理"},
-     *     description="三方平台模板管理",
+     *     tags={"三方平台管理-模板管理"},
+     *     description="三方平台三方平台管理-模板管理",
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         description="第几页，默认第一页",
@@ -92,7 +92,7 @@ class TemplateController extends Controller
      * @SWG\Post(
      *     path="/component/{componentAppId}/template",
      *     summary="保存草稿箱到模板",
-     *     tags={"模板管理"},
+     *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Response(
@@ -128,7 +128,7 @@ class TemplateController extends Controller
      * @SWG\Get(
      *     path="/component/{componentAppId}/template/{templateId}",
      *     summary="获取模板信息",
-     *     tags={"模板管理"},
+     *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -183,7 +183,7 @@ class TemplateController extends Controller
      * @SWG\Delete(
      *     path="/component/{componentAppId}/template/{templateId}",
      *     summary="删除模板",
-     *     tags={"模板管理"},
+     *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -234,8 +234,8 @@ class TemplateController extends Controller
      * @SWG\Get(
      *     path="/component/{componentAppId}/template",
      *     summary="获取模板列表",
-     *     tags={"模板管理"},
-     *     description="三方平台模板管理",
+     *     tags={"三方平台管理-模板管理"},
+     *     description="三方平台三方平台管理-模板管理",
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         description="第几页，默认第一页",

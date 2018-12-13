@@ -56,6 +56,9 @@ Route::group([
     Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/tester', 'MiniProgramController@tester');
     Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/tester', 'MiniProgramController@bindTester');
     Route::delete('/component/{componentAppId}/mini_program/{miniProgramAppId}/tester', 'MiniProgramController@unbindTester');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/support_version', 'CodeController@supportVersion');
+    Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/support_version', 'CodeController@SetSupportVersion');
+
 
 
     /**
