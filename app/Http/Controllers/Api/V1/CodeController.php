@@ -9,7 +9,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 
-class CodeController
+use App\Models\Component;
+use App\Models\ComponentExt;
+use App\Models\MiniProgram;
+use EasyWeChat\Factory;
+
+class CodeController extends Controller
 {
     /**
      * @SWG\Post(
@@ -35,10 +40,26 @@ class CodeController
      *     @SWG\Parameter(
      *         name="data",
      *         in="body",
-     *         description="提交代码的配置信息",
+     *         description="表单数据",
      *         required=true,
      *         type="object",
-     *         @SWG\Schema(ref="#/definitions/Commit")
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="template_id",
+     *                 type="string",
+     *                 description="模板id",
+     *             ),
+     *             @SWG\Property(
+     *                 property="user_version",
+     *                 type="string",
+     *                 description="用户自定义版本",
+     *             ),
+     *             @SWG\Property(
+     *                 property="user_desc",
+     *                 type="string",
+     *                 description="用户自定义描述",
+     *             )
+     *         )
      *     ),
      *     @SWG\Response(
      *         response=200,
@@ -54,6 +75,27 @@ class CodeController
      *     )
      * )
      */
+    public function commit($componentAppId, $miniProgramAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
+        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
+
+        $componentConfig = ComponentExt::where('component_id',$config['component_id'])->value('config');
+        $componentConfig = json_decode($componentConfig, true);
+        //TODO::替换模板变量
+
+        $result = $miniProgramApp->code->commit(
+            (integer) request()->input('template_id'),
+            json_encode($componentConfig['ext_json'] ?? [], JSON_UNESCAPED_UNICODE),
+            request()->input('user_version'),
+            request()->input('user_desc')
+        );
+        //TODO::小程序配置设置
+
+        return $this->response->withArray(['data' => $result]);
+    }
 
     /**
      * @SWG\Get(
@@ -78,7 +120,7 @@ class CodeController
      *     ),
      *     @SWG\Parameter(
      *         name="path",
-     *         in="formData",
+     *         in="query",
      *         description="跳转的path",
      *         required=true,
      *         type="string",
@@ -91,13 +133,23 @@ class CodeController
      *                 property="status",
      *                 type="string",
      *                 default="T",
-     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *                 description="直接返回图片"
      *             )
      *         )
      *     )
      * )
      */
+    public function qrcode($componentAppId, $miniProgramAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
+        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
 
+        $response = $miniProgramApp->code->getQrCode();
+
+        return $response;
+    }
     /**
      * @SWG\Get(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/category",
@@ -138,7 +190,17 @@ class CodeController
      *     )
      * )
      */
+    public function category($componentAppId, $miniProgramAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
+        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
 
+        $response = $miniProgramApp->code->getCategory();
+
+        return $this->response->withArray(['data'=> $response]);
+    }
     /**
      * @SWG\Get(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/page",
@@ -179,7 +241,17 @@ class CodeController
      *     )
      * )
      */
+    public function page($componentAppId, $miniProgramAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
+        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
 
+        $response = $miniProgramApp->code->getPage();
+
+        return $this->response->withArray(['data'=> $response]);
+    }
     /**
      * @SWG\Post(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/audit",
@@ -232,7 +304,19 @@ class CodeController
      *     )
      * )
      */
+    public function audit($componentAppId, $miniProgramAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
+        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
 
+        $items = request()->input('item_list');
+        //457853319
+        $response = $miniProgramApp->code->submitAudit($items);
+
+        return $this->response->withArray(['data'=> $response]);
+    }
     /**
      * @SWG\Get(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/audit/{audit}",
@@ -282,6 +366,17 @@ class CodeController
      *     )
      * )
      */
+    public function auditStatus($componentAppId, $miniProgramAppId, $audit)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
+        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
+
+        $response = $miniProgramApp->code->getAuditStatus($audit);
+
+        return $this->response->withArray(['data'=> $response]);
+    }
 
     /**
      * @SWG\Get(
@@ -339,6 +434,17 @@ class CodeController
      *     )
      * )
      */
+    public function lastAuditStatus($componentAppId, $miniProgramAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
+        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
+
+        $response = $miniProgramApp->code->getLatestAuditStatus();
+
+        return $this->response->withArray(['data'=> $response]);
+    }
 
     /**
      * @SWG\Post(
@@ -376,6 +482,17 @@ class CodeController
      * )
      */
 
+    public function release($componentAppId, $miniProgramAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
+        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
+
+        $response = $miniProgramApp->code->release();
+
+        return $this->response->withArray(['data'=> $response]);
+    }
     /**
      * @SWG\Post(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/visit_status",
@@ -461,7 +578,17 @@ class CodeController
      *     )
      * )
      */
+    public function revertCodeRelease($componentAppId, $miniProgramAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
+        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
 
+        $response = $miniProgramApp->code->rollbackRelease();
+
+        return $this->response->withArray(['data'=> $response]);
+    }
     /**
      * @SWG\Post(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/support_version",

@@ -138,11 +138,11 @@ class ComponentController extends Controller
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
-     *             @SWG\Property(property="action", type="string", description="add添加, delete删除, set覆盖, get获取。当参数是get时不需要填四个域名字段"),
-     *             @SWG\Property(property="requestdomain", type="array", @SWG\Items(), description="request合法域名，当action参数是get时不需要此字段"),
-     *             @SWG\Property(property="wsrequestdomain", type="array", @SWG\Items(),  description="socke合法域名，当action参数是get时不需要此字段"),
-     *             @SWG\Property(property="uploaddomain", type="array", @SWG\Items(),  description="uploadFile合法域名，当action参数是get时不需要此字段"),
-     *             @SWG\Property(property="downloaddomain", type="array", @SWG\Items(),  description="downloadFile合法域名，当action参数是get时不需要此字段"),
+     *             @SWG\Property(property="action", type="string", description="set覆盖,当前版本仅支持set模式"),
+     *             @SWG\Property(property="requestdomain", type="array", @SWG\Items(), description="request合法域名"),
+     *             @SWG\Property(property="wsrequestdomain", type="array", @SWG\Items(),  description="socke合法域名"),
+     *             @SWG\Property(property="uploaddomain", type="array", @SWG\Items(),  description="uploadFile合法域名"),
+     *             @SWG\Property(property="downloaddomain", type="array", @SWG\Items(),  description="downloadFile合法域名"),
      *         )
      *     ),
      *     @SWG\Response(
@@ -164,7 +164,18 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+    public function domain($componentAppId)
+    {
+        $component = Component::where('app_id', $componentAppId)->first();
+        $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
+        $config = json_decode($componentExt->config, true) ?? [];
+        $config['domain'] = request()->input('domain');
 
+        $componentExt->config = json_encode($config, JSON_UNESCAPED_UNICODE);
+        $componentExt->save();
+
+        return $this->response->withArray(['data' => json_decode($componentExt->config) ]);
+    }
     /**
      * @SWG\Put(
      *     path="/component/:componentAppId/config/web_view_domain",
@@ -179,8 +190,8 @@ class ComponentController extends Controller
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
-     *             @SWG\Property(property="action", type="string", description="add添加, delete删除, set覆盖, get获取。当参数是get时不需要填四个域名字段"),
-     *             @SWG\Property(property="webviewdomain", type="array", @SWG\Items(), description="webviewdomain合法域名，当action参数是get时不需要此字段"),
+     *             @SWG\Property(property="action", type="string", description="set覆盖,仅支持set"),
+     *             @SWG\Property(property="webviewdomain", type="array", @SWG\Items(), description="webviewdomain合法域名"),
      *         )
      *     ),
      *     @SWG\Response(
@@ -202,7 +213,18 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+    public function webViewDomain($componentAppId)
+    {
+        $component = Component::where('app_id', $componentAppId)->first();
+        $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
+        $config = json_decode($componentExt->config, true) ?? [];
+        $config['web_view_domain'] = request()->input('web_view_domain');
 
+        $componentExt->config = json_encode($config, JSON_UNESCAPED_UNICODE);
+        $componentExt->save();
+
+        return $this->response->withArray(['data' => json_decode($componentExt->config) ]);
+    }
     /**
      * @SWG\Put(
      *     path="/component/:componentAppId/config/tester",
@@ -243,7 +265,18 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+    public function tester($componentAppId)
+    {
+        $component = Component::where('app_id', $componentAppId)->first();
+        $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
+        $config = json_decode($componentExt->config, true) ?? [];
+        $config['tester'] = request()->input('tester');
 
+        $componentExt->config = json_encode($config, JSON_UNESCAPED_UNICODE);
+        $componentExt->save();
+
+        return $this->response->withArray(['data' => json_decode($componentExt->config) ]);
+    }
     /**
      * @SWG\Put(
      *     path="/component/:componentAppId/config/visit_status",
@@ -284,7 +317,18 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+    public function visitStatus($componentAppId)
+    {
+        $component = Component::where('app_id', $componentAppId)->first();
+        $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
+        $config = json_decode($componentExt->config, true) ?? [];
+        $config['visit_status'] = request()->input('visit_status');
 
+        $componentExt->config = json_encode($config, JSON_UNESCAPED_UNICODE);
+        $componentExt->save();
+
+        return $this->response->withArray(['data' => json_decode($componentExt->config) ]);
+    }
     /**
      * @SWG\Put(
      *     path="/component/:componentAppId/config/support_version",
@@ -325,7 +369,18 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+    public function supportVersion($componentAppId)
+    {
+        $component = Component::where('app_id', $componentAppId)->first();
+        $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
+        $config = json_decode($componentExt->config, true) ?? [];
+        $config['support_version'] = request()->input('support_version');
 
+        $componentExt->config = json_encode($config, JSON_UNESCAPED_UNICODE);
+        $componentExt->save();
+
+        return $this->response->withArray(['data' => json_decode($componentExt->config) ]);
+    }
     /**
      * @SWG\Put(
      *     path="/component/:componentAppId/config/sync",
@@ -366,6 +421,18 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+    public function configSync($componentAppId)
+    {
+        $component = Component::where('app_id', $componentAppId)->first();
+        $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
+        $config = json_decode($componentExt->config, true) ?? [];
+        $config['ext_json'] = request()->input('ext_json');
+
+        $componentExt->config = json_encode($config, JSON_UNESCAPED_UNICODE);
+        $componentExt->save();
+
+        return $this->response->withArray(['data' => json_decode($componentExt->config) ]);
+    }
 
     /**
      * @SWG\Put(
@@ -409,27 +476,19 @@ class ComponentController extends Controller
     public function extJson($componentAppId)
     {
         $component = Component::where('app_id', $componentAppId)->first();
-        $a = request()->getContent();
         $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
-        $config = $componentExt->config;
+        $config = json_decode($componentExt->config, true) ?? [];
+        $config['ext_json'] = request()->input('ext_json');
 
-        $data = [
-            'tests' => ['aaa', 'vbbb'],
-            'ext_json' => [
-                'app_id' => '123123',
-                'cccc' => '222'
-            ]
-        ];
-        $componentExt->config = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $componentExt->config = json_encode($config, JSON_UNESCAPED_UNICODE);
         $componentExt->save();
 
-        return $this->response->withArray(['data' => $componentExt->config ]);
-
+        return $this->response->withArray(['data' => json_decode($componentExt->config) ]);
     }
 
     /**
      * @SWG\get(
-     *     path="/component/:componentAppId/config",
+     *     path="/component/{componentAppId}/config",
      *     summary="获取平台发版配置",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
@@ -453,7 +512,14 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+    public function config($componentAppId)
+    {
+        $component = Component::where('app_id', $componentAppId)->first();
+        $componentExt = ComponentExt::where(['component_id' => $component->component_id])->first();
+        $config = json_decode($componentExt->config, true) ?? [];
 
+        return $this->response->withArray(['data' => $config ]);
+    }
 
     /**
      * @SWG\Post(

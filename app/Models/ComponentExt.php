@@ -19,4 +19,13 @@ class ComponentExt extends Model
      * @var string
      */
     protected $primaryKey = 'component_ext_id';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'component_id',
+    ];
 }

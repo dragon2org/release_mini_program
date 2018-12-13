@@ -24,11 +24,6 @@ class MiniProgram
     public $inner_desc;
 
     /**
-     * @SWG\Property(type="string", description="内部名称")
-     */
-    public $inner_key;
-
-    /**
      * @SWG\Property(type="string", description="三方平台名称")
      */
     public $nick_name;

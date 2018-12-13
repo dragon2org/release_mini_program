@@ -76,6 +76,17 @@ class TemplateController extends Controller
      *     )
      * )
      */
+    public function draft($componentAppId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $response = $openPlatform->code_template->getDrafts();
+
+
+        return $this->response->withArray([
+            'data' => $response
+        ]);
+    }
 
     /**
      * @SWG\Post(
@@ -103,6 +114,15 @@ class TemplateController extends Controller
      *     )
      * )
      */
+    public function draftToTemplate($componentAppId, $templateId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+        $openPlatform->code_template->createFromDraft($templateId);
+
+
+        return $this->response->withArray();
+    }
 
     /**
      * @SWG\Get(
@@ -143,17 +163,21 @@ class TemplateController extends Controller
      *                     type="Object",
      *                     ref="#/definitions/Template"
      *                 ),
-     *                 @SWG\Property(
-     *                     property="config",
-     *                     type="Object",
-     *                     description="发版信息",
-     *                     ref="#/definitions/MiniProgramConfig"
-     *                 ),
      *             )
      *         )
      *     )
      * )
      */
+
+    public function show($componentAppId, $templateId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+
+
+
+        return $this->response->withArray();
+    }
 
     /**
      * @SWG\Delete(
@@ -195,6 +219,16 @@ class TemplateController extends Controller
      *     )
      * )
      */
+
+    public function delete($componentAppId, $templateId)
+    {
+        $config = Component::getConfig($componentAppId);
+        $openPlatform = Factory::openPlatform($config);
+
+        $openPlatform->code_template->delete($templateId);
+
+        return $this->response->withArray();
+    }
 
     /**
      * @SWG\Get(

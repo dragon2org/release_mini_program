@@ -25,22 +25,43 @@ Route::group([
     Route::get('/component/{componentAppId}/component_verify_ticket', 'ComponentController@componentVerifyTicket')->name('getComponentVerifyTicket');
     Route::get('/component/{componentAppId}/component_access_token', 'ComponentController@componentAccessToken');
     Route::put('/component/{componentAppId}/ext_json', 'ComponentController@extJson');
+    Route::get('/component/{componentAppId}/config', 'ComponentController@config');
+    Route::put('/component/{componentAppId}/domain', 'ComponentController@domain');
+    Route::put('/component/{componentAppId}/web_view_domain', 'ComponentController@webViewDomain');
+    Route::put('/component/{componentAppId}/tester', 'ComponentController@tester');
+    Route::put('/component/{componentAppId}/support_version', 'ComponentController@supportVersion');
+    Route::put('/component/{componentAppId}/visit_status', 'ComponentController@visitStatus');
+    Route::post('/component/{componentAppId}/config_sync', 'ComponentController@configSync');
+    Route::post('/component/{componentAppId}/config_sync', 'ComponentController@configSync');
 
     /**
      * 小程序管理
      */
     Route::get('/component/{componentAppId}/bind_url', 'MiniProgramController@bindUrl');
     Route::get('/component/{componentAppId}/bind/callback', 'MiniProgramController@bindCallback')->name('MiniProgramBindCallback');
-    Route::get('/component/{componentAppId}/mini_program');
-    Route::post('/component/{componentAppId}/domain');
-    Route::post('/component/{componentAppId}/web_view_domain');
-    Route::put('/component/{componentAppId}/mini_program/{miniProgramAppId}');
+    Route::get('/component/{componentAppId}/mini_program', 'MiniProgramController@index');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}', 'MiniProgramController@show');
+    Route::put('/component/{componentAppId}/mini_program/{miniProgramAppId}', 'MiniProgramController@update');
     Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/access_token', 'MiniProgramController@accessToken');
+    Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/commit', 'CodeController@commit');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/qrcode', 'CodeController@qrcode');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/category', 'CodeController@category');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/page', 'CodeController@page');
+    Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/audit', 'CodeController@audit');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/audit/{audit}', 'CodeController@auditStatus');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/last_audit', 'CodeController@lastAuditStatus');
+    Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/release', 'CodeController@release');
+    Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/revert_code_release', 'CodeController@revertCodeRelease');
+
+    Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/tester', 'MiniProgramController@tester');
+    Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/tester', 'MiniProgramController@bindTester');
+    Route::delete('/component/{componentAppId}/mini_program/{miniProgramAppId}/tester', 'MiniProgramController@unbindTester');
+
 
     /**
      * 模板管理
      */
-    Route::get('/component/{componentAppId}/draft');
+    Route::get('/component/{componentAppId}/draft', 'TemplateController@draft');
     Route::get('/component/{componentAppId}/template', 'TemplateController@index');
     Route::delete('/component/{componentAppId}/template/{templateId}');
     Route::post('/component/{componentAppId}/template');
