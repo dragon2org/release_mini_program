@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5063cb282bf98a1f96c94cff5cbaa8d2",
+    "content-hash": "4769ae5a51aa68af8d64fc8d3cc90082",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -610,16 +610,16 @@
         },
         {
             "name": "doctrine/dbal",
-            "version": "v2.9.0",
+            "version": "v2.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "21fdabe2fc01e004e1966f200d900554876bc63c"
+                "reference": "ec74d6e300d78fbc896669c3ca57ef9719adc9c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/21fdabe2fc01e004e1966f200d900554876bc63c",
-                "reference": "21fdabe2fc01e004e1966f200d900554876bc63c",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/ec74d6e300d78fbc896669c3ca57ef9719adc9c6",
+                "reference": "ec74d6e300d78fbc896669c3ca57ef9719adc9c6",
                 "shasum": ""
             },
             "require": {
@@ -688,7 +688,7 @@
                 "php",
                 "queryobject"
             ],
-            "time": "2018-12-04T04:39:48+00:00"
+            "time": "2018-12-14T04:51:13+00:00"
         },
         {
             "name": "doctrine/event-manager",
@@ -2902,6 +2902,49 @@
                 "phra"
             ],
             "time": "2015-10-13T18:44:15+00:00"
+        },
+        {
+            "name": "sjje/laravel-kafka",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "../packages/laravel-kafka",
+                "reference": "d062b306f9a93ca7ac553633ddeabeb43b70080c",
+                "shasum": null
+            },
+            "require": {
+                "illuminate/queue": "~5.3|~5.4|~5.5",
+                "illuminate/support": "~5.3|~5.4|~5.5",
+                "php": "^7.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Sjje\\LaravelKafka\\LaravelKafkaServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sjje\\LaravelKafka\\": "src"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "sjje",
+                    "email": "377304925@qq.com"
+                }
+            ],
+            "description": "aliyun kafka for laravel5, based on kasimchen/laravel-aliyun-kafka",
+            "keywords": [
+                "aliyun laravel kafka",
+                "laravel aliyun kafka",
+                "laravel kafka"
+            ]
         },
         {
             "name": "sjje/swaggervel",
@@ -6212,7 +6255,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "sjje/laravel-kafka": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

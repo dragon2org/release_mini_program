@@ -4,6 +4,12 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
+    "repositories": {
+        "laravel-kafka": {
+            "type": "path",
+            "url": "../packages/laravel-kafka"
+        }
+    },
     "require": {
         "php": ">=7.0.0",
         "barryvdh/laravel-ide-helper": "^2.5",
@@ -15,6 +21,7 @@
         "overtrue/laravel-wechat": "~4.0",
         "predis/predis": "^1.1",
         "sjje/swaggervel": "3.0.2",
+        "sjje/laravel-kafka": "dev-master",
         "zircote/swagger-php": "2.0.*"
     },
     "require-dev": {

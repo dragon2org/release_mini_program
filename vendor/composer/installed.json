@@ -623,17 +623,17 @@
     },
     {
         "name": "doctrine/dbal",
-        "version": "v2.9.0",
-        "version_normalized": "2.9.0.0",
+        "version": "v2.9.1",
+        "version_normalized": "2.9.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/doctrine/dbal.git",
-            "reference": "21fdabe2fc01e004e1966f200d900554876bc63c"
+            "reference": "ec74d6e300d78fbc896669c3ca57ef9719adc9c6"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/dbal/zipball/21fdabe2fc01e004e1966f200d900554876bc63c",
-            "reference": "21fdabe2fc01e004e1966f200d900554876bc63c",
+            "url": "https://api.github.com/repos/doctrine/dbal/zipball/ec74d6e300d78fbc896669c3ca57ef9719adc9c6",
+            "reference": "ec74d6e300d78fbc896669c3ca57ef9719adc9c6",
             "shasum": ""
         },
         "require": {
@@ -653,7 +653,7 @@
         "suggest": {
             "symfony/console": "For helpful console commands such as SQL execution and import of files."
         },
-        "time": "2018-12-04T04:39:48+00:00",
+        "time": "2018-12-14T04:51:13+00:00",
         "bin": [
             "bin/doctrine-dbal"
         ],
@@ -4701,6 +4701,51 @@
         "description": "PHAR file format utilities, for when PHP phars you up",
         "keywords": [
             "phra"
+        ]
+    },
+    {
+        "name": "sjje/laravel-kafka",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "dist": {
+            "type": "path",
+            "url": "../packages/laravel-kafka",
+            "reference": "d062b306f9a93ca7ac553633ddeabeb43b70080c",
+            "shasum": null
+        },
+        "require": {
+            "illuminate/queue": "~5.3|~5.4|~5.5",
+            "illuminate/support": "~5.3|~5.4|~5.5",
+            "php": "^7.0"
+        },
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "Sjje\\LaravelKafka\\LaravelKafkaServiceProvider"
+                ]
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Sjje\\LaravelKafka\\": "src"
+            }
+        },
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "sjje",
+                "email": "377304925@qq.com"
+            }
+        ],
+        "description": "aliyun kafka for laravel5, based on kasimchen/laravel-aliyun-kafka",
+        "keywords": [
+            "aliyun laravel kafka",
+            "laravel aliyun kafka",
+            "laravel kafka"
         ]
     },
     {

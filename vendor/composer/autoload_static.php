@@ -68,6 +68,7 @@ class ComposerStaticInit57c3ca7400b4875d3c65b4e72a8fe30b
             'Symfony\\Component\\Cache\\' => 24,
             'Symfony\\Bridge\\PsrHttpMessage\\' => 30,
             'Swagger\\' => 8,
+            'Sjje\\LaravelKafka\\' => 18,
             'Seld\\PharUtils\\' => 15,
             'Seld\\JsonLint\\' => 14,
         ),
@@ -275,6 +276,10 @@ class ComposerStaticInit57c3ca7400b4875d3c65b4e72a8fe30b
         'Swagger\\' => 
         array (
             0 => __DIR__ . '/..' . '/zircote/swagger-php/src',
+        ),
+        'Sjje\\LaravelKafka\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sjje/laravel-kafka/src',
         ),
         'Seld\\PharUtils\\' => 
         array (
@@ -537,7 +542,7 @@ class ComposerStaticInit57c3ca7400b4875d3c65b4e72a8fe30b
         'App\\Http\\Controllers\\Api\\V1\\Definitions\\MiniProgramConfig' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V1/Definitions/MiniProgramConfig.php',
         'App\\Http\\Controllers\\Api\\V1\\Definitions\\Tester' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V1/Definitions/Tester.php',
         'App\\Http\\Controllers\\Api\\V1\\MiniProgramController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V1/MiniProgramController.php',
-        'App\\Http\\Controllers\\Api\\V1\\TesterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V1/TesterController.php',
+        'App\\Http\\Controllers\\Api\\V1\\TemplateController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V1/TemplateController.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
         'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
         'App\\Http\\Controllers\\Auth\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisterController.php',
@@ -545,7 +550,6 @@ class ComposerStaticInit57c3ca7400b4875d3c65b4e72a8fe30b
         'App\\Http\\Controllers\\ComponentController' => __DIR__ . '/../..' . '/app/Http/Controllers/ComponentController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\MiniProgramController' => __DIR__ . '/../..' . '/app/Http/Controllers/MiniProgramController.php',
-        'App\\Http\\Controllers\\V1\\TemplateController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/V1/TemplateController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
@@ -554,7 +558,11 @@ class ComposerStaticInit57c3ca7400b4875d3c65b4e72a8fe30b
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Http\\Requests\\Api\\ComponentRequest' => __DIR__ . '/../..' . '/app/Http/Requests/Api/ComponentRequest.php',
         'App\\Http\\Transformer\\ComponentTransformer' => __DIR__ . '/../..' . '/app/Http/Transformer/ComponentTransformer.php',
+        'App\\Http\\Transformer\\MiniProgramListTransformer' => __DIR__ . '/../..' . '/app/Http/Transformer/MiniProgramListTransformer.php',
+        'App\\Http\\Transformer\\MiniProgramTransformer' => __DIR__ . '/../..' . '/app/Http/Transformer/MiniProgramTransformer.php',
         'App\\Models\\Component' => __DIR__ . '/../..' . '/app/Models/Component.php',
+        'App\\Models\\ComponentExt' => __DIR__ . '/../..' . '/app/Models/ComponentExt.php',
+        'App\\Models\\MiniProgram' => __DIR__ . '/../..' . '/app/Models/MiniProgram.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
@@ -4620,6 +4628,15 @@ class ComposerStaticInit57c3ca7400b4875d3c65b4e72a8fe30b
         'Seld\\JsonLint\\Undefined' => __DIR__ . '/..' . '/seld/jsonlint/src/Seld/JsonLint/Undefined.php',
         'Seld\\PharUtils\\Timestamps' => __DIR__ . '/..' . '/seld/phar-utils/src/Timestamps.php',
         'SessionUpdateTimestampHandlerInterface' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/SessionUpdateTimestampHandlerInterface.php',
+        'Sjje\\LaravelKafka\\Connectors\\KafkaConnector' => __DIR__ . '/..' . '/sjje/laravel-kafka/src/Connectors/KafkaConnector.php',
+        'Sjje\\LaravelKafka\\Exception\\KafkaMaxPollException' => __DIR__ . '/..' . '/sjje/laravel-kafka/src/Exception/KafkaMaxPollException.php',
+        'Sjje\\LaravelKafka\\Jobs\\KafkaJob' => __DIR__ . '/..' . '/sjje/laravel-kafka/src/Jobs/KafkaJob.php',
+        'Sjje\\LaravelKafka\\KafKaProducer' => __DIR__ . '/..' . '/sjje/laravel-kafka/src/KafKaProducer.php',
+        'Sjje\\LaravelKafka\\KafkaConfig' => __DIR__ . '/..' . '/sjje/laravel-kafka/src/KafkaConfig.php',
+        'Sjje\\LaravelKafka\\KafkaConsumer' => __DIR__ . '/..' . '/sjje/laravel-kafka/src/KafkaConsumer.php',
+        'Sjje\\LaravelKafka\\KafkaQueue' => __DIR__ . '/..' . '/sjje/laravel-kafka/src/KafkaQueue.php',
+        'Sjje\\LaravelKafka\\KafkaQueueCommand' => __DIR__ . '/..' . '/sjje/laravel-kafka/src/KafkaQueueCommand.php',
+        'Sjje\\LaravelKafka\\LaravelKafkaServiceProvider' => __DIR__ . '/..' . '/sjje/laravel-kafka/src/LaravelKafkaServiceProvider.php',
         'Sjje\\Swaggervel\\SwaggervelServiceProvider' => __DIR__ . '/..' . '/sjje/swaggervel/src/Jlapp/Swaggervel/SwaggervelServiceProvider.php',
         'Swagger\\Analyser' => __DIR__ . '/..' . '/zircote/swagger-php/src/Analyser.php',
         'Swagger\\Analysis' => __DIR__ . '/..' . '/zircote/swagger-php/src/Analysis.php',
