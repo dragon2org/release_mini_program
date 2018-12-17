@@ -3,11 +3,21 @@
 namespace App\Http\Controllers\Api\V1;
 
 
+use App\Http\ApiResponse;
 use App\Models\Component;
+use App\Services\ComponentService;
 use EasyWeChat\Factory;
 
 class TemplateController extends Controller
 {
+    protected $service;
+
+    public function __construct(ApiResponse $response)
+    {
+        parent::__construct($response);
+        $this->service = new ComponentService();
+    }
+
     /**
      * @SWG\Get(
      *     path="/component/{componentAppId}/draft",
@@ -76,13 +86,9 @@ class TemplateController extends Controller
      *     )
      * )
      */
-    public function draft($componentAppId)
+    public function draft()
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-        $response = $openPlatform->code_template->getDrafts();
-
-
+        $response = $this->service->getDrafts();
         return $this->response->withArray([
             'data' => $response
         ]);
@@ -116,68 +122,12 @@ class TemplateController extends Controller
      */
     public function draftToTemplate($componentAppId, $templateId)
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-        $openPlatform->code_template->createFromDraft($templateId);
-
-
-        return $this->response->withArray();
+        $response = $this->service->draftToTemplate($templateId);
+        return $this->response->withArray([
+            'data' => $response
+        ]);
     }
 
-    /**
-     * @SWG\Get(
-     *     path="/component/{componentAppId}/template/{templateId}",
-     *     summary="获取模板信息",
-     *     tags={"三方平台管理-模板管理"},
-     *     description="管理三方平台",
-     *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         name="componentAppId",
-     *         in="path",
-     *         description="三方平台AppID",
-     *         required=true,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="templateId",
-     *         in="path",
-     *         description="模板ID",
-     *         required=true,
-     *         type="string",
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="成功返回",
-     *         @SWG\Schema(
-     *             @SWG\Property(
-     *                 property="status",
-     *                 type="string",
-     *                 default="T",
-     *                 description="接口返回状态['T'->成功; 'F'->失败]"
-     *             ),
-     *             @SWG\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 @SWG\Property(
-     *                     property="info",
-     *                     type="Object",
-     *                     ref="#/definitions/Template"
-     *                 ),
-     *             )
-     *         )
-     *     )
-     * )
-     */
-
-    public function show($componentAppId, $templateId)
-    {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-
-
-
-        return $this->response->withArray();
-    }
 
     /**
      * @SWG\Delete(
@@ -222,12 +172,10 @@ class TemplateController extends Controller
 
     public function delete($componentAppId, $templateId)
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-
-        $openPlatform->code_template->delete($templateId);
-
-        return $this->response->withArray();
+        $response = $this->service->deleteTemplate($templateId);
+        return $this->response->withArray([
+            'data' => $response
+        ]);
     }
 
     /**
@@ -275,15 +223,11 @@ class TemplateController extends Controller
      * )
      */
 
-    public function index($componentAppId)
+    public function index()
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-
-        $data = $openPlatform->code_template->list();
-
+        $response = $this->service->templateList();
         return $this->response->withArray([
-            'data'=> $data['template_list'] ?? []
+            'data' => $response
         ]);
     }
 

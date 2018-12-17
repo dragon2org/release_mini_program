@@ -9,13 +9,22 @@
 namespace App\Http\Controllers\Api\V1;
 
 
+use App\Http\ApiResponse;
 use App\Models\Component;
 use App\Models\ComponentExt;
 use App\Models\MiniProgram;
+use App\Services\MiniProgramService;
 use EasyWeChat\Factory;
 
 class CodeController extends Controller
 {
+    protected $service;
+    public function __construct(ApiResponse $response)
+    {
+        parent::__construct($response);
+        $this->service = new MiniProgramService();
+    }
+
     /**
      * @SWG\Post(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/commit",
@@ -75,26 +84,14 @@ class CodeController extends Controller
      *     )
      * )
      */
-    public function commit($componentAppId, $miniProgramAppId)
+    public function commit()
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
-        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
-
-        $componentConfig = ComponentExt::where('component_id',$config['component_id'])->value('config');
-        $componentConfig = json_decode($componentConfig, true);
-        //TODO::替换模板变量
-
-        $result = $miniProgramApp->code->commit(
-            (integer) request()->input('template_id'),
-            json_encode($componentConfig['ext_json'] ?? [], JSON_UNESCAPED_UNICODE),
+        $response = $this->service->commit(
+            request()->input('template_id'),
             request()->input('user_version'),
-            request()->input('user_desc')
-        );
-        //TODO::小程序配置设置
+            request()->input('user_desc'));
 
-        return $this->response->withArray(['data' => $result]);
+        return $this->response->withArray(['data' => $response]);
     }
 
     /**
@@ -139,14 +136,9 @@ class CodeController extends Controller
      *     )
      * )
      */
-    public function qrcode($componentAppId, $miniProgramAppId)
+    public function qrcode()
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
-        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
-
-        $response = $miniProgramApp->code->getQrCode();
+        $response = $this->service->getQrCode(request()->input('path'));
 
         return $response;
     }
@@ -190,14 +182,9 @@ class CodeController extends Controller
      *     )
      * )
      */
-    public function category($componentAppId, $miniProgramAppId)
+    public function category()
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
-        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
-
-        $response = $miniProgramApp->code->getCategory();
+        $response = $this->service->getCategory();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -241,14 +228,9 @@ class CodeController extends Controller
      *     )
      * )
      */
-    public function page($componentAppId, $miniProgramAppId)
+    public function page()
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
-        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
-
-        $response = $miniProgramApp->code->getPage();
+        $response = $this->service->getPage();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -304,16 +286,9 @@ class CodeController extends Controller
      *     )
      * )
      */
-    public function audit($componentAppId, $miniProgramAppId)
+    public function audit()
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
-        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
-
-        $items = request()->input('item_list');
-        //457853319
-        $response = $miniProgramApp->code->submitAudit($items);
+        $response = $this->service->audit(request()->input('item_list'));
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -368,12 +343,7 @@ class CodeController extends Controller
      */
     public function auditStatus($componentAppId, $miniProgramAppId, $audit)
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
-        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
-
-        $response = $miniProgramApp->code->getAuditStatus($audit);
+        $response = $this->service->getAuditStatus($audit);
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -434,14 +404,9 @@ class CodeController extends Controller
      *     )
      * )
      */
-    public function lastAuditStatus($componentAppId, $miniProgramAppId)
+    public function lastAuditStatus()
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
-        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
-
-        $response = $miniProgramApp->code->getLatestAuditStatus();
+        $response = $this->service->getLatestAuditStatus();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -482,14 +447,9 @@ class CodeController extends Controller
      * )
      */
 
-    public function release($componentAppId, $miniProgramAppId)
+    public function release()
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
-        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
-
-        $response = $miniProgramApp->code->release();
+        $response = $this->service->release();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -542,6 +502,12 @@ class CodeController extends Controller
      *     )
      * )
      */
+    public function visitStatus()
+    {
+        $response = $this->service->setVisitStatus(request()->input('action', 'close'));
+
+        return $this->response->withArray(['data'=> $response]);
+    }
 
     /**
      * @SWG\Post(
@@ -578,14 +544,9 @@ class CodeController extends Controller
      *     )
      * )
      */
-    public function revertCodeRelease($componentAppId, $miniProgramAppId)
+    public function revertCodeRelease()
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
-        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
-
-        $response = $miniProgramApp->code->rollbackRelease();
+        $response = $this->service->revertCodeRelease();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -638,26 +599,20 @@ class CodeController extends Controller
      *     )
      * )
      */
-    public function SetSupportVersion($componentAppId, $miniProgramAppId)
+    public function SetSupportVersion()
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
-        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
-        $response = $miniProgramApp->code->setSupportVersion(
+        $response = $this->service->setSupportVersion(
             request()->input('version')
         );
 
         return $this->response->withArray(['data' => $response]);
     }
 
-    public function supportVersion($componentAppId, $miniProgramAppId)
+    public function supportVersion()
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-        $miniProgram = MiniProgram::where('app_id', $miniProgramAppId)->first();
-        $miniProgramApp = $openPlatform->miniProgram($miniProgramAppId, $miniProgram->authorizer_refresh_token);
-        $response = $miniProgramApp->code->getSupportVersion();
+        $response = $this->service->getSupportVersion(
+            request()->input('version')
+        );
 
         return $this->response->withArray(['data' => $response]);
     }

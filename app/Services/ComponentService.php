@@ -5,6 +5,7 @@
  * Date: 2018-12-17
  * Time: 10:15
  */
+
 namespace App\Services;
 
 use App\Exceptions\UnprocessableEntityHttpException;
@@ -19,7 +20,7 @@ class ComponentService
 {
     protected $config;
 
-    protected $appId;
+    public $appId;
 
     /**
      * @var \EasyWeChat\OpenPlatform\Application
@@ -28,23 +29,28 @@ class ComponentService
 
     public function __construct()
     {
-        $this->appId  = 'wx302844b3c020c900';
+        $this->appId = 'wx302844b3c020c900';
 
         $this->app = Factory::openPlatform($this->getConfig());
     }
-
 
     public function setAppId($appId)
     {
         $this->appId = $appId;
     }
 
+    public function getParent()
+    {
+        return $this;
+    }
+
+
     public function getConfig()
     {
-        if(in_array(env('APP_ENV'), ['local'])){
+        if (in_array(env('APP_ENV'), ['local'])) {
             return $this->getRemoteConfig();
         }
-        return Cache::remember($this->getCacheKey(), 6000, function() {
+        return Cache::remember($this->getCacheKey(), 6000, function () {
             $component = Component::where('app_id', $this->appId)->first();
             $config = [
                 'component_id' => $component->component_id,
@@ -74,7 +80,7 @@ class ComponentService
             $uri = route('getComponentVerifyTicket', ['componentAppId' => $component->app_id], false) . '?remote=1';
             $res = file_get_contents(env('WECAHT_RECEIVE_MSG_GATEWAY_HOST') . $uri);
             $res = json_decode($res);
-            if(isset($res->data)){
+            if (isset($res->data)) {
                 $app = Factory::openPlatform($config);
                 $app['verify_ticket']->setTicket($res->data->component_verify_ticket);
             }
@@ -107,8 +113,8 @@ class ComponentService
 
     public function getComponent()
     {
-        $component = Component::where(['app_Id'=>$this->appId])->first();
-        if(!isset($component)){
+        $component = Component::where(['app_Id' => $this->appId])->first();
+        if (!isset($component)) {
             throw new UnprocessableEntityHttpException('Component is exists');
         }
         return $component;
@@ -127,8 +133,8 @@ class ComponentService
     public function updateReleaseConfig($config)
     {
         $oldConfig = $this->getReleaseConfig();
-        foreach(['tests', 'domain', 'web_view_domain', 'visit_status', 'support_version'] as $key){
-            if(isset($config[$key])){
+        foreach (['tests', 'domain', 'web_view_domain', 'visit_status', 'support_version'] as $key) {
+            if (isset($config[$key])) {
                 $oldConfig[$key] = $config[$key];
             }
         }
@@ -183,5 +189,25 @@ class ComponentService
     {
         $this->app['verify_ticket']->setTicket($ticket);
         Cache::forget($this->getCacheKey());
+    }
+
+    public function getDrafts()
+    {
+        return $this->app->code_template->getDrafts();
+    }
+
+    public function draftToTemplate($templateId)
+    {
+        return $this->app->code_template->createFromDraft($templateId);
+    }
+
+    public function deleteTemplate($templateId)
+    {
+        return $this->app->code_template->delete($templateId);
+    }
+
+    public  function templateList()
+    {
+        return $this->app->code_template->list();
     }
 }
