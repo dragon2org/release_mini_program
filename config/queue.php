@@ -66,7 +66,7 @@ return [
 
         'kafka' => [
             'driver' => 'kafka',
-            'sasl'=> true,
+            'sasl'=> false,
             'sasl_plain_username' => env('KAFKA_SASL_PLAIN_USERNAME', 'YOUR AK'), // 阿里云 ak
             'sasl_plain_password' => env('KAFKA_SASL_PLAIN_PASSWORD', 'YOUR AC'),// 阿里云 ac后10位
             'bootstrap_servers' => "127.0.0.1:9092", // broker
@@ -74,7 +74,9 @@ return [
             'message.send.max.retries' => 5,
             'queue' => env('KAFKA_TOPIC', 'release-mini-program'),  // 这里填入你在阿里云控制台配置的topic
             'consumer_id' => env('KAFKA_CONSUMER_ID', '1'), // 消费者ID，你在阿里云控制台配置的消费之ID
-            'log_level' => LOG_DEBUG // 日志等级
+            'log_level' => LOG_DEBUG, // 日志等级
+            'security.protocol' => 'plaintext',  //plaintext, ssl, sasl_plaintext, sasl_ssl
+            'max.tries' => '5', // 最大尝试次数
         ],
 
     ],

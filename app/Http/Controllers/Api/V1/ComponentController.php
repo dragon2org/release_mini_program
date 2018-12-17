@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\ApiResponse;
 use App\Http\Requests\Api\ComponentRequest;
 use App\Http\Transformer\ComponentTransformer;
+use App\Jobs\SyncConfig;
+use App\Models\Component;
 use App\Models\ComponentExt;
 use App\Services\ComponentService;
 use EasyWeChat\Factory;
+use Illuminate\Support\Facades\Queue;
 
 class ComponentController extends Controller
 {
@@ -67,6 +70,8 @@ class ComponentController extends Controller
 
     public function create()
     {
+        SyncConfig::dispatch(Component::where(['component_id'=>4])->first())->onConnection('kafka');
+        die('success');
         $component = $this->service->register(request()->all());
 
         return $this->response->withArray(

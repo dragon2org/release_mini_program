@@ -4,14 +4,14 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMiniProgramExt extends Migration
+class CreateMiniProgramExtend extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    protected $tableName = 'mini_program_ext';
+    protected $tableName = 'mini_program_extend';
 
     protected $tableComment = '小程序extra配置信息';
 

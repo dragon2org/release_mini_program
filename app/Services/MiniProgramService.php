@@ -8,6 +8,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\UnprocessableEntityHttpException;
 use App\Models\MiniProgram;
 use App\Services\ComponentService;
 use Illuminate\Support\Facades\Cache;
@@ -34,6 +35,21 @@ class MiniProgramService
         $this->app = $this->component->app->miniProgram($this->appId, $this->getRefreshToken());
     }
 
+    /**
+     * @param array $data
+     * @return array
+     * @throws UnprocessableEntityHttpException
+     */
+    protected function parseResponse(array $data)
+    {
+        if($data['errcode'] === 0){
+            unset($data['errmsg']);
+            unset($data['errcode']);
+            return $data;
+        }
+        throw new UnprocessableEntityHttpException($data['errmsg'], $data['errcode']);
+    }
+
     public function getCacheKey()
     {
         return 'dhb.mini-program.release.mini-program' . $this->appId;
@@ -42,7 +58,7 @@ class MiniProgramService
     public function getRefreshToken()
     {
         return Cache::remember($this->getCacheKey(), 6000, function () {
-            return MiniProgram::where('app_id', $this->appId)->select(['app_id', 'authorizer_refresh_token'])->first();
+            return MiniProgram::where('app_id', $this->appId)->value('authorizer_refresh_token');
         });
     }
 
@@ -149,7 +165,9 @@ class MiniProgramService
 
     public function bindTester($userStr)
     {
-        return $this->app->tester->bind($userStr);
+        $response = $this->app->tester->bind($userStr);
+        $data = $this->parseResponse($response);
+
     }
 
     public function unbindTester($userStr)

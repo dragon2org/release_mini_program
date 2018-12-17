@@ -662,7 +662,7 @@ class MiniProgramController extends Controller
      */
     public function bindTester()
     {
-        $response = $this->service->bind(request()->input('wechat_id'));
+        $response = $this->service->bindTester(request()->input('wechat_id'));
 
         return $this->response->withArray(['data' => $response]);
     }
