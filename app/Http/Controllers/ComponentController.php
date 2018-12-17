@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Component;
+use App\Services\ComponentService;
 use EasyWeChat\Factory;
 use EasyWeChat\OpenPlatform\Server\Guard;
 use Illuminate\Support\Facades\Cache;
@@ -17,37 +18,9 @@ use Log;
 
 class ComponentController extends Controller
 {
-    public function serve($componentAppId)
+    public function serve()
     {
-        $component = Component::where('app_id', $componentAppId)->first();
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-        $server = $openPlatform->server;
-
-        // 处理授权成功事件
-        $server->push(function ($message) {
-
-        }, Guard::EVENT_AUTHORIZED);
-
-        // 处理授权更新事件
-        $server->push(function ($message) {
-
-        }, Guard::EVENT_UPDATE_AUTHORIZED);
-
-        // 处理授权取消事件
-        $server->push(function ($message) {
-
-        }, Guard::EVENT_UNAUTHORIZED);
-
-        // 处理VERIFY_TICKET
-        $server->push(function ($message) use($component) {
-            Log::info('ComponentVerifyTicket:', $message);
-            $component->verify_ticket = $message['ComponentVerifyTicket'];
-            $component->save();
-            Cache::forget(Component::getCacheKey($component->app_id));
-        }, Guard::EVENT_COMPONENT_VERIFY_TICKET);
-
-        return $server->serve();
+        return (new ComponentService())->server();
     }
 
     public function hostValidate($validateFilename)

@@ -1,13 +1,4 @@
 <?php
-
-$rawInput = file_get_contents('php://input');
-$path = dirname(__DIR__) .'/'. 'wechat_request_data_' . date('Ymd') .'.log';
-file_put_contents(
-    $path,
-    $rawInput .PHP_EOL,
-    FILE_APPEND
-    );
-
 /**
  * Laravel - A PHP Framework For Web Artisans
  *

@@ -2,14 +2,31 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Http\ApiResponse;
 use App\Http\Requests\Api\ComponentRequest;
 use App\Http\Transformer\ComponentTransformer;
-use App\Models\Component;
 use App\Models\ComponentExt;
+use App\Services\ComponentService;
 use EasyWeChat\Factory;
 
 class ComponentController extends Controller
 {
+    /**
+     * @var \App\Services\ComponentService
+     */
+    protected $service;
+
+    /**
+     * ComponentController constructor.
+     * @param ApiResponse $response
+     * @param ComponentService $service
+     */
+    public function __construct(ApiResponse $response, ComponentService $service)
+    {
+        parent::__construct($response);
+        $this->service = $service;
+    }
+
     /**
      * @SWG\Post(
      *     path="/component",
@@ -48,13 +65,9 @@ class ComponentController extends Controller
      * )
      */
 
-    public function create(ComponentRequest $request, Component $component)
+    public function create()
     {
-        $component->fill($request->all());
-        $validateFile = $request->input('validate');
-        $component->validate_filename = $validateFile['filename'];
-        $component->validate_content = $validateFile['content'];
-        $component->save();
+        $component = $this->service->register(request()->all());
 
         return $this->response->withArray(
             ['data' => $this->response->transformatItem($component, new ComponentTransformer($component))]
@@ -164,17 +177,11 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function domain($componentAppId)
+    public function domain()
     {
-        $component = Component::where('app_id', $componentAppId)->first();
-        $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
-        $config = json_decode($componentExt->config, true) ?? [];
-        $config['domain'] = request()->input('domain');
+        $config = $this->service->updateReleaseConfig(request()->all());
 
-        $componentExt->config = json_encode($config, JSON_UNESCAPED_UNICODE);
-        $componentExt->save();
-
-        return $this->response->withArray(['data' => json_decode($componentExt->config) ]);
+        return $this->response->withArray(['data' => $config ]);
     }
     /**
      * @SWG\Put(
@@ -213,17 +220,11 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function webViewDomain($componentAppId)
+    public function webViewDomain()
     {
-        $component = Component::where('app_id', $componentAppId)->first();
-        $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
-        $config = json_decode($componentExt->config, true) ?? [];
-        $config['web_view_domain'] = request()->input('web_view_domain');
+        $config = $this->service->updateReleaseConfig(request()->all());
 
-        $componentExt->config = json_encode($config, JSON_UNESCAPED_UNICODE);
-        $componentExt->save();
-
-        return $this->response->withArray(['data' => json_decode($componentExt->config) ]);
+        return $this->response->withArray(['data' => $config ]);
     }
     /**
      * @SWG\Put(
@@ -265,17 +266,11 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function tester($componentAppId)
+    public function tester()
     {
-        $component = Component::where('app_id', $componentAppId)->first();
-        $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
-        $config = json_decode($componentExt->config, true) ?? [];
-        $config['tester'] = request()->input('tester');
+        $config = $this->service->updateReleaseConfig(request()->all());
 
-        $componentExt->config = json_encode($config, JSON_UNESCAPED_UNICODE);
-        $componentExt->save();
-
-        return $this->response->withArray(['data' => json_decode($componentExt->config) ]);
+        return $this->response->withArray(['data' => $config ]);
     }
     /**
      * @SWG\Put(
@@ -317,17 +312,11 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function visitStatus($componentAppId)
+    public function visitStatus()
     {
-        $component = Component::where('app_id', $componentAppId)->first();
-        $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
-        $config = json_decode($componentExt->config, true) ?? [];
-        $config['visit_status'] = request()->input('visit_status');
+        $config = $this->service->updateReleaseConfig(request()->all());
 
-        $componentExt->config = json_encode($config, JSON_UNESCAPED_UNICODE);
-        $componentExt->save();
-
-        return $this->response->withArray(['data' => json_decode($componentExt->config) ]);
+        return $this->response->withArray(['data' => $config ]);
     }
     /**
      * @SWG\Put(
@@ -369,69 +358,11 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function supportVersion($componentAppId)
+    public function supportVersion()
     {
-        $component = Component::where('app_id', $componentAppId)->first();
-        $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
-        $config = json_decode($componentExt->config, true) ?? [];
-        $config['support_version'] = request()->input('support_version');
+        $config = $this->service->updateReleaseConfig(request()->all());
 
-        $componentExt->config = json_encode($config, JSON_UNESCAPED_UNICODE);
-        $componentExt->save();
-
-        return $this->response->withArray(['data' => json_decode($componentExt->config) ]);
-    }
-    /**
-     * @SWG\Put(
-     *     path="/component/:componentAppId/config/sync",
-     *     summary="批量推送平台配置到微信小程序",
-     *     tags={"三方平台管理"},
-     *     description="管理三方平台",
-     *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         name="data",
-     *         in="body",
-     *         description="表单数据",
-     *         required=true,
-     *         type="object",
-     *         @SWG\Schema(
-     *             @SWG\Property(
-     *                 property="category",
-     *                 type="string",
-     *                 description="推送配置类型: domain, web_view_domain, tester, visit_status, support_version; all全部推送",
-     *             )
-     *         )
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="成功返回",
-     *         ref="$/responses/200",
-     *         @SWG\Schema(
-     *             @SWG\Property(
-     *                 property="data",
-     *                 type="Object",
-     *                 ref="#/definitions/MiniProgramConfig"
-     *             )
-     *         )
-     *     ),
-     *     @SWG\Response(
-     *         response=422,
-     *         description="处理失败的返回",
-     *         ref="$/responses/422",
-     *     ),
-     * )
-     */
-    public function configSync($componentAppId)
-    {
-        $component = Component::where('app_id', $componentAppId)->first();
-        $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
-        $config = json_decode($componentExt->config, true) ?? [];
-        $config['ext_json'] = request()->input('ext_json');
-
-        $componentExt->config = json_encode($config, JSON_UNESCAPED_UNICODE);
-        $componentExt->save();
-
-        return $this->response->withArray(['data' => json_decode($componentExt->config) ]);
+        return $this->response->withArray(['data' => $config ]);
     }
 
     /**
@@ -473,17 +404,59 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function extJson($componentAppId)
+    public function extJson()
     {
-        $component = Component::where('app_id', $componentAppId)->first();
-        $componentExt = ComponentExt::firstOrNew(['component_id' => $component->component_id]);
-        $config = json_decode($componentExt->config, true) ?? [];
-        $config['ext_json'] = request()->input('ext_json');
+        $config = $this->service->updateReleaseConfig(request()->all());
 
-        $componentExt->config = json_encode($config, JSON_UNESCAPED_UNICODE);
-        $componentExt->save();
+        return $this->response->withArray(['data' => $config ]);
+    }
 
-        return $this->response->withArray(['data' => json_decode($componentExt->config) ]);
+    /**
+     * @SWG\Put(
+     *     path="/component/:componentAppId/config/sync",
+     *     summary="批量推送平台配置到微信小程序",
+     *     tags={"三方平台管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="data",
+     *         in="body",
+     *         description="表单数据",
+     *         required=true,
+     *         type="object",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="category",
+     *                 type="string",
+     *                 description="推送配置类型: domain, web_view_domain, tester, visit_status, support_version; all全部推送",
+     *             )
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         ref="$/responses/200",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="Object",
+     *                 ref="#/definitions/MiniProgramConfig"
+     *             )
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=422,
+     *         description="处理失败的返回",
+     *         ref="$/responses/422",
+     *     ),
+     * )
+     */
+
+    public function configSync()
+    {
+        $this->service->configSync();
+
+        return $this->response->withArray();
     }
 
     /**
@@ -512,11 +485,9 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function config($componentAppId)
+    public function config()
     {
-        $component = Component::where('app_id', $componentAppId)->first();
-        $componentExt = ComponentExt::where(['component_id' => $component->component_id])->first();
-        $config = json_decode($componentExt->config, true) ?? [];
+        $config = $this->service->getReleaseConfig();
 
         return $this->response->withArray(['data' => $config ]);
     }
@@ -601,7 +572,7 @@ class ComponentController extends Controller
     public function componentVerifyTicket($componentAppId)
     {
         return $this->response->withArray(['data' => [
-                'component_verify_ticket' => Component::getConfig($componentAppId)['component_verify_ticket']
+                'component_verify_ticket' => $this->service->getConfig()['component_verify_ticket']
             ]]
         );
     }
@@ -641,12 +612,9 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function componentAccessToken($componentAppId)
+    public function componentAccessToken()
     {
-        $config = Component::getConfig($componentAppId);
-        $openPlatform = Factory::openPlatform($config);
-
-        return $this->response->withArray(['data' =>$openPlatform['access_token']->getToken()]
+        return $this->response->withArray(['data' =>$this->service->app['access_token']->getToken()]
         );
     }
 

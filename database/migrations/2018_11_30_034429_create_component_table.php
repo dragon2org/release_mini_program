@@ -33,6 +33,7 @@ class CreateComponentTable extends Migration
             $table->string('validate_content', 43)->default('')->comment('三方平台验证域名-文件内容');
 
             $table->unique('app_id', 'uniq_app_id');
+            $table->index('validate_filename', 'idx_validate_filename');
 
             $table->string('field1', 45)->default('')->comment('备用字段');
             $table->string('field2', 45)->default('')->comment('备用字段2');
