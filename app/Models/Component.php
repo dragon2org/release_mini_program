@@ -40,17 +40,19 @@ class Component extends Model
         'aes_key',
     ];
 
-    public function extend()
+    public function getConfig()
     {
-        return $this->hasOne(ComponentExt::class, 'component_id', 'component_id')->withDefault(function(){
-            return json_encode([
-                'tests' => '',
-                'domain' => '',
-                'web_view_domain' => '',
-                'visit_status' => '',
-                'support_version' => '',
-            ], JSON_UNESCAPED_UNICODE);
-        });
+        if($config = json_decode($this->config, true)){
+            return $config;
+        }
+
+        return json_encode([
+            'tests' => '',
+            'domain' => '',
+            'web_view_domain' => '',
+            'visit_status' => '',
+            'support_version' => '',
+        ], JSON_UNESCAPED_UNICODE);
     }
 
     public function getAuthorizationLaunchPageDomain()

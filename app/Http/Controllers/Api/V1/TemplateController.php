@@ -101,6 +101,20 @@ class TemplateController extends Controller
      *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="data",
+     *         in="body",
+     *         description="表单数据",
+     *         required=true,
+     *         type="object",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="draft_id",
+     *                 type="string",
+     *                 description="模板ID"
+     *             )
+     *         )
+     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="成功返回",
@@ -120,9 +134,9 @@ class TemplateController extends Controller
      *     )
      * )
      */
-    public function draftToTemplate($componentAppId, $templateId)
+    public function draftToTemplate()
     {
-        $response = $this->service->draftToTemplate($templateId);
+        $response = $this->service->draftToTemplate(request()->input('draft_id'));
         return $this->response->withArray([
             'data' => $response
         ]);

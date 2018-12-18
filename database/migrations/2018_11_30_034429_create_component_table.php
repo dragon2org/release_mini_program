@@ -34,6 +34,7 @@ class CreateComponentTable extends Migration
 
             $table->unique('app_id', 'uniq_app_id');
             $table->index('validate_filename', 'idx_validate_filename');
+            $table->json('config')->comment('发版配置');
 
             $table->string('field1', 45)->default('')->comment('备用字段');
             $table->string('field2', 45)->default('')->comment('备用字段2');

@@ -711,8 +711,8 @@ class MiniProgramController extends Controller
      */
     public function unbindTester()
     {
-        $response = $this->service->unbind(request()->input('wechat_id'));
+        $response = $this->service->unbindTester(request()->input('wechat_id'));
 
-        return $this->response->withArray(['data' => $response]);
+        return $this->response->withArray();
     }
 }

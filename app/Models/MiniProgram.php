@@ -19,4 +19,9 @@ class MiniProgram extends Model
      * @var string
      */
     protected $primaryKey = 'mini_program_id';
+
+    public function tester()
+    {
+        return $this->hasMany(Tester::class, 'mini_program_id', 'mini_program_id');
+    }
 }

@@ -19,4 +19,14 @@ class Tester extends Model
      * @var string
      */
     protected $primaryKey = 'tester_id';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'wechat_id',
+        'userstr',
+    ];
 }

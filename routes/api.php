@@ -66,8 +66,8 @@ Route::group([
      */
     Route::get('/component/{componentAppId}/draft', 'TemplateController@draft');
     Route::get('/component/{componentAppId}/template', 'TemplateController@index');
-    Route::delete('/component/{componentAppId}/template/{templateId}');
-    Route::post('/component/{componentAppId}/template');
+    Route::delete('/component/{componentAppId}/template/{templateId}', 'TemplateController@delete');
+    Route::post('/component/{componentAppId}/template', 'TemplateController@draftToTemplate');
     Route::post('/component/{componentAppId}/template/{templateId}/release');
 });
 

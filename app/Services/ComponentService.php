@@ -34,6 +34,22 @@ class ComponentService
         $this->app = Factory::openPlatform($this->getConfig());
     }
 
+    /**
+     * @param array $data
+     * @return array
+     * @throws UnprocessableEntityHttpException
+     */
+    protected function parseResponse(array $data)
+    {
+        if ($data['errcode'] === 0) {
+            unset($data['errmsg']);
+            unset($data['errcode']);
+            return $data;
+        }
+        return $data;
+        throw new UnprocessableEntityHttpException($data['errmsg'], $data['errcode']);
+    }
+
     public function setAppId($appId)
     {
         $this->appId = $appId;
@@ -67,6 +83,7 @@ class ComponentService
     protected function getRemoteConfig()
     {
         $component = $this->getComponent();
+
         $config = [
             'component_id' => $component->component_id,
             'app_id' => $component->app_id,
@@ -139,7 +156,7 @@ class ComponentService
             }
         }
 
-        $extend = $this->getComponent()->extend;
+        $extend = $this->getComponent()->getConfig();
         $extend->config = json_encode($oldConfig, JSON_UNESCAPED_UNICODE);
         $extend->save();
 
@@ -148,8 +165,8 @@ class ComponentService
 
     public function getReleaseConfig()
     {
-        $extend = $this->getComponent()->extend;
-        return json_decode($extend->config, true);
+        $config = $this->getComponent()->getConfig();
+        return json_decode($config, true);
     }
 
     public function configSync()
@@ -193,21 +210,29 @@ class ComponentService
 
     public function getDrafts()
     {
-        return $this->app->code_template->getDrafts();
+        return $this->parseResponse(
+            $this->app->code_template->getDrafts()
+        );
     }
 
     public function draftToTemplate($templateId)
     {
-        return $this->app->code_template->createFromDraft($templateId);
+        return $this->parseResponse(
+            $this->app->code_template->createFromDraft($templateId)
+        );
     }
 
     public function deleteTemplate($templateId)
     {
-        return $this->app->code_template->delete($templateId);
+        return $this->parseResponse(
+            $this->app->code_template->delete($templateId)
+        );
     }
 
-    public  function templateList()
+    public function templateList()
     {
-        return $this->app->code_template->list();
+        return $this->parseResponse(
+            $this->app->code_template->list()
+        );
     }
 }

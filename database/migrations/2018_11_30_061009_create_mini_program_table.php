@@ -32,7 +32,8 @@ class CreateMiniProgramTable extends Migration
             $table->string('qrcode_url')->default('')->comment('二维码图片的URL');
             $table->string('desc')->default('')->comment('小程序平台描述');
             $table->string('authorizer_refresh_token', 100)->default('')->comment('获取（刷新）授权公众号或小程序的接口调用凭据');
-            $table->string('user_version', 43)->default('')->comment('当前版本');
+
+            $table->json('config')->comment('自定义发版配置');
 
             $table->index('app_id', 'idx_app_id');
             $table->index('user_name', 'idx_user_name');
