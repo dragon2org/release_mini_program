@@ -562,7 +562,6 @@ class ComposerStaticInit57c3ca7400b4875d3c65b4e72a8fe30b
         'App\\Http\\Transformer\\MiniProgramTransformer' => __DIR__ . '/../..' . '/app/Http/Transformer/MiniProgramTransformer.php',
         'App\\Jobs\\SyncConfig' => __DIR__ . '/../..' . '/app/Jobs/SyncConfig.php',
         'App\\Models\\Component' => __DIR__ . '/../..' . '/app/Models/Component.php',
-        'App\\Models\\ComponentExt' => __DIR__ . '/../..' . '/app/Models/ComponentExt.php',
         'App\\Models\\MiniProgram' => __DIR__ . '/../..' . '/app/Models/MiniProgram.php',
         'App\\Models\\Tester' => __DIR__ . '/../..' . '/app/Models/Tester.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',

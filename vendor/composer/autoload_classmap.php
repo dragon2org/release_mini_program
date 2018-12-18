@@ -42,7 +42,6 @@ return array(
     'App\\Http\\Transformer\\MiniProgramTransformer' => $baseDir . '/app/Http/Transformer/MiniProgramTransformer.php',
     'App\\Jobs\\SyncConfig' => $baseDir . '/app/Jobs/SyncConfig.php',
     'App\\Models\\Component' => $baseDir . '/app/Models/Component.php',
-    'App\\Models\\ComponentExt' => $baseDir . '/app/Models/ComponentExt.php',
     'App\\Models\\MiniProgram' => $baseDir . '/app/Models/MiniProgram.php',
     'App\\Models\\Tester' => $baseDir . '/app/Models/Tester.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',

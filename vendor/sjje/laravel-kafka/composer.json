@@ -1,0 +1,30 @@
+{
+    "name": "sjje/laravel-kafka",
+    "description": "aliyun kafka for laravel5, based on kasimchen/laravel-aliyun-kafka",
+    "keywords": ["laravel kafka", "laravel aliyun kafka", "aliyun laravel kafka"],
+    "license": "MIT",
+    "require": {
+        "php": "^7.0",
+        "illuminate/support": "~5.3|~5.4|~5.5",
+        "illuminate/queue": "~5.3|~5.4|~5.5"
+    },
+    "authors": [
+        {
+            "name": "sjje",
+            "email": "377304925@qq.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Sjje\\LaravelKafka\\": "src"
+        }
+    },
+    "minimum-stability": "stable",
+    "extra": {
+        "laravel":{
+            "providers": [
+                "Sjje\\LaravelKafka\\LaravelKafkaServiceProvider"
+            ]
+        }
+    }
+}

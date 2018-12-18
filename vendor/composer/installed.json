@@ -4705,19 +4705,25 @@
     },
     {
         "name": "sjje/laravel-kafka",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/sjje/laravel-aliyun-kafka.git",
+            "reference": "cf6408363d273d8394e45c95d7e028d707d0407b"
+        },
         "dist": {
-            "type": "path",
-            "url": "../packages/laravel-kafka",
-            "reference": "d062b306f9a93ca7ac553633ddeabeb43b70080c",
-            "shasum": null
+            "type": "zip",
+            "url": "https://api.github.com/repos/sjje/laravel-aliyun-kafka/zipball/cf6408363d273d8394e45c95d7e028d707d0407b",
+            "reference": "cf6408363d273d8394e45c95d7e028d707d0407b",
+            "shasum": ""
         },
         "require": {
             "illuminate/queue": "~5.3|~5.4|~5.5",
             "illuminate/support": "~5.3|~5.4|~5.5",
             "php": "^7.0"
         },
+        "time": "2018-12-18T11:02:18+00:00",
         "type": "library",
         "extra": {
             "laravel": {
@@ -4732,6 +4738,7 @@
                 "Sjje\\LaravelKafka\\": "src"
             }
         },
+        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],

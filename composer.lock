@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4769ae5a51aa68af8d64fc8d3cc90082",
+    "content-hash": "06b9e6f504db83465c668b4de1f6f957",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -2905,12 +2905,17 @@
         },
         {
             "name": "sjje/laravel-kafka",
-            "version": "dev-master",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sjje/laravel-aliyun-kafka.git",
+                "reference": "cf6408363d273d8394e45c95d7e028d707d0407b"
+            },
             "dist": {
-                "type": "path",
-                "url": "../packages/laravel-kafka",
-                "reference": "d062b306f9a93ca7ac553633ddeabeb43b70080c",
-                "shasum": null
+                "type": "zip",
+                "url": "https://api.github.com/repos/sjje/laravel-aliyun-kafka/zipball/cf6408363d273d8394e45c95d7e028d707d0407b",
+                "reference": "cf6408363d273d8394e45c95d7e028d707d0407b",
+                "shasum": ""
             },
             "require": {
                 "illuminate/queue": "~5.3|~5.4|~5.5",
@@ -2930,6 +2935,7 @@
                     "Sjje\\LaravelKafka\\": "src"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2944,7 +2950,8 @@
                 "aliyun laravel kafka",
                 "laravel aliyun kafka",
                 "laravel kafka"
-            ]
+            ],
+            "time": "2018-12-18T11:02:18+00:00"
         },
         {
             "name": "sjje/swaggervel",
@@ -6255,9 +6262,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "sjje/laravel-kafka": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
