@@ -20,9 +20,9 @@ class CreateComponentTable extends Migration
         Schema::create($this->tableName, function (Blueprint $table) {
             $table->increments($this->tableName . '_id')->unsigned()->comment('自增id');
             $table->string('inner_name', 45)->default('')->comment('内部名称');
-            $table->string('inner_desc', 45)->default('')->comment('内部描述');
+            $table->string('inner_desc')->default('')->comment('内部描述');
             $table->string('name', 45)->default('')->comment('三方平台名称');
-            $table->string('desc', 45)->default('')->comment('三方平台描述');
+            $table->string('desc')->default('')->comment('三方平台描述');
 
             $table->string('app_id', 32)->default('')->comment('三方平台AppID');
             $table->string('app_secret', 32)->default('')->comment('三方平台AppSecret');
@@ -34,7 +34,7 @@ class CreateComponentTable extends Migration
 
             $table->unique('app_id', 'uniq_app_id');
             $table->index('validate_filename', 'idx_validate_filename');
-            $table->json('config')->comment('发版配置');
+            $table->text('config')->comment('自定义发版配置');
 
             $table->string('field1', 45)->default('')->comment('备用字段');
             $table->string('field2', 45)->default('')->comment('备用字段2');

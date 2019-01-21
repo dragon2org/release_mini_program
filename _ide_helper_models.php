@@ -12,6 +12,68 @@
 
 namespace App\Models{
 /**
+ * App\Models\MiniProgram
+ *
+ * @property int $mini_program_id 自增id
+ * @property int $component_id 关联的三方平台ID
+ * @property int $company_id 公司id
+ * @property string $inner_name 内部名称
+ * @property string $inner_desc 内部描述
+ * @property string $nick_name 授权方昵称
+ * @property string $head_img 小程序头像
+ * @property string $app_id 小程序AppID
+ * @property string $user_name 原始ID,审核推送要用
+ * @property string $principal_name 小程序主体名称
+ * @property string $qrcode_url 二维码图片的URL
+ * @property string $desc 小程序平台描述
+ * @property string $authorizer_refresh_token 获取（刷新）授权公众号或小程序的接口调用凭据
+ * @property string $user_version 当前版本
+ * @property string $field1 备用字段
+ * @property string $field2 备用字段2
+ * @property int $deleted 软删除标志
+ * @property \Illuminate\Support\Carbon $created_at 记录添加时间
+ * @property \Illuminate\Support\Carbon $updated_at 记录更新时间
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tester[] $tester
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereAuthorizerRefreshToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereCompanyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereComponentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereDesc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereField1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereField2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereHeadImg($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereInnerDesc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereInnerName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereMiniProgramId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereNickName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram wherePrincipalName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereQrcodeUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereUserName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereUserVersion($value)
+ */
+	class MiniProgram extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\User
+ *
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User query()
+ */
+	class User extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Component
  *
  * @property int $component_id 自增id
@@ -26,7 +88,6 @@ namespace App\Models{
  * @property string $aes_key 三方平台消息解密解密Key
  * @property string $validate_filename 三方平台验证域名-文件名
  * @property string $validate_content 三方平台验证域名-文件内容
- * @property mixed $config 发版配置
  * @property string $field1 备用字段
  * @property string $field2 备用字段2
  * @property int $deleted 软删除标志
@@ -39,7 +100,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereAppSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereComponentId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereConfig($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereDeleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereDesc($value)
@@ -59,90 +119,12 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * App\Models\MiniProgram
- *
- * @property int $mini_program_id 自增id
- * @property int $component_id 关联的三方平台ID
- * @property int $company_id 公司id
- * @property string $inner_name 内部名称
- * @property string $inner_desc 内部描述
- * @property string $nick_name 授权方昵称
- * @property string $head_img 小程序头像
- * @property string $app_id 小程序AppID
- * @property string $user_name 原始ID,审核推送要用
- * @property string $principal_name 小程序主体名称
- * @property string $qrcode_url 二维码图片的URL
- * @property string $desc 小程序平台描述
- * @property string $authorizer_refresh_token 获取（刷新）授权公众号或小程序的接口调用凭据
- * @property mixed $config 自定义发版配置
- * @property string $field1 备用字段
- * @property string $field2 备用字段2
- * @property int $deleted 软删除标志
- * @property \Illuminate\Support\Carbon $created_at 记录添加时间
- * @property \Illuminate\Support\Carbon $updated_at 记录更新时间
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tester[] $tester
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereAppId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereAuthorizerRefreshToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereCompanyId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereComponentId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereConfig($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereDeleted($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereDesc($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereField1($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereField2($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereHeadImg($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereInnerDesc($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereInnerName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereMiniProgramId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereNickName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram wherePrincipalName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereQrcodeUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereUserName($value)
- */
-	class MiniProgram extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
  * App\Models\Tester
  *
- * @property int $tester_id 自增id
- * @property int $mini_program_id 小程序id
- * @property string $userstr wechat_id别名
- * @property string $wechat_id 微信id
- * @property string $field1 备用字段
- * @property string $field2 备用字段2
- * @property \Illuminate\Support\Carbon $created_at 记录添加时间
- * @property \Illuminate\Support\Carbon $updated_at 记录更新时间
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Tester newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Tester newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Tester query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Tester whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Tester whereField1($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Tester whereField2($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Tester whereMiniProgramId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Tester whereTesterId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Tester whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Tester whereUserstr($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Tester whereWechatId($value)
  */
 	class Tester extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * App\Models\User
- *
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User query()
- */
-	class User extends \Eloquent {}
 }
 

@@ -70,8 +70,6 @@ class ComponentController extends Controller
 
     public function create()
     {
-        SyncConfig::dispatch(Component::where(['component_id'=>4])->first())->onConnection('kafka');
-        die('success');
         $component = $this->service->register(request()->all());
 
         return $this->response->withArray(

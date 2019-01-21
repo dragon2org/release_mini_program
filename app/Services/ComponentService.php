@@ -31,7 +31,7 @@ class ComponentService
     {
         $this->appId = 'wx302844b3c020c900';
 
-        $this->app = Factory::openPlatform($this->getConfig());
+        //$this->app = Factory::openPlatform($this->getConfig());
     }
 
     /**
@@ -63,9 +63,6 @@ class ComponentService
 
     public function getConfig()
     {
-        if (in_array(env('APP_ENV'), ['local'])) {
-            return $this->getRemoteConfig();
-        }
         return Cache::remember($this->getCacheKey(), 6000, function () {
             $component = Component::where('app_id', $this->appId)->first();
             $config = [
@@ -76,6 +73,8 @@ class ComponentService
                 'aes_key' => $component->aes_key,
                 'component_verify_ticket' => $component->verify_ticket,
             ];
+            $app = Factory::openPlatform($config);
+            $app['verify_ticket']->setTicket($component->verify_ticket);
             return $config;
         });
     }
@@ -83,7 +82,6 @@ class ComponentService
     protected function getRemoteConfig()
     {
         $component = $this->getComponent();
-
         $config = [
             'component_id' => $component->component_id,
             'app_id' => $component->app_id,

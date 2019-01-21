@@ -16,11 +16,7 @@ class Component
      * @SWG\Property(type="string", description="业务方内部描述")
      */
     public $inner_desc;
-
-    /**
-     * @SWG\Property(type="string", description="业务方内部key")
-     */
-    public $inner_key;
+    
 
     /**
      * @SWG\Property(type="string", description="三方平台名称")

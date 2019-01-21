@@ -13,11 +13,39 @@ use Faker\Generator as Faker;
 |
 */
 
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\Models\User::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
         'remember_token' => str_random(10),
+    ];
+});
+
+$factory->define(App\Models\Component::class, function (Faker $faker) {
+    return [
+        'inner_name' => 'inner_name' . $faker->randomNumber(),
+        'inner_desc' => 'inner_desc' . $faker->randomNumber(),
+        'name' => 'name' . $faker->randomNumber(),
+        'desc' => 'desc' . $faker->randomNumber(),
+        'app_id' => 'app_id' . $faker->randomNumber(),
+        'app_secret' => 'app_secret',
+        'verify_token' => 'verify_token',
+        'aes_key' => 'aes_key' . $faker->randomNumber(),
+    ];
+});
+
+$factory->define(App\Models\MiniProgram::class, function (Faker $faker) {
+    return [
+        'inner_name' => $faker->name,
+        'inner_desc' => $faker->text,
+    ];
+});
+
+$factory->define(App\Models\Tester::class, function (Faker $faker) {
+    return [
+        'userstr' => $faker->name,
+        'wechat_id' => ''
     ];
 });
