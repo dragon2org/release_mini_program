@@ -15,23 +15,25 @@ use Tests\TestCase;
 
 class ComponentTest extends TestCase
 {
-    use RefreshDatabase;
+    //use RefreshDatabase;
 
     public function testComponentCreate()
     {
         $component = make(Component::class);
 
-        $form = array_merge($component->toArray(), [
-            'validate' => [
-                'filename' => '5555239629.txt',
-                'content' => '4d549fb1a927ca9d89d965cfe07301ec',
-            ]
-        ]);
+        $validate = [
+            'filename' => '5555239629.txt',
+            'content' => '4d549fb1a927ca9d89d965cfe07301ec',
+        ];
+        $form = array_merge($component->toArray(), ['validate' => $validate]);
         $response = $this->postJson('/api/v1/component', $form, [
             'Content-Type' => 'application/json'
         ]);
 
         $response->assertStatus(200);
-        //$this->assertDatabaseHas(Component::getTabale(), $component);
+        $this->assertDatabaseHas((new Component())->getTable(), $component->toArray());
+        
+        $response = $this->get($validate['filename']);
+        $response->assertSeeText($validate['content']);
     }
 }

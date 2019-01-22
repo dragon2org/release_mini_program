@@ -33,7 +33,7 @@ class MiniProgramService
         $this->appId = 'wxb21f306e9ef1af2a';
 
         $this->component = new ComponentService();
-        $this->app = $this->component->app->miniProgram($this->appId, $this->getRefreshToken());
+        //$this->app = $this->component->app->miniProgram($this->appId, $this->getRefreshToken());
     }
 
     /**

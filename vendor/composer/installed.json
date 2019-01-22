@@ -4709,12 +4709,12 @@
         "version_normalized": "1.0.0.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/sjje/laravel-aliyun-kafka.git",
+            "url": "https://github.com/sjje/laravel-kafka.git",
             "reference": "cf6408363d273d8394e45c95d7e028d707d0407b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/sjje/laravel-aliyun-kafka/zipball/cf6408363d273d8394e45c95d7e028d707d0407b",
+            "url": "https://api.github.com/repos/sjje/laravel-kafka/zipball/cf6408363d273d8394e45c95d7e028d707d0407b",
             "reference": "cf6408363d273d8394e45c95d7e028d707d0407b",
             "shasum": ""
         },
@@ -5894,6 +5894,58 @@
             "uri",
             "url"
         ]
+    },
+    {
+        "name": "symfony/stopwatch",
+        "version": "v4.2.2",
+        "version_normalized": "4.2.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/stopwatch.git",
+            "reference": "af62b35760fc92c8dbdce659b4eebdfe0e6a0472"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/stopwatch/zipball/af62b35760fc92c8dbdce659b4eebdfe0e6a0472",
+            "reference": "af62b35760fc92c8dbdce659b4eebdfe0e6a0472",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^7.1.3",
+            "symfony/contracts": "^1.0"
+        },
+        "time": "2019-01-03T09:07:35+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "4.2-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Component\\Stopwatch\\": ""
+            },
+            "exclude-from-classmap": [
+                "/Tests/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony Stopwatch Component",
+        "homepage": "https://symfony.com"
     },
     {
         "name": "symfony/thanks",
