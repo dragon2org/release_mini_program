@@ -24,7 +24,7 @@ class UpdateReleaseConfigWebViewDomain extends FormRequest
     public function rules()
     {
         return [
-            'web_view_domain' => 'required',
+            'web_view_domain' => 'required|array',
         ];
     }
 }

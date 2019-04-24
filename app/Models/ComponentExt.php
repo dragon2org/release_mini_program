@@ -32,7 +32,7 @@ class ComponentExt extends Model
         }
 
         return json_encode([
-            'tests' => '',
+            'tester' => '',
             'domain' => '',
             'web_view_domain' => '',
             'visit_status' => '',

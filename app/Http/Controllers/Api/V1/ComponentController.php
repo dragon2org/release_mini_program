@@ -6,6 +6,10 @@ use App\Exceptions\UnprocessableEntityHttpException;
 use App\Http\ApiResponse;
 use App\Http\Requests\RegisterComponent;
 use App\Http\Requests\UpdateComponent;
+use App\Http\Requests\UpdateReleaseConfigSupportVersion;
+use App\Http\Requests\UpdateReleaseConfigTester;
+use App\Http\Requests\UpdateReleaseConfigVisitStatus;
+use App\Http\Requests\UpdateReleaseConfigWebViewDomain;
 use App\Http\Requests\UpdateReleaseExtJson;
 use App\Http\Requests\UpdateReleaseConfigDomain;
 use App\Http\Requests\UpdateReleaseConfigWebDomain;
@@ -199,6 +203,8 @@ class ComponentController extends Controller
      *         ref="$/responses/422",
      *     ),
      * )
+     * @param UpdateReleaseConfigDomain $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse
      */
     public function domain(UpdateReleaseConfigDomain $request)
     {

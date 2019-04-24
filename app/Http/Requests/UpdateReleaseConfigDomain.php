@@ -24,7 +24,8 @@ class UpdateReleaseConfigDomain extends FormRequest
     public function rules()
     {
         return [
-            'domain' => 'required',
+            'domain' => 'required|array',
+            ''
         ];
     }
 }

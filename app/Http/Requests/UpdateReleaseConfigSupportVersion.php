@@ -24,7 +24,7 @@ class UpdateReleaseConfigSupportVersion extends FormRequest
     public function rules()
     {
         return [
-            'support_version' => 'required',
+            'support_version' => 'required|string',
         ];
     }
 }

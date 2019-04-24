@@ -107,7 +107,7 @@ class ComponentService
     public function updateReleaseConfig($config)
     {
         $oldConfig = $this->getReleaseConfig();
-        foreach (['tests', 'domain', 'web_view_domain', 'visit_status', 'support_version', 'ext_json'] as $key) {
+        foreach (['tester', 'domain', 'web_view_domain', 'visit_status', 'support_version', 'ext_json'] as $key) {
             if (isset($config[$key])) {
                 $oldConfig[$key] = $config[$key];
             }

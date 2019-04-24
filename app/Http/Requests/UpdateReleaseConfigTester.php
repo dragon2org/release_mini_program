@@ -24,7 +24,7 @@ class UpdateReleaseConfigTester extends FormRequest
     public function rules()
     {
         return [
-            'tests' => 'required',
+            'tester' => 'required|array',
         ];
     }
 }
