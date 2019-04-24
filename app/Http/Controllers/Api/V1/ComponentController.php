@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Exceptions\UnprocessableEntityHttpException;
 use App\Http\ApiResponse;
-use App\Http\Requests\Api\ComponentRequest;
+use App\Http\Requests\RegisterComponent;
+use App\Http\Requests\UpdateComponent;
+use App\Http\Transformer\ComponentDetailTransformer;
 use App\Http\Transformer\ComponentTransformer;
-use App\Jobs\SyncConfig;
 use App\Models\Component;
 use App\Models\ComponentExt;
 use App\Services\ComponentService;
-use EasyWeChat\Factory;
-use Illuminate\Support\Facades\Queue;
 
 class ComponentController extends Controller
 {
@@ -68,7 +68,7 @@ class ComponentController extends Controller
      * )
      */
 
-    public function create()
+    public function create(RegisterComponent $request)
     {
         $component = $this->service->register(request()->all());
 
@@ -103,7 +103,15 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+    public function show($componentAppId)
+    {
+        $component = (new Component())->where('app_id', $componentAppId)->first();
+        if(!isset($component)){
+            throw new UnprocessableEntityHttpException(trans('平台不存在'));
+        }
 
+        return $this->response->withArray(['data' => $this->response->transformatItem($component, new ComponentDetailTransformer($component))]);
+    }
 
     /**
      * @SWG\Put(
@@ -139,6 +147,16 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+    public function update(UpdateComponent $request, $componentAppId)
+    {
+        $input = request()->all();
+        $input['app_id'] = $componentAppId;
+        $component = $this->service->updateComponent(request()->all());
+
+        return $this->response->withArray(
+            ['data' => $this->response->transformatItem($component, new ComponentTransformer($component))]
+        );
+    }
 
     /**
      * @SWG\Put(

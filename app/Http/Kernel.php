@@ -41,6 +41,10 @@ class Kernel extends HttpKernel
             'throttle:60,1',
             'bindings',
         ],
+
+        'force-json' => [
+            \App\Http\Middleware\ForceJson::class,
+        ]
     ];
 
     /**

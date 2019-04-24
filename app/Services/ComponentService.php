@@ -130,7 +130,7 @@ class ComponentService
     {
         $component = Component::where(['app_Id' => $this->appId])->first();
         if (!isset($component)) {
-            throw new UnprocessableEntityHttpException('Component is exists');
+            throw new UnprocessableEntityHttpException(trans('不存在的三方平台: ' . $this->appId));
         }
         return $component;
     }
