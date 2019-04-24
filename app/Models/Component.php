@@ -89,4 +89,8 @@ class Component extends Model
         return $componentApp;
     }
 
+    public function extend()
+    {
+        return $this->hasOne(ComponentExt::class, 'component_id', 'component_id');
+    }
 }

@@ -78,4 +78,22 @@ class ReleaseService
 
         return $server->serve();
     }
+
+    public function updateReleaseConfig($input)
+    {
+        dd($this->component);
+        $config = $this->component->extend->getReleaseConfig();
+
+        foreach (['tests', 'domain', 'web_view_domain', 'visit_status', 'support_version'] as $key) {
+            if (isset($config[$key])) {
+                $oldConfig[$key] = $config[$key];
+            }
+        }
+
+        $extend = $this->getComponent()->getConfig();
+        $extend->config = json_encode($oldConfig, JSON_UNESCAPED_UNICODE);
+        $extend->save();
+
+        return $oldConfig;
+    }
 }

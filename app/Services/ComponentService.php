@@ -9,6 +9,7 @@
 namespace App\Services;
 
 use App\Exceptions\UnprocessableEntityHttpException;
+use App\Models\ComponentExt;
 use EasyWeChat\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
@@ -26,13 +27,6 @@ class ComponentService
      * @var \EasyWeChat\OpenPlatform\Application
      */
     public $app;
-
-    public function __construct(Component $component)
-    {
-        $this->appId = 'wx302844b3c020c900';
-
-        //$this->app = Factory::openPlatform($this->getConfig());
-    }
 
     /**
      * @param array $data
@@ -100,18 +94,9 @@ class ComponentService
         return $component;
     }
 
-    public function getComponent()
-    {
-        $component = Component::where(['app_Id' => $this->appId])->first();
-        if (!isset($component)) {
-            throw new UnprocessableEntityHttpException(trans('不存在的三方平台: ' . $this->appId));
-        }
-        return $component;
-    }
-
     public function updateComponent($input)
     {
-        $component = $this->getComponent();
+        $component = app('dhb.component.core')->component;
         $component->fill($input);
         $component->save();
 
@@ -122,13 +107,17 @@ class ComponentService
     public function updateReleaseConfig($config)
     {
         $oldConfig = $this->getReleaseConfig();
-        foreach (['tests', 'domain', 'web_view_domain', 'visit_status', 'support_version'] as $key) {
+        foreach (['tests', 'domain', 'web_view_domain', 'visit_status', 'support_version', 'ext_json'] as $key) {
             if (isset($config[$key])) {
                 $oldConfig[$key] = $config[$key];
             }
         }
 
-        $extend = $this->getComponent()->getConfig();
+        $extend = app('dhb.component.core')->component->extend;
+        if(!isset($extend)){
+            $extend = new ComponentExt();
+            $extend->component_id = app('dhb.component.core')->component->component_id;
+        }
         $extend->config = json_encode($oldConfig, JSON_UNESCAPED_UNICODE);
         $extend->save();
 
@@ -137,7 +126,13 @@ class ComponentService
 
     public function getReleaseConfig()
     {
-        $config = $this->getComponent()->getConfig();
+        $extend = app('dhb.component.core')->component->extend;
+        if(isset($extend)){
+            $config = $extend->config;
+        }else{
+            $config = (new ComponentExt())->getReleaseConfig();
+        }
+
         return json_decode($config, true);
     }
 

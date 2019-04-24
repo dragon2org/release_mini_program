@@ -6,10 +6,12 @@ use App\Exceptions\UnprocessableEntityHttpException;
 use App\Http\ApiResponse;
 use App\Http\Requests\RegisterComponent;
 use App\Http\Requests\UpdateComponent;
+use App\Http\Requests\UpdateReleaseExtJson;
+use App\Http\Requests\UpdateReleaseConfigDomain;
+use App\Http\Requests\UpdateReleaseConfigWebDomain;
 use App\Http\Transformer\ComponentDetailTransformer;
 use App\Http\Transformer\ComponentTransformer;
 use App\Models\Component;
-use App\Models\ComponentExt;
 use App\Services\ComponentService;
 
 class ComponentController extends Controller
@@ -198,7 +200,7 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function domain()
+    public function domain(UpdateReleaseConfigDomain $request)
     {
         $config = $this->service->updateReleaseConfig(request()->all());
 
@@ -241,7 +243,7 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function webViewDomain()
+    public function webViewDomain(UpdateReleaseConfigWebViewDomain $request)
     {
         $config = $this->service->updateReleaseConfig(request()->all());
 
@@ -287,7 +289,7 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function tester()
+    public function tester(UpdateReleaseConfigTester $request)
     {
         $config = $this->service->updateReleaseConfig(request()->all());
 
@@ -333,7 +335,7 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function visitStatus()
+    public function visitStatus(UpdateReleaseConfigVisitStatus $request)
     {
         $config = $this->service->updateReleaseConfig(request()->all());
 
@@ -379,7 +381,7 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function supportVersion()
+    public function supportVersion(UpdateReleaseConfigSupportVersion $request)
     {
         $config = $this->service->updateReleaseConfig(request()->all());
 
@@ -425,7 +427,7 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function extJson()
+    public function extJson(UpdateReleaseExtJson $request, $componentAppId)
     {
         $config = $this->service->updateReleaseConfig(request()->all());
 
