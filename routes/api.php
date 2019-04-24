@@ -5,16 +5,21 @@ use Illuminate\Http\Request;
 Route::pattern('validateFilename', '[A-Za-z0-9_]+\.txt$');
 Route::get('/{validateFilename}', 'ComponentController@hostValidate');
 
+Route::group([
+    'middleware' => ['force-json', 'component-injection']
+], function(){
+    Route::any('/component/{componentAppId}/mini_program/{miniProgram}/serve', 'MiniProgramController@serve')->name('componentMiniProgramServe');
+    Route::post('/component/{componentAppId}/serve', 'ComponentController@serve')->name('componentServe');;
 
-Route::any('/component/{componentAppId}/mini_program/{miniProgram}/serve', 'MiniProgramController@serve')->name('componentMiniProgramServe');
-Route::post('/component/{componentAppId}/serve', 'ComponentController@serve')->name('componentServe');;
+});
+
 
 
 Route::group([
     'middleware' => 'force-json',
     'prefix' => 'api/v1',
     'namespace' => 'Api\V1',
-],  function(){
+], function () {
     /**
      * 三方平台管理
      */
@@ -23,6 +28,16 @@ Route::group([
     Route::get('/component/{componentAppId}', 'ComponentController@show');
     Route::put('/component/{componentAppId}', 'ComponentController@update');
     Route::delete('/component/{componentAppId}');
+});
+
+Route::group([
+    'middleware' => ['force-json', 'component-injection'],
+    'prefix' => 'api/v1',
+    'namespace' => 'Api\V1',
+], function () {
+    /**
+     * 三方平台配置
+     */
     Route::get('/component/{componentAppId}/component_verify_ticket', 'ComponentController@componentVerifyTicket')->name('getComponentVerifyTicket');
     Route::get('/component/{componentAppId}/component_access_token', 'ComponentController@componentAccessToken');
     Route::put('/component/{componentAppId}/ext_json', 'ComponentController@extJson');
@@ -96,7 +111,6 @@ Route::group([
     Route::post('/component/{componentAppId}/mini_program/{miniProgram}/tester');
     Route::delete('/component/{componentAppId}/mini_program/{miniProgram}/tester/{wechatid}');
 });
-
 
 
 

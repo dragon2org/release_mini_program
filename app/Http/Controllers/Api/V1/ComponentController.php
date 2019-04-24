@@ -592,10 +592,18 @@ class ComponentController extends Controller
 
     public function componentVerifyTicket($componentAppId)
     {
-        return $this->response->withArray(['data' => [
-                'component_verify_ticket' => $this->service->getConfig()['component_verify_ticket']
-            ]]
-        );
+        try {
+            return $this->response->withArray(['data' => [
+                    'component_verify_ticket' => app('dhb.component.core')->component->verify_ticket
+                ]]
+            );
+        } catch (UnprocessableEntityHttpException $e) {
+            return $this->response->withArray([
+                'status' => 'F',
+                'message' => $e->getMessage()
+            ]);
+        }
+
     }
 
     /**
@@ -635,8 +643,23 @@ class ComponentController extends Controller
      */
     public function componentAccessToken()
     {
-        return $this->response->withArray(['data' =>$this->service->app['access_token']->getToken()]
-        );
+        try {
+            return $this->response->withArray([
+                    'data' =>app('dhb.component.core')->openPlatform->access_token->getToken()
+                ]
+            );
+        } catch (\EasyWeChat\Kernel\Exceptions\HttpException $e) {
+            return $this->response->withArray([
+                'status' => 'F',
+                'message' => $e->getMessage()
+            ]);
+        } catch (UnprocessableEntityHttpException $e) {
+            return $this->response->withArray([
+                'status' => 'F',
+                'message' => $e->getMessage()
+            ]);
+        }
+
     }
 
 

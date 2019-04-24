@@ -27,7 +27,7 @@ class ComponentService
      */
     public $app;
 
-    public function __construct()
+    public function __construct(Component $component)
     {
         $this->appId = 'wx302844b3c020c900';
 
@@ -77,32 +77,6 @@ class ComponentService
             $app['verify_ticket']->setTicket($component->verify_ticket);
             return $config;
         });
-    }
-
-    protected function getRemoteConfig()
-    {
-        $component = $this->getComponent();
-        $config = [
-            'component_id' => $component->component_id,
-            'app_id' => $component->app_id,
-            'secret' => $component->app_secret,
-            'token' => $component->verify_token,
-            'aes_key' => $component->aes_key,
-            'component_verify_ticket' => $component->verify_ticket,
-        ];
-
-        try {
-            $uri = route('getComponentVerifyTicket', ['componentAppId' => $component->app_id], false) . '?remote=1';
-            $res = file_get_contents(env('WECAHT_RECEIVE_MSG_GATEWAY_HOST') . $uri);
-            $res = json_decode($res);
-            if (isset($res->data)) {
-                $app = Factory::openPlatform($config);
-                $app['verify_ticket']->setTicket($res->data->component_verify_ticket);
-            }
-            return $config;
-        } catch (\Exception $e) {
-            throw new \App\Exceptions\InternalException('拉取网关component_verify_ticket失败');
-        }
     }
 
     public function getCacheKey()

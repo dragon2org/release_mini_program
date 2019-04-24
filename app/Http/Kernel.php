@@ -42,9 +42,7 @@ class Kernel extends HttpKernel
             'bindings',
         ],
 
-        'force-json' => [
-            \App\Http\Middleware\ForceJson::class,
-        ]
+
     ];
 
     /**
@@ -61,5 +59,7 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'force-json' => \App\Http\Middleware\ForceJson::class,
+        'component-injection' => \App\Http\Middleware\ComponentInjection::class,
     ];
 }
