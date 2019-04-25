@@ -5,23 +5,39 @@ use Illuminate\Http\Request;
 Route::pattern('validateFilename', '[A-Za-z0-9_]+\.txt$');
 Route::get('/{validateFilename}', 'ComponentController@hostValidate');
 
+Route::group([
+    'middleware' => ['force-json', 'component-injection']
+], function(){
+    Route::any('/component/{componentAppId}/mini_program/{miniProgram}/serve', 'MiniProgramController@serve')->name('componentMiniProgramServe');
+    Route::post('/component/{componentAppId}/serve', 'ComponentController@serve')->name('componentServe');;
 
-Route::any('/component/{componentAppId}/mini_program/{miniProgram}/serve', 'MiniProgramController@serve')->name('componentMiniProgramServe');
-Route::post('/component/{componentAppId}/serve', 'ComponentController@serve')->name('componentServe');;
+});
+
 
 
 Route::group([
+    'middleware' => 'force-json',
     'prefix' => 'api/v1',
     'namespace' => 'Api\V1',
-],  function(){
+], function () {
     /**
      * 三方平台管理
      */
     Route::post('/component', 'ComponentController@create');
-    Route::get('/component');
-    Route::get('/component/{componentAppId}');
-    Route::put('/component/{componentAppId}');
+    Route::get('/component', 'ComponentController@list');
+    Route::get('/component/{componentAppId}', 'ComponentController@show');
+    Route::put('/component/{componentAppId}', 'ComponentController@update');
     Route::delete('/component/{componentAppId}');
+});
+
+Route::group([
+    'middleware' => ['force-json', 'component-injection'],
+    'prefix' => 'api/v1',
+    'namespace' => 'Api\V1',
+], function () {
+    /**
+     * 三方平台配置
+     */
     Route::get('/component/{componentAppId}/component_verify_ticket', 'ComponentController@componentVerifyTicket')->name('getComponentVerifyTicket');
     Route::get('/component/{componentAppId}/component_access_token', 'ComponentController@componentAccessToken');
     Route::put('/component/{componentAppId}/ext_json', 'ComponentController@extJson');
@@ -59,8 +75,6 @@ Route::group([
     Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/support_version', 'CodeController@supportVersion');
     Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/support_version', 'CodeController@SetSupportVersion');
 
-
-
     /**
      * 模板管理
      */
@@ -69,6 +83,33 @@ Route::group([
     Route::delete('/component/{componentAppId}/template/{templateId}', 'TemplateController@delete');
     Route::post('/component/{componentAppId}/template', 'TemplateController@draftToTemplate');
     Route::post('/component/{componentAppId}/template/{templateId}/release');
+
+    /**
+     * 代码管理
+     */
+    Route::post('/component/{componentAppId}/mini_program/{miniProgram}/commit');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgram}/qrcode');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgram}/category');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgram}/page');
+    Route::post('/component/{componentAppId}/mini_program/{miniProgram}/audit');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgram}/audit/{audit}');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgram}/last_audit');
+    Route::post('/component/{componentAppId}/mini_program/{miniProgram}/release');
+    Route::post('/component/{componentAppId}/mini_program/{miniProgram}/visit_status');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgram}/revert_code_release');
+    Route::post('/component/{componentAppId}/mini_program/{miniProgram}/support_version');
+
+    /**
+     * 微信登录和解密. 上报js_code
+     */
+    Route::get('/component/{componentAppId}/mini_program/{miniProgram}/');
+
+    /**
+     * 成员管理
+     */
+    Route::get('/component/{componentAppId}/mini_program/{miniProgram}/tester');
+    Route::post('/component/{componentAppId}/mini_program/{miniProgram}/tester');
+    Route::delete('/component/{componentAppId}/mini_program/{miniProgram}/tester/{wechatid}');
 });
 
 
@@ -76,31 +117,5 @@ Route::group([
 
 
 
-/**
- * 代码管理
- */
-Route::post('/component/{componentAppId}/mini_program/{miniProgram}/commit');
-Route::get('/component/{componentAppId}/mini_program/{miniProgram}/qrcode');
-Route::get('/component/{componentAppId}/mini_program/{miniProgram}/category');
-Route::get('/component/{componentAppId}/mini_program/{miniProgram}/page');
-Route::post('/component/{componentAppId}/mini_program/{miniProgram}/audit');
-Route::get('/component/{componentAppId}/mini_program/{miniProgram}/audit/{audit}');
-Route::get('/component/{componentAppId}/mini_program/{miniProgram}/last_audit');
-Route::post('/component/{componentAppId}/mini_program/{miniProgram}/release');
-Route::post('/component/{componentAppId}/mini_program/{miniProgram}/visit_status');
-Route::get('/component/{componentAppId}/mini_program/{miniProgram}/revert_code_release');
-Route::post('/component/{componentAppId}/mini_program/{miniProgram}/support_version');
-
-/**
- * 微信登录和解密. 上报js_code
- */
-Route::get('/component/{componentAppId}/mini_program/{miniProgram}/');
-
-/**
- * 成员管理
- */
-Route::get('/component/{componentAppId}/mini_program/{miniProgram}/tester');
-Route::post('/component/{componentAppId}/mini_program/{miniProgram}/tester');
-Route::delete('/component/{componentAppId}/mini_program/{miniProgram}/tester/{wechatid}');
 
 

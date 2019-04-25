@@ -20,7 +20,7 @@ class ComponentController extends Controller
 {
     public function serve()
     {
-        return (new ComponentService())->server();
+        return app('dhb.component.core')->server();
     }
 
     public function hostValidate($validateFilename)

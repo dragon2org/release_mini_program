@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\UnprocessableEntityHttpException;
 use EasyWeChat\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -74,4 +75,22 @@ class Component extends Model
         return str_replace('AAAAA', '$APPID$', $route);
     }
 
+    public function getComponent($componentAppId)
+    {
+        $componentApp = (new self())
+            ->where('app_id', $componentAppId)
+//            ->where('is_deleted', 0)
+            ->first();
+
+        if(!isset($componentApp)){
+            throw new UnprocessableEntityHttpException(trans('微信三方平台未注册: '. $componentAppId));
+        }
+
+        return $componentApp;
+    }
+
+    public function extend()
+    {
+        return $this->hasOne(ComponentExt::class, 'component_id', 'component_id');
+    }
 }

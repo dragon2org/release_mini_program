@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Exceptions\UnprocessableEntityHttpException;
 use App\Http\ApiResponse;
-use App\Http\Requests\Api\ComponentRequest;
+use App\Http\Requests\RegisterComponent;
+use App\Http\Requests\UpdateComponent;
+use App\Http\Requests\UpdateReleaseConfigSupportVersion;
+use App\Http\Requests\UpdateReleaseConfigTester;
+use App\Http\Requests\UpdateReleaseConfigVisitStatus;
+use App\Http\Requests\UpdateReleaseConfigWebViewDomain;
+use App\Http\Requests\UpdateReleaseExtJson;
+use App\Http\Requests\UpdateReleaseConfigDomain;
+use App\Http\Requests\UpdateReleaseConfigWebDomain;
+use App\Http\Transformer\ComponentDetailTransformer;
 use App\Http\Transformer\ComponentTransformer;
-use App\Jobs\SyncConfig;
 use App\Models\Component;
-use App\Models\ComponentExt;
 use App\Services\ComponentService;
-use EasyWeChat\Factory;
-use Illuminate\Support\Facades\Queue;
 
 class ComponentController extends Controller
 {
@@ -68,7 +74,7 @@ class ComponentController extends Controller
      * )
      */
 
-    public function create()
+    public function create(RegisterComponent $request)
     {
         $component = $this->service->register(request()->all());
 
@@ -103,7 +109,15 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+    public function show($componentAppId)
+    {
+        $component = (new Component())->where('app_id', $componentAppId)->first();
+        if(!isset($component)){
+            throw new UnprocessableEntityHttpException(trans('平台不存在'));
+        }
 
+        return $this->response->withArray(['data' => $this->response->transformatItem($component, new ComponentDetailTransformer($component))]);
+    }
 
     /**
      * @SWG\Put(
@@ -139,6 +153,16 @@ class ComponentController extends Controller
      *     ),
      * )
      */
+    public function update(UpdateComponent $request, $componentAppId)
+    {
+        $input = request()->all();
+        $input['app_id'] = $componentAppId;
+        $component = $this->service->updateComponent(request()->all());
+
+        return $this->response->withArray(
+            ['data' => $this->response->transformatItem($component, new ComponentTransformer($component))]
+        );
+    }
 
     /**
      * @SWG\Put(
@@ -179,8 +203,10 @@ class ComponentController extends Controller
      *         ref="$/responses/422",
      *     ),
      * )
+     * @param UpdateReleaseConfigDomain $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\JsonResponse
      */
-    public function domain()
+    public function domain(UpdateReleaseConfigDomain $request)
     {
         $config = $this->service->updateReleaseConfig(request()->all());
 
@@ -223,7 +249,7 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function webViewDomain()
+    public function webViewDomain(UpdateReleaseConfigWebViewDomain $request)
     {
         $config = $this->service->updateReleaseConfig(request()->all());
 
@@ -269,7 +295,7 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function tester()
+    public function tester(UpdateReleaseConfigTester $request)
     {
         $config = $this->service->updateReleaseConfig(request()->all());
 
@@ -315,7 +341,7 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function visitStatus()
+    public function visitStatus(UpdateReleaseConfigVisitStatus $request)
     {
         $config = $this->service->updateReleaseConfig(request()->all());
 
@@ -361,7 +387,7 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function supportVersion()
+    public function supportVersion(UpdateReleaseConfigSupportVersion $request)
     {
         $config = $this->service->updateReleaseConfig(request()->all());
 
@@ -407,7 +433,7 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function extJson()
+    public function extJson(UpdateReleaseExtJson $request, $componentAppId)
     {
         $config = $this->service->updateReleaseConfig(request()->all());
 
@@ -574,10 +600,18 @@ class ComponentController extends Controller
 
     public function componentVerifyTicket($componentAppId)
     {
-        return $this->response->withArray(['data' => [
-                'component_verify_ticket' => $this->service->getConfig()['component_verify_ticket']
-            ]]
-        );
+        try {
+            return $this->response->withArray(['data' => [
+                    'component_verify_ticket' => app('dhb.component.core')->component->verify_ticket
+                ]]
+            );
+        } catch (UnprocessableEntityHttpException $e) {
+            return $this->response->withArray([
+                'status' => 'F',
+                'message' => $e->getMessage()
+            ]);
+        }
+
     }
 
     /**
@@ -617,8 +651,23 @@ class ComponentController extends Controller
      */
     public function componentAccessToken()
     {
-        return $this->response->withArray(['data' =>$this->service->app['access_token']->getToken()]
-        );
+        try {
+            return $this->response->withArray([
+                    'data' =>app('dhb.component.core')->openPlatform->access_token->getToken()
+                ]
+            );
+        } catch (\EasyWeChat\Kernel\Exceptions\HttpException $e) {
+            return $this->response->withArray([
+                'status' => 'F',
+                'message' => $e->getMessage()
+            ]);
+        } catch (UnprocessableEntityHttpException $e) {
+            return $this->response->withArray([
+                'status' => 'F',
+                'message' => $e->getMessage()
+            ]);
+        }
+
     }
 
 
