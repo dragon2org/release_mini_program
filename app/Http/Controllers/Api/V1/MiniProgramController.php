@@ -9,15 +9,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 
+use App\Http\Requests\GetBindMiniProgramUri;
 use App\Http\Transformer\MiniProgramListTransformer;
 use App\Services\MiniProgramService;
 use App\Http\ApiResponse;
 use App\Http\Transformer\MiniProgramTransformer;
-use App\Models\Component;
 use App\Models\MiniProgram;
-use EasyWeChat\Factory;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class MiniProgramController extends Controller
 {
@@ -98,14 +95,14 @@ class MiniProgramController extends Controller
      *     )
      * )
      */
-    public function bindUrl()
+    public function bindUrl(GetBindMiniProgramUri $request)
     {
-        return view('authorize_boot_page', ['uri' => $this->service->getBindUri()]);
+        return view('authorize_boot_page', ['uri' => app('dhb.component.core')->getBindUri()]);
     }
 
     public function bindCallback()
     {
-        return $this->service->bindCallback();
+        return app('dhb.component.core')->bindCallback();
     }
 
     /**
