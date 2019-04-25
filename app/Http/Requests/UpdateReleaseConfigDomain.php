@@ -24,8 +24,13 @@ class UpdateReleaseConfigDomain extends FormRequest
     public function rules()
     {
         return [
-            'domain' => 'required|array',
-            ''
+            'action' => ['required', function($attribute, $value, $closure){
+                if($value !== 'set') $closure('action参数仅支持: set');
+            }],
+            'requestdomain.*' => 'url',
+            'wsrequestdomain.*' => 'url',
+            'uploaddomain.*' => 'url',
+            'downloaddomain.*' => 'url',
         ];
     }
 }

@@ -28,13 +28,12 @@ class UpdateComponent extends FormRequest
             'inner_desc' => 'required|max:45',
             'name' => 'required|max:45',
             'desc' => 'max:45',
-            'app_id' => 'required|max:32|unique:component',
+            'app_id' => 'required|max:32',
             'app_secret' => 'required|max:32',
             'verify_token' => 'required|max:45',
             'aes_key' => 'required|max:43',
-            'validate' => 'required|array',
-            'filename' => 'in_array:validate',
-            'content' => 'in_array:validate',
+            'validate.filename' => 'required|max:45',
+            'validate.content' => 'required|max:45',
         ];
     }
 }

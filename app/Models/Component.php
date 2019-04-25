@@ -93,4 +93,16 @@ class Component extends Model
     {
         return $this->hasOne(ComponentExt::class, 'component_id', 'component_id');
     }
+
+    public function validateUnique($appId)
+    {
+        if($this->app_id === $appId){
+            return true;
+        }
+
+        if(((new self())->where('app_id', $appId)->count()) == 0){
+            return true;
+        }
+        return false;
+    }
 }
