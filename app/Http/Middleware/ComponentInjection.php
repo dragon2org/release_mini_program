@@ -29,9 +29,11 @@ class ComponentInjection
         if(!isset($params['componentAppId'])){
             throw new UnprocessableEntityHttpException(trans('注入component配置信息失败'));
         }
-
         $this->injection($params['componentAppId']);
 
+        if(isset($params['miniProgramAppId'])){
+            app('dhb.component.core')->setMiniProgram($params['miniProgramAppId']);
+        }
         return $next($request);
     }
 
@@ -39,7 +41,6 @@ class ComponentInjection
     {
         app()->singleton('dhb.component.core', function() use($componentAppId) {
             $component = (new Component())->getComponent($componentAppId);
-
             $service = (new ReleaseService($component));
             $service->setOpenPlatform();
             return $service;

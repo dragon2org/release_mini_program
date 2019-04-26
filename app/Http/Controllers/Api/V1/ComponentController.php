@@ -155,9 +155,10 @@ class ComponentController extends Controller
      */
     public function update(UpdateComponent $request, $componentAppId)
     {
-        $input = request()->all();
+        $input = $request->all();
         $input['app_id'] = $componentAppId;
-        $component = $this->service->updateComponent(request()->all());
+
+        $component = $this->service->updateComponent($input);
 
         return $this->response->withArray(
             ['data' => $this->response->transformatItem($component, new ComponentTransformer($component))]
@@ -208,7 +209,7 @@ class ComponentController extends Controller
      */
     public function domain(UpdateReleaseConfigDomain $request)
     {
-        $config = $this->service->updateReleaseConfig(request()->all());
+        $config = $this->service->updateDomain(request()->all());
 
         return $this->response->withArray(['data' => $config ]);
     }
@@ -251,7 +252,7 @@ class ComponentController extends Controller
      */
     public function webViewDomain(UpdateReleaseConfigWebViewDomain $request)
     {
-        $config = $this->service->updateReleaseConfig(request()->all());
+        $config = $this->service->updateWebViewDomain(request()->all());
 
         return $this->response->withArray(['data' => $config ]);
     }
@@ -435,7 +436,7 @@ class ComponentController extends Controller
      */
     public function extJson(UpdateReleaseExtJson $request, $componentAppId)
     {
-        $config = $this->service->updateReleaseConfig(request()->all());
+        $config = $this->service->updateReleaseConfig(['ext_json' =>request()->all()]);
 
         return $this->response->withArray(['data' => $config ]);
     }

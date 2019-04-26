@@ -24,7 +24,7 @@ class UpdateReleaseConfigVisitStatus extends FormRequest
     public function rules()
     {
         return [
-            'visit_status' => 'required|string',
+            'visit_status' => 'required|in:close,open',
         ];
     }
 }

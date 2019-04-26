@@ -24,7 +24,8 @@ class UpdateReleaseExtJson extends FormRequest
     public function rules()
     {
         return [
-            'ext_json' => 'required',
+            'extAppid' => 'required',
+            'ext.company_id' => 'required',
         ];
     }
 }

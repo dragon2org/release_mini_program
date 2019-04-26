@@ -32,9 +32,13 @@ class RegisterComponent extends FormRequest
             'app_secret' => 'required|max:32',
             'verify_token' => 'required|max:45',
             'aes_key' => 'required|max:43',
-            'validate' => 'required|array',
-            'filename' => 'in_array:validate',
-            'content' => 'in_array:validate',
+            'validate.filename' => 'required',
+            'validate.content' => 'required',
         ];
+    }
+
+    public function a()
+    {
+
     }
 }

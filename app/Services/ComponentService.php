@@ -96,20 +96,34 @@ class ComponentService
 
     public function updateComponent($input)
     {
-        $component = app('dhb.component.core')->component;
+        $component = (new Component())->where('app_id', $input['app_id'])->first();
+        if(!isset($component)){
+            throw new UnprocessableEntityHttpException(trans('App 不存在'));
+        }
         $component->fill($input);
         $component->save();
 
-        Cache::forget($this->getCacheKey());
         return $component;
     }
 
-    public function updateReleaseConfig($config)
+    public function updateDomain($input)
     {
-        $oldConfig = $this->getReleaseConfig();
+        unset($input['action']);
+        return $this->updateReleaseConfig(['domain'=> $input]);
+    }
+
+    public function updateWebViewDomain($input)
+    {
+        unset($input['action']);
+        return $this->updateReleaseConfig(['web_view_domain'=> $input]);
+    }
+
+    public function updateReleaseConfig($input)
+    {
+        $config = $this->getReleaseConfig();
         foreach (['tester', 'domain', 'web_view_domain', 'visit_status', 'support_version', 'ext_json'] as $key) {
-            if (isset($config[$key])) {
-                $oldConfig[$key] = $config[$key];
+            if (isset($input[$key])) {
+                $config[$key] = $input[$key];
             }
         }
 
@@ -118,10 +132,10 @@ class ComponentService
             $extend = new ComponentExt();
             $extend->component_id = app('dhb.component.core')->component->component_id;
         }
-        $extend->config = json_encode($oldConfig, JSON_UNESCAPED_UNICODE);
+        $extend->config = json_encode($config, JSON_UNESCAPED_UNICODE);
         $extend->save();
 
-        return $oldConfig;
+        return $config;
     }
 
     public function getReleaseConfig()

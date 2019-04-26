@@ -24,7 +24,10 @@ class UpdateReleaseConfigWebViewDomain extends FormRequest
     public function rules()
     {
         return [
-            'web_view_domain' => 'required|array',
+            'action' => ['required', function($attribute, $value, $closure){
+                if($value !== 'set') $closure('action参数仅支持: set');
+            }],
+            'webviewdomain.*' => 'url',
         ];
     }
 }

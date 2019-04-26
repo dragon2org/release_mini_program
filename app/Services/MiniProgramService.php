@@ -30,10 +30,10 @@ class MiniProgramService
      */
     public function __construct()
     {
-        $this->appId = 'wxb21f306e9ef1af2a';
-
-        $this->component = new ComponentService();
-        //$this->app = $this->component->app->miniProgram($this->appId, $this->getRefreshToken());
+//        $core = app('dhb.component.core');
+//        dd($core);
+//        $this->component = $core->component;
+//        $this->app = $this->component->app->miniProgram($core->miniProgramAppId, $this->getRefreshToken());
     }
 
     /**
@@ -64,58 +64,7 @@ class MiniProgramService
         });
     }
 
-    public function getBindUri()
-    {
-        $callbackUrl = Route('MiniProgramBindCallback', [
-            'componentAppId' => $this->component->appId,
-        ]);
 
-        $params = [
-            'inner_name' => request()->query('inner_name'),
-            'inner_desc' => request()->query('inner_desc'),
-            'company_id' => request()->query('company_id'),
-            'redirect_uri' => request()->query('redirect_uri'),
-        ];
-
-        $callbackUrl .= '?' . http_build_query($params);
-
-        $uri = request()->query('type') === 'mobile' ? $this->component->app->getMobilePreAuthorizationUrl($callbackUrl) : $this->component->app->getPreAuthorizationUrl($callbackUrl);
-        return $uri;
-    }
-
-    public function bindCallback()
-    {
-        $authorization = $this->component->app->handleAuthorize();
-
-        $miniProgramAppId = $authorization['authorization_info']['authorizer_appid'];
-        $refreshToken = $authorization['authorization_info']['authorizer_refresh_token'];
-        //TODO::判断function_info
-        $miniProgram = new MiniProgram();
-        $miniProgram->component_id = $this->component->getConfig['component_id'];
-        $miniProgram->app_id = $miniProgramAppId;
-        $miniProgram->company_id = request()->query('company_id', 0);
-        $miniProgram->inner_name = request()->query('inner_name', '');
-        $miniProgram->inner_desc = request()->query('inner_desc', '');
-        $miniProgram->authorizer_refresh_token = $refreshToken;
-        $miniProgram->save();
-
-        //拉取基础信息
-        $miniProgramAuthorizer = $this->component->app->getAuthorizer($miniProgramAppId);
-        $info = $miniProgramAuthorizer['authorizer_info'];
-
-        $miniProgram->nick_name = $info['nick_name'];
-        $miniProgram->head_img = $info['head_img'];
-        $miniProgram->user_name = $info['user_name'];
-        $miniProgram->principal_name = $info['principal_name'];
-        $miniProgram->qrcode_url = $info['qrcode_url'];
-        $miniProgram->desc = $info['signature'];
-        $miniProgram->save();
-
-        if ($redirectUri = request()->query('redirect_uri')) {
-            return response()->redirectTo($redirectUri);
-        }
-        return view('authorize_success');
-    }
 
     public function getMiniProgram()
     {
