@@ -24,6 +24,17 @@ class ComponentExt extends Model
      */
     protected $primaryKey = 'component_ext_id';
 
+    public function defaultConfig()
+    {
+        return [
+            'tester' => '',
+            'domain' => '',
+            'web_view_domain' => '',
+            'visit_status' => '',
+            'support_version' => '',
+            'ext_json' => '',
+        ];
+    }
 
     public function getReleaseConfig()
     {
@@ -31,13 +42,7 @@ class ComponentExt extends Model
             return $config;
         }
 
-        return json_encode([
-            'tester' => '',
-            'domain' => '',
-            'web_view_domain' => '',
-            'visit_status' => '',
-            'support_version' => '',
-            'ext_json' => '',
-        ], JSON_UNESCAPED_UNICODE);
+        return $this->defaultConfig();
     }
+
 }

@@ -24,4 +24,16 @@ class MiniProgram extends Model
     {
         return $this->hasMany(Tester::class, 'mini_program_id', 'mini_program_id');
     }
+
+    public function getComponentMiniProgramList($componentId)
+    {
+        return (new self())
+            ->where('component_id', $componentId)
+            ->get();
+    }
+
+    public function component()
+    {
+        return $this->belongsTo(Component::class, 'component_id', 'component_id');
+    }
 }

@@ -10,9 +10,19 @@ namespace App\Services;
 
 
 use App\Exceptions\UnprocessableEntityHttpException;
+use App\Helper\CustomLogger;
+use App\Jobs\SetMiniProgramAudit;
+use App\Jobs\SetMiniProgramCodeCommit;
+use App\Jobs\SetMiniProgramDomain;
+use App\Jobs\SetMiniProgramSupportVersion;
+use App\Jobs\SetMiniProgramTester;
+use App\Jobs\SetMiniProgramVisitStatus;
+use App\Jobs\SetMiniProgramWebViewDomain;
+use App\Logs\ReleaseInQueueLog;
 use App\Models\Component;
 use App\Models\MiniProgram;
 use App\Models\Tester;
+use App\ReleaseConfigurator;
 use EasyWeChat\Factory;
 use EasyWeChat\OpenPlatform\Server\Guard;
 use Illuminate\Support\Arr;
@@ -64,6 +74,11 @@ class ReleaseService
         return $this->openPlatform = $openPlatform;
     }
 
+    /**
+     * @param $appId
+     * @return \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application
+     * @throws UnprocessableEntityHttpException
+     */
     public function setMiniProgram($appId)
     {
         $miniProgram = (new MiniProgram())
@@ -71,12 +86,12 @@ class ReleaseService
             ->where('component_id', $this->component->component_id)
             ->first();
 
-        if(!isset($miniProgram)){
+        if (!isset($miniProgram)) {
             throw new UnprocessableEntityHttpException(trans('小程序未绑定'));
         }
         $this->miniProgram = $miniProgram;
 
-        $this->miniProgramApp = $this->openPlatform->miniProgram(
+        return $this->miniProgramApp = $this->openPlatform->miniProgram(
             $this->miniProgram->app_id,
             $this->miniProgram->authorizer_refresh_token);
     }
@@ -253,7 +268,7 @@ class ReleaseService
         //微信服务器已经绑定，本地没有数据的
         $diff = array_diff($remoteUserStr, $localUserStr);
 
-        foreach($diff as $item){
+        foreach ($diff as $item) {
             $items[] = [
                 'userstr' => $item,
                 'wechat_id' => '',
@@ -301,14 +316,14 @@ class ReleaseService
             $this->miniProgramApp->tester->unbind($userStr)
         );
 
-        $tester = Tester::where(['mini_program_id' => $this->miniProgram->mini_program_id])->where(function($query) use($userStr) {
+        $tester = Tester::where(['mini_program_id' => $this->miniProgram->mini_program_id])->where(function ($query) use ($userStr) {
             $query->orWhere('userstr', $userStr);
             $query->orWhere('wechat_id', $userStr);
             return $query;
         })->first();
-        if($tester){
+        if ($tester) {
             //完善软删除
-            $tester->is_deleted =1;
+            $tester->is_deleted = 1;
             $tester->save();
             //$tester->delete();
         }
@@ -326,7 +341,7 @@ class ReleaseService
     public function decryptData(string $jscode, string $iv, string $encryptedData)
     {
         $sessionKey = $this->sessionKey($jscode);
-         return $this->miniProgramApp->encryptor->decryptData($sessionKey, $iv, $encryptedData);
+        return $this->miniProgramApp->encryptor->decryptData($sessionKey, $iv, $encryptedData);
     }
 
     public function getAccessToken()
@@ -429,5 +444,48 @@ class ReleaseService
             $this->miniProgramApp->code->changeVisitStatus($status)
         );
         return $response;
+    }
+
+    public function templateRelease($templateId)
+    {
+        try {
+            //step 1. 获取授权小程序列表
+            $miniProgramList = (new MiniProgram())->getComponentMiniProgramList($this->component->component_id);
+            if (count($miniProgramList) == 0) {
+                throw new UnprocessableEntityHttpException(trans('暂无已绑定的小程序可发版'));
+            }
+
+            //step 2. 获取配置文件
+            $config = $this->component->extend->getReleaseConfig();
+
+            $configurator = new ReleaseConfigurator($config);
+
+            //TODO::入列日志
+            foreach ($miniProgramList as $miniProgram) {
+                SetMiniProgramDomain::dispatch($miniProgram, $configurator, $templateId);
+                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramDomain::class, SetMiniProgramDomain::VERSION);
+
+                SetMiniProgramWebViewDomain::dispatch($miniProgram, $configurator, $templateId);
+                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramWebViewDomain::class, SetMiniProgramWebViewDomain::VERSION);
+
+                SetMiniProgramTester::dispatch($miniProgram, $configurator, $templateId);
+                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramTester::class, SetMiniProgramTester::VERSION);
+
+                SetMiniProgramSupportVersion::dispatch($miniProgram, $configurator, $templateId);
+                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramSupportVersion::class, SetMiniProgramSupportVersion::VERSION);
+
+                SetMiniProgramVisitStatus::dispatch($miniProgram, $configurator, $templateId);
+                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramVisitStatus::class, SetMiniProgramVisitStatus::VERSION);
+
+                SetMiniProgramCodeCommit::dispatch($miniProgram, $configurator, $templateId);
+                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramCodeCommit::class, SetMiniProgramCodeCommit::VERSION);
+
+                SetMiniProgramAudit::dispatch($miniProgram, $configurator, $templateId);
+                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramAudit::class, SetMiniProgramAudit::VERSION);
+            }
+            return true;
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 }
