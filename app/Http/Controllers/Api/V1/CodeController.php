@@ -10,6 +10,10 @@ namespace App\Http\Controllers\Api\V1;
 
 
 use App\Http\ApiResponse;
+use App\Http\Requests\CodeAudit;
+use App\Http\Requests\CodeCommit;
+use App\Http\Requests\GetTestQrcode;
+use App\Http\Requests\SetSupportVersion;
 use App\Models\Component;
 use App\Models\ComponentExt;
 use App\Models\MiniProgram;
@@ -18,11 +22,9 @@ use EasyWeChat\Factory;
 
 class CodeController extends Controller
 {
-    protected $service;
     public function __construct(ApiResponse $response)
     {
         parent::__construct($response);
-        $this->service = new MiniProgramService();
     }
 
     /**
@@ -67,7 +69,12 @@ class CodeController extends Controller
      *                 property="user_desc",
      *                 type="string",
      *                 description="用户自定义描述",
-     *             )
+     *             ),
+     *             @SWG\Property(
+     *                 property="ext_json",
+     *                 type="string",
+     *                 description="自定义ext_json",
+     *             ),
      *         )
      *     ),
      *     @SWG\Response(
@@ -84,12 +91,13 @@ class CodeController extends Controller
      *     )
      * )
      */
-    public function commit()
+    public function commit(CodeCommit $request)
     {
-        $response = $this->service->commit(
+
+        $response = app('dhb.component.core')->commit(
             request()->input('template_id'),
             request()->input('user_version'),
-            request()->input('user_desc'));
+            request()->input('ext_json'));
 
         return $this->response->withArray(['data' => $response]);
     }
@@ -136,9 +144,9 @@ class CodeController extends Controller
      *     )
      * )
      */
-    public function qrcode()
+    public function qrcode(GetTestQrcode $request)
     {
-        $response = $this->service->getQrCode(request()->input('path'));
+        $response = app('dhb.component.core')->getQrCode(request()->input('path'));
 
         return $response;
     }
@@ -184,7 +192,7 @@ class CodeController extends Controller
      */
     public function category()
     {
-        $response = $this->service->getCategory();
+        $response = app('dhb.component.core')->getCategory();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -230,7 +238,7 @@ class CodeController extends Controller
      */
     public function page()
     {
-        $response = $this->service->getPage();
+        $response = app('dhb.component.core')->getPage();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -286,9 +294,9 @@ class CodeController extends Controller
      *     )
      * )
      */
-    public function audit()
+    public function audit(CodeAudit $request)
     {
-        $response = $this->service->audit(request()->input('item_list'));
+        $response = app('dhb.component.core')->audit(request()->input('item_list'));
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -343,7 +351,7 @@ class CodeController extends Controller
      */
     public function auditStatus($componentAppId, $miniProgramAppId, $audit)
     {
-        $response = $this->service->getAuditStatus($audit);
+        $response = app('dhb.component.core')->getAuditStatus($audit);
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -406,7 +414,7 @@ class CodeController extends Controller
      */
     public function lastAuditStatus()
     {
-        $response = $this->service->getLatestAuditStatus();
+        $response = app('dhb.component.core')->getLatestAuditStatus();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -449,7 +457,7 @@ class CodeController extends Controller
 
     public function release()
     {
-        $response = $this->service->release();
+        $response = app('dhb.component.core')->release();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -504,7 +512,7 @@ class CodeController extends Controller
      */
     public function visitStatus()
     {
-        $response = $this->service->setVisitStatus(request()->input('action', 'close'));
+        $response = app('dhb.component.core')->setVisitStatus(request()->input('action', 'close'));
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -546,7 +554,7 @@ class CodeController extends Controller
      */
     public function revertCodeRelease()
     {
-        $response = $this->service->revertCodeRelease();
+        $response = app('dhb.component.core')->revertCodeRelease();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -599,9 +607,9 @@ class CodeController extends Controller
      *     )
      * )
      */
-    public function SetSupportVersion()
+    public function SetSupportVersion(SetSupportVersion $request)
     {
-        $response = $this->service->setSupportVersion(
+        $response = app('dhb.component.core')->setSupportVersion(
             request()->input('version')
         );
 
@@ -610,7 +618,7 @@ class CodeController extends Controller
 
     public function supportVersion()
     {
-        $response = $this->service->getSupportVersion(
+        $response = app('dhb.component.core')->getSupportVersion(
             request()->input('version')
         );
 

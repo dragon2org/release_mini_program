@@ -59,6 +59,7 @@ Route::group([
     Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}', 'MiniProgramController@show');
     Route::put('/component/{componentAppId}/mini_program/{miniProgramAppId}', 'MiniProgramController@update');
     Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/access_token', 'MiniProgramController@accessToken');
+    Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/session_key', 'MiniProgramController@sessionKey');
     Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/commit', 'CodeController@commit');
     Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/qrcode', 'CodeController@qrcode');
     Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/category', 'CodeController@category');

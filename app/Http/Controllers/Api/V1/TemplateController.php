@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\V1;
 
 
 use App\Http\ApiResponse;
+use App\Http\Requests\DeleteTemplate;
+use App\Http\Requests\DraftToTemplate;
 use App\Models\Component;
 use App\Services\ComponentService;
 use EasyWeChat\Factory;
@@ -15,7 +17,6 @@ class TemplateController extends Controller
     public function __construct(ApiResponse $response)
     {
         parent::__construct($response);
-        $this->service = new ComponentService();
     }
 
     /**
@@ -88,7 +89,8 @@ class TemplateController extends Controller
      */
     public function draft()
     {
-        $response = $this->service->getDrafts();
+
+        $response = app('dhb.component.core')->getDrafts();
         return $this->response->withArray([
             'data' => $response
         ]);
@@ -134,9 +136,9 @@ class TemplateController extends Controller
      *     )
      * )
      */
-    public function draftToTemplate()
+    public function draftToTemplate(DraftToTemplate $request)
     {
-        $response = $this->service->draftToTemplate(request()->input('draft_id'));
+        $response = app('dhb.component.core')->draftToTemplate(request()->input('draft_id'));
         return $this->response->withArray([
             'data' => $response
         ]);
@@ -186,7 +188,7 @@ class TemplateController extends Controller
 
     public function delete($componentAppId, $templateId)
     {
-        $response = $this->service->deleteTemplate($templateId);
+        $response = app('dhb.component.core')->deleteTemplate($templateId);
         return $this->response->withArray([
             'data' => $response
         ]);
@@ -239,7 +241,7 @@ class TemplateController extends Controller
 
     public function index()
     {
-        $response = $this->service->templateList();
+        $response = app('dhb.component.core')->templateList();
         return $this->response->withArray([
             'data' => $response
         ]);

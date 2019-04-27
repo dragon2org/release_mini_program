@@ -110,82 +110,10 @@ class MiniProgramService
         return $this->app->access_token->getToken();
     }
 
-    /**
-     * get binding tester
-     * @return array
-     * @throws UnprocessableEntityHttpException
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
-     */
-    public function getTester()
-    {
-        $remote = $this->parseResponse($this->app->tester->list())['members'];
 
-        $items = $this->getMiniProgram()->tester()->select(['wechat_id', 'userstr'])->get()->toArray();
 
-        $localUserStr = Arr::pluck($items, 'userstr');
-        $remoteUserStr = Arr::pluck($remote, 'userstr');
 
-        //微信服务器已经绑定，本地没有数据的
-        $diff = array_diff($remoteUserStr, $localUserStr);
 
-        foreach($diff as $item){
-            $items[] = [
-                'userstr' => $item,
-                'wechat_id' => '',
-            ];
-        }
-
-        return $items;
-    }
-
-    /**
-     * bind tester
-     * @param $wechatId
-     * @return array
-     * @throws UnprocessableEntityHttpException
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
-     */
-    public function bindTester($wechatId)
-    {
-        $response = $this->app->tester->bind($wechatId);
-        $response = $this->parseResponse($response);
-
-        $fill = [
-            'wechat_id' => $wechatId,
-            'userstr' => $response['userstr'],
-        ];
-        $tester = new Tester();
-        $tester->fill($fill);
-        $tester->mini_program_id = $this->getMiniProgram()->mini_program_id;
-        $tester->save();
-        
-        return $fill;
-    }
-
-    /**
-     * unbind tester
-     * @param $userStr
-     * @return bool
-     * @throws UnprocessableEntityHttpException
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
-     */
-    public function unbindTester($userStr)
-    {
-        $response = $this->app->tester->bind($userStr);
-        $response = $this->parseResponse($response);
-
-        $miniProgramId = $this->getMiniProgram()->mini_program_id;
-        $tester = Tester::where(['mini_program_id' => $miniProgramId])->where(function($query) use($userStr) {
-            $query->orWhere('userstr', $userStr);
-            $query->orWhere('wechat_id', $userStr);
-            return $query;
-        })->first();
-        if($tester){
-            $tester->delete();
-        }
-
-        return true;
-    }
 
 
     public function commit($templateId, $userVersion, $userDesc)

@@ -24,7 +24,7 @@ class MiniProgram
     public $inner_desc;
 
     /**
-     * @SWG\Property(type="string", description="三方平台名称")
+     * @SWG\Property(type="string", description="小程序名称")
      */
     public $nick_name;
 

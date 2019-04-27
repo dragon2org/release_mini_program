@@ -27,6 +27,7 @@ class CreateTesterTable extends Migration
             $table->integer('mini_program_id')->default(0)->unsigned()->comment('小程序id');
             $table->string('userstr')->default('')->comment('wechat_id别名');
             $table->string('wechat_id')->default('')->comment('微信id');
+            $table->tinyInteger('is_deleted')->default(0)->comment('1已删除;0未删除');
 
             $table->string('field1', 45)->default('')->comment('备用字段');
             $table->string('field2', 45)->default('')->comment('备用字段2');

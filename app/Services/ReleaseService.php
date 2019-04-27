@@ -9,14 +9,21 @@
 namespace App\Services;
 
 
+use App\Exceptions\UnprocessableEntityHttpException;
 use App\Models\Component;
 use App\Models\MiniProgram;
+use App\Models\Tester;
 use EasyWeChat\Factory;
 use EasyWeChat\OpenPlatform\Server\Guard;
+use Illuminate\Support\Arr;
 use Log;
 
 class ReleaseService
 {
+
+    /**
+     * @var \App\Models\Component
+     */
     protected $component;
 
     /**
@@ -24,7 +31,15 @@ class ReleaseService
      */
     protected $openPlatform;
 
-    protected $miniProgramAppId;
+    /**
+     * @var \App\Models\MiniProgram
+     */
+    protected $miniProgram;
+
+    /**
+     * @var \EasyWeChat\MiniProgram\Application
+     */
+    protected $miniProgramApp;
 
     public function __construct(Component $component)
     {
@@ -51,8 +66,21 @@ class ReleaseService
 
     public function setMiniProgram($appId)
     {
-        $this->miniProgramAppId = $appId;
+        $miniProgram = (new MiniProgram())
+            ->where('app_id', $appId)
+            ->where('component_id', $this->component->component_id)
+            ->first();
+
+        if(!isset($miniProgram)){
+            throw new UnprocessableEntityHttpException(trans('小程序未绑定'));
+        }
+        $this->miniProgram = $miniProgram;
+
+        $this->miniProgramApp = $this->openPlatform->miniProgram(
+            $this->miniProgram->app_id,
+            $this->miniProgram->authorizer_refresh_token);
     }
+
 
     public function __get($name)
     {
@@ -156,5 +184,250 @@ class ReleaseService
             return response()->redirectTo($redirectUri);
         }
         return view('authorize_success');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws UnprocessableEntityHttpException
+     */
+    protected function parseResponse(array $data)
+    {
+        if ($data['errcode'] === 0) {
+            unset($data['errmsg']);
+            unset($data['errcode']);
+            return $data;
+        }
+        //TODO::返回正常的微信code
+        throw new UnprocessableEntityHttpException($data['errmsg']);
+    }
+
+    public function getDrafts()
+    {
+        $data = $this->parseResponse(
+            $this->openPlatform->code_template->getDrafts()
+        );
+
+        return $data['draft_list'] ?? [];
+    }
+
+    public function draftToTemplate($draftId)
+    {
+        return $this->parseResponse(
+            $this->openPlatform->code_template->createFromDraft($draftId)
+        );
+    }
+
+    public function templateList()
+    {
+        $data = $this->parseResponse(
+            $this->openPlatform->code_template->list()
+        );
+
+        return $data['template_list'] ?? [];
+    }
+
+    public function deleteTemplate($templateId)
+    {
+        return $this->parseResponse(
+            $this->openPlatform->code_template->delete($templateId)
+        );
+    }
+
+    /**
+     * get binding tester
+     * @return array
+     * @throws UnprocessableEntityHttpException
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     */
+    public function getTester()
+    {
+        $remoteData = $this->miniProgramApp->tester->list();
+        $remote = $this->parseResponse($remoteData)['members'] ?? [];
+
+        $items = $this->miniProgram->tester()->select(['wechat_id', 'userstr'])->get()->toArray();
+
+        $localUserStr = Arr::pluck($items, 'userstr');
+        $remoteUserStr = Arr::pluck($remote, 'userstr');
+
+        //微信服务器已经绑定，本地没有数据的
+        $diff = array_diff($remoteUserStr, $localUserStr);
+
+        foreach($diff as $item){
+            $items[] = [
+                'userstr' => $item,
+                'wechat_id' => '',
+            ];
+        }
+
+        return $items;
+    }
+
+    /**
+     * bind tester
+     * @param $wechatId
+     * @return array
+     * @throws UnprocessableEntityHttpException
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     */
+    public function bindTester($wechatId)
+    {
+        $response = $this->parseResponse(
+            $this->miniProgramApp->tester->bind($wechatId)
+        );
+
+        $fill = [
+            'wechat_id' => $wechatId,
+            'userstr' => $response['userstr'],
+        ];
+        $tester = new Tester();
+        $tester->fill($fill);
+        $tester->mini_program_id = $this->miniProgram->mini_program_id;
+        $tester->save();
+
+        return $fill;
+    }
+
+    /**
+     * unbind tester
+     * @param $userStr
+     * @return bool
+     * @throws UnprocessableEntityHttpException
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     */
+    public function unbindTester($userStr)
+    {
+        $response = $this->parseResponse(
+            $this->miniProgramApp->tester->unbind($userStr)
+        );
+
+        $tester = Tester::where(['mini_program_id' => $this->miniProgram->mini_program_id])->where(function($query) use($userStr) {
+            $query->orWhere('userstr', $userStr);
+            $query->orWhere('wechat_id', $userStr);
+            return $query;
+        })->first();
+        if($tester){
+            //完善软删除
+            $tester->is_deleted =1;
+            $tester->save();
+            //$tester->delete();
+        }
+
+        return true;
+    }
+
+    public function sessionKey(string $code)
+    {
+        return $this->parseResponse(
+            $this->openPlatform->auth->session($code)
+        );
+    }
+
+    public function decryptData(string $jscode, string $iv, string $encryptedData)
+    {
+        $sessionKey = $this->sessionKey($jscode);
+         return $this->miniProgramApp->encryptor->decryptData($sessionKey, $iv, $encryptedData);
+    }
+
+    public function getAccessToken()
+    {
+        return $this->miniProgramApp->access_token->getToken();
+    }
+
+    public function commit($templateId, $userVersion, $extJson = '{}')
+    {
+        $response = $this->parseResponse(
+            $this->miniProgramApp->code->commit($templateId, $extJson, $userVersion, $userVersion)
+        );
+
+        return $response;
+    }
+
+    public function getQrCode($path = null)
+    {
+        //TODO::尝试转换成地址
+        $response = $this->miniProgramApp->code->getQrCode($path);
+        return $response;
+    }
+
+    public function getCategory()
+    {
+        $response = $this->parseResponse(
+            $response = $this->miniProgramApp->code->getCategory()
+        );
+        return $response['category_list'] ?? [];
+    }
+
+    public function getPage()
+    {
+        $response = $this->parseResponse(
+            $response = $this->miniProgramApp->code->getPage()
+        );
+        return $response['page_list'] ?? [];
+    }
+
+    public function audit($itemList)
+    {
+        //TODO::做详细的验证参数
+        $response = $this->parseResponse(
+            $response = $this->miniProgramApp->code->submitAudit($itemList)
+        );
+        return $response;
+    }
+
+    public function getAuditStatus($audit)
+    {
+        $response = $this->parseResponse(
+            $this->miniProgramApp->code->getAuditStatus($audit)
+        );
+        return $response;
+    }
+
+    public function getLatestAuditStatus()
+    {
+        $response = $this->parseResponse(
+            $this->miniProgramApp->code->getLatestAuditStatus()
+        );
+        return $response;
+    }
+
+    public function release()
+    {
+        $response = $this->parseResponse(
+            $this->miniProgramApp->code->release()
+        );
+        return $response;
+    }
+
+    public function revertCodeRelease()
+    {
+        $response = $this->parseResponse(
+            $this->miniProgramApp->code->rollbackRelease()
+        );
+        return $response;
+    }
+
+    public function SetSupportVersion($version)
+    {
+        $response = $this->parseResponse(
+            $this->miniProgramApp->code->setSupportVersion($version)
+        );
+        return $response;
+    }
+
+    public function getSupportVersion()
+    {
+        $response = $this->parseResponse(
+            $this->miniProgramApp->code->getSupportVersion()
+        );
+        return $response;
+    }
+
+    public function setVisitStatus($status)
+    {
+        $response = $this->parseResponse(
+            $this->miniProgramApp->code->changeVisitStatus($status)
+        );
+        return $response;
     }
 }
