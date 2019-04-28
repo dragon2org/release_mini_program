@@ -40,15 +40,14 @@ Route::group([
      */
     Route::get('/component/{componentAppId}/component_verify_ticket', 'ComponentController@componentVerifyTicket')->name('getComponentVerifyTicket');
     Route::get('/component/{componentAppId}/component_access_token', 'ComponentController@componentAccessToken');
-    Route::put('/component/{componentAppId}/ext_json', 'ComponentController@extJson');
+    Route::put('/component/{componentAppId}/config/ext_json', 'ComponentController@extJson');
     Route::get('/component/{componentAppId}/config', 'ComponentController@config');
-    Route::put('/component/{componentAppId}/domain', 'ComponentController@domain');
-    Route::put('/component/{componentAppId}/web_view_domain', 'ComponentController@webViewDomain');
-    Route::put('/component/{componentAppId}/tester', 'ComponentController@tester');
-    Route::put('/component/{componentAppId}/support_version', 'ComponentController@supportVersion');
-    Route::put('/component/{componentAppId}/visit_status', 'ComponentController@visitStatus');
-    Route::post('/component/{componentAppId}/config_sync', 'ComponentController@configSync');
-    Route::post('/component/{componentAppId}/config_sync', 'ComponentController@configSync');
+    Route::put('/component/{componentAppId}/config/domain', 'ComponentController@domain');
+    Route::put('/component/{componentAppId}/config/web_view_domain', 'ComponentController@webViewDomain');
+    Route::put('/component/{componentAppId}/config/tester', 'ComponentController@tester');
+    Route::put('/component/{componentAppId}/config/support_version', 'ComponentController@supportVersion');
+    Route::put('/component/{componentAppId}/config/visit_status', 'ComponentController@visitStatus');
+    Route::post('/component/{componentAppId}/config/sync', 'ComponentController@configSync');
 
     /**
      * 小程序管理

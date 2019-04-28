@@ -397,7 +397,7 @@ class ComponentController extends Controller
 
     /**
      * @SWG\Put(
-     *     path="/component/{componentAppId}/ext_json",
+     *     path="/component/{componentAppId}/config/ext_json",
      *     summary="更新平台发版配置-ext_json",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
