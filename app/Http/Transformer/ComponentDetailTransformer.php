@@ -25,8 +25,8 @@ class ComponentDetailTransformer extends TransformerAbstract
             "verify_token" => $component->verify_token,
             "aes_key" => $component->aes_key,
             "validate" => [
-                'filename' => $component->filename,
-                'content' => $component->filename
+                'filename' => $component->validate_filename,
+                'content' => $component->validate_content
             ],
         ];
     }
