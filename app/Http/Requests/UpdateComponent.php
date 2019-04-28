@@ -27,7 +27,7 @@ class UpdateComponent extends FormRequest
             'inner_name' => 'required|max:45',
             'inner_desc' => 'required|max:45',
             'name' => 'required|max:45',
-            'desc' => 'max:45',
+            'desc' => 'required|max:45',
             'app_id' => 'required|max:32',
             'app_secret' => 'required|max:32',
             'verify_token' => 'required|max:45',
