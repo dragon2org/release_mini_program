@@ -129,11 +129,12 @@ class ComponentService
         $extend = app('dhb.component.core')->component->extend;
         if(isset($extend)){
             $config = $extend->config;
+            $config = json_decode($config, true);
         }else{
             $config = (new ComponentExt())->getReleaseConfig();
         }
 
-        return json_decode($config, true);
+        return $config;
     }
 
     public function configSync()
