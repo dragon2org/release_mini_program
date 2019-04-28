@@ -523,48 +523,6 @@ class ComponentController extends Controller
     }
 
     /**
-     * @SWG\Post(
-     *     path="/component/:componentAppId/template/:templateId/release",
-     *     summary="批量发布",
-     *     tags={"三方平台管理"},
-     *     description="管理三方平台",
-     *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         name="componentAppId",
-     *         in="path",
-     *         description="三方平台AppID",
-     *         required=true,
-     *         type="string"
-     *     ),
-     *     @SWG\Parameter(
-     *         name="templateId",
-     *         in="path",
-     *         description="模板id",
-     *         required=true,
-     *         type="string"
-     *     ),
-     *     @SWG\Parameter(
-     *         name="data",
-     *         in="body",
-     *         description="注册表单数据",
-     *         required=true,
-     *         type="object",
-     *         @SWG\Schema(ref="#/definitions/MiniProgramConfig")
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="成功返回",
-     *         ref="$/responses/200",
-     *     ),
-     *     @SWG\Response(
-     *         response=422,
-     *         description="处理失败的返回",
-     *         ref="$/responses/422",
-     *     ),
-     * )
-     */
-
-    /**
      * @SWG\Get(
      *     path="/component/{componentAppId}/component_verify_ticket",
      *     summary="获取三方平台 component_verify_ticket",

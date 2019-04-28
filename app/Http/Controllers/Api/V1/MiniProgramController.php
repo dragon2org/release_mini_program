@@ -9,7 +9,13 @@
 namespace App\Http\Controllers\Api\V1;
 
 
+use App\Exceptions\UnprocessableEntityHttpException;
+use App\Http\Requests\BindMiniProgramTester;
 use App\Http\Requests\GetBindMiniProgramUri;
+use App\Http\Requests\GetMiniProgramSessionKey;
+use App\Http\Requests\MiniProgramDecrypt;
+use App\Http\Requests\PutMiniProgramInfo;
+use App\Http\Requests\UnbindMiniProgramTester;
 use App\Http\Transformer\MiniProgramListTransformer;
 use App\Services\MiniProgramService;
 use App\Http\ApiResponse;
@@ -173,9 +179,9 @@ class MiniProgramController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index($componentId)
     {
-        $componentId = $this->service->component->appId;
+        $componentId = app('dhb.component.core')->component->component_id;
         $items = MiniProgram::where(['component_id'=> $componentId])->paginate();
 
         return $this->response->withCollection($items, new MiniProgramListTransformer($items));
@@ -226,9 +232,9 @@ class MiniProgramController extends Controller
      *     )
      * )
      */
-    public function show()
+    public function show($componentAppId, $miniProgramAppId)
     {
-        $item = $this->service->getMiniProgram();
+        $item = (new MiniProgram())->where('app_id', $miniProgramAppId)->first();
         return $this->response->withItem($item, new MiniProgramTransformer($item));
     }
 
@@ -285,11 +291,27 @@ class MiniProgramController extends Controller
      *     )
      * )
      */
-    public function update()
+    public function update(PutMiniProgramInfo $request, $componentAppId, $miniProgramAppId)
     {
-        $item = $this->service->updateMiniProgram(request()->all());
+        $miniProgram = (new MiniProgram())
+            ->where('component_id', app('dhb.component.core')->component->component_id)
+            ->where('app_id', $miniProgramAppId)
+            ->first();
 
-        return $this->response->withItem($item, new MiniProgramTransformer($item));
+        if(!isset($miniProgram)){
+            throw new UnprocessableEntityHttpException(trans('小程序不存在'));
+        }
+
+        $miniProgram->inner_name = $request->inner_name;
+        $miniProgram->inner_desc = $request->inner_desc;
+        $miniProgram->nick_name = $request->nick_namem;
+        $miniProgram->head_img = $request->head_img;
+        $miniProgram->principal_name = $request->principal_name;
+        $miniProgram->qrcode_url = $request->qrcode_url;
+        $miniProgram->desc = $request->desc;
+        $miniProgram->save();
+
+        return $this->response->withItem($miniProgram, new MiniProgramTransformer($miniProgram));
     }
 
     /**
@@ -331,192 +353,21 @@ class MiniProgramController extends Controller
      *     )
      * )
      */
-    public function delete()
+    public function delete($componentAppId, $miniProgramAppId)
     {
-        $this->service->deleteMiniProgram();
+        $miniProgram = (new MiniProgram())
+            ->where('component_id', app('dhb.component.core')->component->component_id)
+            ->where('app_id', $miniProgramAppId)
+            ->first();
+
+        if(!isset($miniProgram)){
+            throw new UnprocessableEntityHttpException(trans('小程序不存在'));
+        }
+
+        $miniProgram->is_deleted = 1;
+        $miniProgram->save();
 
         return $this->response->withArray();
-    }
-
-    /**
-     * @SWG\Post(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/session_key",
-     *     summary="code换小程序session_key",
-     *     tags={"小程序管理"},
-     *     description="管理三方平台",
-     *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         name="componentAppId",
-     *         in="path",
-     *         description="三方平台AppID",
-     *         required=true,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="miniProgramAppId",
-     *         in="path",
-     *         description="小程序AppId",
-     *         required=true,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="data",
-     *         in="body",
-     *         description="注册表单数据",
-     *         required=true,
-     *         type="object",
-     *         @SWG\Schema(
-     *             @SWG\Property(
-     *                 property="code",
-     *                 type="string",
-     *                 description="jscode"
-     *             ),
-     *         )
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="成功返回",
-     *         @SWG\Schema(
-     *             @SWG\Property(
-     *                 property="status",
-     *                 type="string",
-     *                 default="T",
-     *                 description="接口返回状态['T'->成功; 'F'->失败]"
-     *             ),
-     *             @SWG\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 @SWG\Property(
-     *                     property="session_key",
-     *                     type="string",
-     *                     description="小程序seesion_key"
-     *                 ),
-     *             )
-     *         )
-     *     )
-     * )
-     */
-    public function sessionKey()
-    {
-        $response = $this->service->sessionKey(request()->input('code'));
-        return $this->response->withArray();
-    }
-
-    /**
-     * @SWG\Post(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/decrypt",
-     *     summary="小程序数据解密",
-     *     tags={"小程序管理"},
-     *     description="管理三方平台",
-     *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         name="componentAppId",
-     *         in="path",
-     *         description="三方平台AppID",
-     *         required=true,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="miniProgramAppId",
-     *         in="path",
-     *         description="小程序AppId",
-     *         required=true,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="data",
-     *         in="body",
-     *         description="注册表单数据",
-     *         required=true,
-     *         type="object",
-     *         @SWG\Schema(
-     *             @SWG\Property(
-     *                 property="jscode",
-     *                 type="string",
-     *                 description="jscode"
-     *             ),
-     *             @SWG\Property(
-     *                 property="encryptedData",
-     *                 type="string",
-     *                 description="加密数据"
-     *             ),
-     *             @SWG\Property(
-     *                 property="iv",
-     *                 type="string",
-     *                 description="加密向量"
-     *             ),
-     *         )
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="成功返回",
-     *         @SWG\Schema(
-     *             @SWG\Property(
-     *                 property="status",
-     *                 type="string",
-     *                 default="T",
-     *                 description="接口返回状态['T'->成功; 'F'->失败]"
-     *             ),
-     *             @SWG\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 description="解密返回的数据"
-     *             )
-     *         )
-     *     )
-     * )
-     */
-    public function decrypt()
-    {
-        $response = $this->service->decryptData(request()->input('iv'), request()->input('encryptedData'));
-
-        return $this->response->withArray(['data'=> $response]);
-    }
-    /**
-     * @SWG\Get(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/access_token",
-     *     summary="获取小程序的access_token",
-     *     tags={"小程序管理"},
-     *     description="管理三方平台",
-     *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         name="componentAppId",
-     *         in="path",
-     *         description="三方平台AppID",
-     *         required=true,
-     *         type="string"
-     *     ),
-     *     @SWG\Parameter(
-     *         name="miniProgramAppId",
-     *         in="path",
-     *         description="小程序AppId",
-     *         required=true,
-     *         type="string"
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="处理成功返回",
-     *         ref="$/responses/200",
-     *         @SWG\Schema(
-     *             @SWG\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 description="返回数据包",
-     *                 @SWG\Property(property="authorizer_access_token", type="string", description="授权方令牌"),
-     *                 @SWG\Property(property="expires_in", type="string", description="有效期，为2小时"),
-     *             ),
-     *         )
-     *     ),
-     *     @SWG\Response(
-     *         response=422,
-     *         description="处理失败的返回",
-     *         ref="$/responses/422",
-     *     ),
-     * )
-     */
-    public function accessToken()
-    {
-        return $this->response->withArray(['data' => $this->service->getAccessToken()]);
     }
 
     /**
@@ -603,7 +454,7 @@ class MiniProgramController extends Controller
      */
     public function tester()
     {
-        $response = $this->service->getTester();
+        $response = app('dhb.component.core')->getTester();
 
         return $this->response->withArray(['data' => $response]);
     }
@@ -657,9 +508,9 @@ class MiniProgramController extends Controller
      *     )
      * )
      */
-    public function bindTester()
+    public function bindTester(BindMiniProgramTester $request)
     {
-        $response = $this->service->bindTester(request()->input('wechat_id'));
+        $response = app('dhb.component.core')->bindTester(request()->input('wechat_id'));
 
         return $this->response->withArray(['data' => $response]);
     }
@@ -706,10 +557,193 @@ class MiniProgramController extends Controller
      *     )
      * )
      */
-    public function unbindTester()
+    public function unbindTester(UnbindMiniProgramTester $request)
     {
-        $response = $this->service->unbindTester(request()->input('wechat_id'));
+        $response = app('dhb.component.core')->unbindTester(request()->input('wechat_id'));
 
         return $this->response->withArray();
     }
+
+    /**
+     * @SWG\Post(
+     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/session_key",
+     *     summary="code换小程序session_key",
+     *     tags={"小程序管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         description="三方平台AppID",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="miniProgramAppId",
+     *         in="path",
+     *         description="小程序AppId",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="data",
+     *         in="body",
+     *         description="注册表单数据",
+     *         required=true,
+     *         type="object",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="code",
+     *                 type="string",
+     *                 description="jscode"
+     *             ),
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @SWG\Property(
+     *                     property="session_key",
+     *                     type="string",
+     *                     description="小程序seesion_key"
+     *                 ),
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function sessionKey(GetMiniProgramSessionKey $request)
+    {
+
+        $response = app('dhb.component.core')->sessionKey(request()->input('code'));
+        return $this->response->withArray($response);
+    }
+
+    /**
+     * @SWG\Post(
+     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/decrypt",
+     *     summary="小程序数据解密",
+     *     tags={"小程序管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         description="三方平台AppID",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="miniProgramAppId",
+     *         in="path",
+     *         description="小程序AppId",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="data",
+     *         in="body",
+     *         description="注册表单数据",
+     *         required=true,
+     *         type="object",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="jscode",
+     *                 type="string",
+     *                 description="jscode"
+     *             ),
+     *             @SWG\Property(
+     *                 property="encryptedData",
+     *                 type="string",
+     *                 description="加密数据"
+     *             ),
+     *             @SWG\Property(
+     *                 property="iv",
+     *                 type="string",
+     *                 description="加密向量"
+     *             ),
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 description="解密返回的数据"
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function decrypt(MiniProgramDecrypt $request)
+    {
+        $response = app('dhb.component.core')->decryptData(request()->input('jscode'), request()->input('iv'), request()->input('encryptedData'));
+
+        return $this->response->withArray(['data'=> $response]);
+    }
+    /**
+     * @SWG\Get(
+     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/access_token",
+     *     summary="获取小程序的access_token",
+     *     tags={"小程序管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         description="三方平台AppID",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="miniProgramAppId",
+     *         in="path",
+     *         description="小程序AppId",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="处理成功返回",
+     *         ref="$/responses/200",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 description="返回数据包",
+     *                 @SWG\Property(property="authorizer_access_token", type="string", description="授权方令牌"),
+     *                 @SWG\Property(property="expires_in", type="string", description="有效期，为2小时"),
+     *             ),
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=422,
+     *         description="处理失败的返回",
+     *         ref="$/responses/422",
+     *     ),
+     * )
+     */
+    public function accessToken()
+    {
+        return $this->response->withArray(['data' => app('dhb.component.core')->getAccessToken()]);
+    }
+
 }

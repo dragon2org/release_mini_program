@@ -28,21 +28,7 @@ class ComponentService
      */
     public $app;
 
-    /**
-     * @param array $data
-     * @return array
-     * @throws UnprocessableEntityHttpException
-     */
-    protected function parseResponse(array $data)
-    {
-        if ($data['errcode'] === 0) {
-            unset($data['errmsg']);
-            unset($data['errcode']);
-            return $data;
-        }
-        return $data;
-        throw new UnprocessableEntityHttpException($data['errmsg'], $data['errcode']);
-    }
+
 
     public function setAppId($appId)
     {
@@ -187,13 +173,6 @@ class ComponentService
     {
         $this->app['verify_ticket']->setTicket($ticket);
         Cache::forget($this->getCacheKey());
-    }
-
-    public function getDrafts()
-    {
-        return $this->parseResponse(
-            $this->app->code_template->getDrafts()
-        );
     }
 
     public function draftToTemplate($templateId)

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\V1;
 
 
 use App\Http\ApiResponse;
+use App\Http\Requests\DeleteTemplate;
+use App\Http\Requests\DraftToTemplate;
 use App\Models\Component;
 use App\Services\ComponentService;
 use EasyWeChat\Factory;
@@ -15,7 +17,6 @@ class TemplateController extends Controller
     public function __construct(ApiResponse $response)
     {
         parent::__construct($response);
-        $this->service = new ComponentService();
     }
 
     /**
@@ -88,7 +89,8 @@ class TemplateController extends Controller
      */
     public function draft()
     {
-        $response = $this->service->getDrafts();
+
+        $response = app('dhb.component.core')->getDrafts();
         return $this->response->withArray([
             'data' => $response
         ]);
@@ -134,9 +136,9 @@ class TemplateController extends Controller
      *     )
      * )
      */
-    public function draftToTemplate()
+    public function draftToTemplate(DraftToTemplate $request)
     {
-        $response = $this->service->draftToTemplate(request()->input('draft_id'));
+        $response = app('dhb.component.core')->draftToTemplate(request()->input('draft_id'));
         return $this->response->withArray([
             'data' => $response
         ]);
@@ -186,7 +188,7 @@ class TemplateController extends Controller
 
     public function delete($componentAppId, $templateId)
     {
-        $response = $this->service->deleteTemplate($templateId);
+        $response = app('dhb.component.core')->deleteTemplate($templateId);
         return $this->response->withArray([
             'data' => $response
         ]);
@@ -239,10 +241,51 @@ class TemplateController extends Controller
 
     public function index()
     {
-        $response = $this->service->templateList();
+        $response = app('dhb.component.core')->templateList();
         return $this->response->withArray([
             'data' => $response
         ]);
     }
 
+    /**
+     * @SWG\Post(
+     *     path="/component/:componentAppId/template/:templateId/release",
+     *     summary="批量发布",
+     *     tags={"三方平台管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         description="三方平台AppID",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="templateId",
+     *         in="path",
+     *         description="模板id",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         ref="$/responses/200",
+     *     ),
+     *     @SWG\Response(
+     *         response=422,
+     *         description="处理失败的返回",
+     *         ref="$/responses/422",
+     *     ),
+     * )
+     */
+    public function release($componentAppId, $templateId)
+    {
+        $response = app('dhb.component.core')->templateRelease($templateId);
+
+        return $this->response->withArray([
+            'data' => $response
+        ]);
+    }
 }
