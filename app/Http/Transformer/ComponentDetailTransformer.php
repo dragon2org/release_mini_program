@@ -8,7 +8,7 @@
 
 namespace App\Http\Transformer;
 
-
+use App\Models\Component;
 use League\Fractal\TransformerAbstract;
 
 class ComponentDetailTransformer extends TransformerAbstract
