@@ -27,12 +27,19 @@ class ComponentExt extends Model
     public function defaultConfig()
     {
         return [
-            'tester' => '',
-            'domain' => '',
-            'web_view_domain' => '',
-            'visit_status' => '',
-            'support_version' => '',
-            'ext_json' => '',
+            'tester' => [],
+            'domain' => [
+                'requestdomain' => [],
+                'wsrequestdomain' => [],
+                'uploaddomain' => [],
+                'downloaddomain' => [],
+            ],
+            'web_view_domain' => [
+                'webviewdomain' => [],
+            ],
+            'visit_status' => 'close',
+            'support_version' => '1.0.1',
+            'ext_json' => [],
         ];
     }
 
