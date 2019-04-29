@@ -27,10 +27,30 @@ class UpdateReleaseConfigDomain extends FormRequest
             'action' => ['required', function($attribute, $value, $closure){
                 if($value !== 'set') $closure('action参数仅支持: set');
             }],
-            'requestdomain.*' => 'url',
-            'wsrequestdomain.*' => 'url',
-            'uploaddomain.*' => 'url',
-            'downloaddomain.*' => 'url',
+            'requestdomain' => 'required|array',
+            'requestdomain.*' => ['url', 'distinct', function($attribute, $value, $closure){
+                if(strpos($value, 'https://') !== 0){
+                    $closure($attribute . ' invalid');
+                }
+            }],
+            'wsrequestdomain' => 'required|array',
+            'wsrequestdomain.*' => ['url', function($attribute, $value, $closure){
+                if(strpos($value, 'wss://') !== 0){
+                    $closure($attribute . ' invalid');
+                }
+            }],
+            'uploaddomain' => 'required|array',
+            'uploaddomain.*' => ['url', function($attribute, $value, $closure){
+                if(strpos($value, 'https://') !== 0){
+                    $closure($attribute . ' invalid');
+                }
+            }],
+            'downloaddomain' => 'required|array',
+            'downloaddomain.*' => ['url', function($attribute, $value, $closure){
+                if(strpos($value, 'https://') !== 0){
+                    $closure($attribute . ' invalid');
+                }
+            }],
         ];
     }
 }

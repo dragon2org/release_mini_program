@@ -24,12 +24,7 @@ class UpdateReleaseExtJson extends FormRequest
     public function rules()
     {
         return [
-            'ext_json' => ['required', 'string', function($attribute, $value, $closure){
-                $value = json_decode($value, true);
-                if(json_last_error() !== JSON_ERROR_NONE){
-                    $closure(json_last_error_msg());
-                }
-            }]
+            'ext_json' => ['required', 'string', 'json']
         ];
     }
 }
