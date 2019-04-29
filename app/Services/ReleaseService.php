@@ -462,14 +462,14 @@ class ReleaseService
 
             //TODO::入列日志
             foreach ($miniProgramList as $miniProgram) {
-                SetMiniProgramDomain::dispatch($miniProgram, $configurator, $templateId);
-                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramDomain::class, SetMiniProgramDomain::VERSION);
+                // SetMiniProgramDomain::dispatch($miniProgram, $configurator, $templateId);
+                // ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramDomain::class, SetMiniProgramDomain::VERSION);
 
-//                SetMiniProgramWebViewDomain::dispatch($miniProgram, $configurator, $templateId);
-//                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramWebViewDomain::class, SetMiniProgramWebViewDomain::VERSION);
+                SetMiniProgramWebViewDomain::dispatch($miniProgram, $configurator, $templateId);
+                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramWebViewDomain::class, SetMiniProgramWebViewDomain::VERSION);
 //
-//                SetMiniProgramTester::dispatch($miniProgram, $configurator, $templateId);
-//                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramTester::class, SetMiniProgramTester::VERSION);
+//               SetMiniProgramTester::dispatch($miniProgram, $configurator, $templateId);
+//               ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramTester::class, SetMiniProgramTester::VERSION);
 //
 //                SetMiniProgramSupportVersion::dispatch($miniProgram, $configurator, $templateId);
 //                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramSupportVersion::class, SetMiniProgramSupportVersion::VERSION);

@@ -29,5 +29,7 @@ class Tester extends Model
     protected $fillable = [
         'wechat_id',
         'userstr',
+        'mini_program_id',
+        'app_id',
     ];
 }

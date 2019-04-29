@@ -10,6 +10,8 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use App\Models\Tester;
+use Illuminate\Support\Arr;
 
 class SetMiniProgramTester implements ShouldQueue
 {
@@ -42,15 +44,21 @@ class SetMiniProgramTester implements ShouldQueue
      */
     public function handle()
     {
-        if(!isset($this->config->tester)){
-            return ;
-        }
+        // if(!isset($this->config->tester)){
+        //     return ;
+        // }
 
         $service = Releaser::build($this->miniProgram->component->app_id);
         $app = $service->setMiniProgram($this->miniProgram->app_id);
 
-        foreach($this->config->tester as $tester){
-            $app->tester->bind($tester);
+        $setItems = $this->config->tester;
+        $where = [
+            'mini_program_id' => $this->miniProgram->mini_program_id,
+            'app_id' => $this->miniProgram->app_id,
+        ];
+
+        foreach($setItems as $item){
+            $app->tester->bind($item);
         }
     }
 }

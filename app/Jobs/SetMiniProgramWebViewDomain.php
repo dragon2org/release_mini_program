@@ -42,16 +42,16 @@ class SetMiniProgramWebViewDomain implements ShouldQueue
      */
     public function handle()
     {
-        if(!isset($this->config->webViewDomain)){
-            return ;
-        }
+//        if(!isset($this->config->webViewDomain)){
+//            return ;
+//        }
 
         $service = Releaser::build($this->miniProgram->component->app_id);
         $app = $service->setMiniProgram($this->miniProgram->app_id);
         //step 1. 获取已经设置的业务域名
 
         $domain = $this->config->webViewDomain;
-        $app->domain->setWebviewDomain($domain, 'set');
-        $domain['action'] = 'set';
+        $result = $app->domain->setWebviewDomain($domain['webviewdomain'], 'set');
+        dd($result);
     }
 }
