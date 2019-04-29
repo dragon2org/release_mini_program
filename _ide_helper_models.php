@@ -12,6 +12,37 @@
 
 namespace App\Models{
 /**
+ * App\Models\ComponentExt
+ *
+ * @property int $component_ext_id 自增id
+ * @property int $component_id 关联的三方平台ID
+ * @property string $field1 备用字段
+ * @property string $field2 备用字段2
+ * @property \Illuminate\Support\Carbon $created_at 记录添加时间
+ * @property \Illuminate\Support\Carbon $updated_at 记录更新时间
+ * @property string|null $config 配置文件
+ * @property int $is_deleted 软删除标记
+ * @property string $create_user 新建记录的用户
+ * @property string $update_user 最后一次操作的用户
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComponentExt newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComponentExt newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComponentExt query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComponentExt whereComponentExtId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComponentExt whereComponentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComponentExt whereConfig($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComponentExt whereCreateUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComponentExt whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComponentExt whereField1($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComponentExt whereField2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComponentExt whereIsDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComponentExt whereUpdateUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ComponentExt whereUpdatedAt($value)
+ */
+	class ComponentExt extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\MiniProgram
  *
  * @property int $mini_program_id 自增id
@@ -30,9 +61,12 @@ namespace App\Models{
  * @property string $user_version 当前版本
  * @property string $field1 备用字段
  * @property string $field2 备用字段2
- * @property int $deleted 软删除标志
+ * @property int $is_deleted 软删除标记
+ * @property string $create_user 新建记录的用户
+ * @property string $update_user 最后一次操作的用户
  * @property \Illuminate\Support\Carbon $created_at 记录添加时间
  * @property \Illuminate\Support\Carbon $updated_at 记录更新时间
+ * @property-read \App\Models\Component $component
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tester[] $tester
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram newQuery()
@@ -41,18 +75,20 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereAuthorizerRefreshToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereCompanyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereComponentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereCreateUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereDeleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereDesc($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereField1($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereField2($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereHeadImg($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereInnerDesc($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereInnerName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereIsDeleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereMiniProgramId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereNickName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram wherePrincipalName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereQrcodeUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereUpdateUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereUserName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MiniProgram whereUserVersion($value)
@@ -90,9 +126,12 @@ namespace App\Models{
  * @property string $validate_content 三方平台验证域名-文件内容
  * @property string $field1 备用字段
  * @property string $field2 备用字段2
- * @property int $deleted 软删除标志
+ * @property int $is_deleted 软删除标记
+ * @property string $create_user 新建记录的用户
+ * @property string $update_user 最后一次操作的用户
  * @property \Illuminate\Support\Carbon $created_at 记录添加时间
  * @property \Illuminate\Support\Carbon $updated_at 记录更新时间
+ * @property-read \App\Models\ComponentExt $extend
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component query()
@@ -100,14 +139,16 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereAppSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereComponentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereCreateUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereDeleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereDesc($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereField1($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereField2($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereInnerDesc($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereInnerName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereIsDeleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereUpdateUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereValidateContent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereValidateFilename($value)

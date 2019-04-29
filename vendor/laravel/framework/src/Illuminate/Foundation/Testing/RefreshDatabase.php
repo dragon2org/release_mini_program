@@ -56,6 +56,7 @@ trait RefreshDatabase
 
             RefreshDatabaseState::$migrated = true;
         }
+
         $this->beginDatabaseTransaction();
     }
 
