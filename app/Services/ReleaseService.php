@@ -465,23 +465,23 @@ class ReleaseService
                 SetMiniProgramDomain::dispatch($miniProgram, $configurator, $templateId);
                 ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramDomain::class, SetMiniProgramDomain::VERSION);
 
-                SetMiniProgramWebViewDomain::dispatch($miniProgram, $configurator, $templateId);
-                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramWebViewDomain::class, SetMiniProgramWebViewDomain::VERSION);
-
-                SetMiniProgramTester::dispatch($miniProgram, $configurator, $templateId);
-                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramTester::class, SetMiniProgramTester::VERSION);
-
-                SetMiniProgramSupportVersion::dispatch($miniProgram, $configurator, $templateId);
-                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramSupportVersion::class, SetMiniProgramSupportVersion::VERSION);
-
-                SetMiniProgramVisitStatus::dispatch($miniProgram, $configurator, $templateId);
-                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramVisitStatus::class, SetMiniProgramVisitStatus::VERSION);
-
-                SetMiniProgramCodeCommit::dispatch($miniProgram, $configurator, $templateId);
-                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramCodeCommit::class, SetMiniProgramCodeCommit::VERSION);
-
-                SetMiniProgramAudit::dispatch($miniProgram, $configurator, $templateId);
-                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramAudit::class, SetMiniProgramAudit::VERSION);
+//                SetMiniProgramWebViewDomain::dispatch($miniProgram, $configurator, $templateId);
+//                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramWebViewDomain::class, SetMiniProgramWebViewDomain::VERSION);
+//
+//                SetMiniProgramTester::dispatch($miniProgram, $configurator, $templateId);
+//                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramTester::class, SetMiniProgramTester::VERSION);
+//
+//                SetMiniProgramSupportVersion::dispatch($miniProgram, $configurator, $templateId);
+//                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramSupportVersion::class, SetMiniProgramSupportVersion::VERSION);
+//
+//                SetMiniProgramVisitStatus::dispatch($miniProgram, $configurator, $templateId);
+//                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramVisitStatus::class, SetMiniProgramVisitStatus::VERSION);
+//
+//                SetMiniProgramCodeCommit::dispatch($miniProgram, $configurator, $templateId);
+//                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramCodeCommit::class, SetMiniProgramCodeCommit::VERSION);
+//
+//                SetMiniProgramAudit::dispatch($miniProgram, $configurator, $templateId);
+//                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramAudit::class, SetMiniProgramAudit::VERSION);
             }
             return true;
         } catch (\Exception $e) {

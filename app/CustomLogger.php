@@ -27,6 +27,8 @@ class CustomLogger
 
     const LOG_OUT_QUEUE = 'queue-out';
 
+    const LOG_COMMON_QUEUE = 'queue-common';
+
 
     private static $loggers = array();
 

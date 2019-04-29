@@ -161,7 +161,7 @@ class ComponentController extends Controller
         $component = $this->service->updateComponent($input);
 
         return $this->response->withArray(
-            ['data' => $this->response->transformatItem($component, new ComponentTransformer($component))]
+            ['data' => $this->response->transformatItem($component, new ComponentDetailTransformer($component))]
         );
     }
 
@@ -298,7 +298,7 @@ class ComponentController extends Controller
      */
     public function tester(UpdateReleaseConfigTester $request)
     {
-        $config = $this->service->updateReleaseConfig(request()->all());
+        $config = $this->service->updateTester(request()->all());
 
         return $this->response->withArray(['data' => $config ]);
     }
@@ -344,7 +344,7 @@ class ComponentController extends Controller
      */
     public function visitStatus(UpdateReleaseConfigVisitStatus $request)
     {
-        $config = $this->service->updateReleaseConfig(request()->all());
+        $config = $this->service->updateVisitStatus(request()->all());
 
         return $this->response->withArray(['data' => $config ]);
     }
@@ -484,7 +484,7 @@ class ComponentController extends Controller
 
     public function configSync()
     {
-        $this->service->configSync();
+        app('dhb.component.core')->configSync();
 
         return $this->response->withArray();
     }

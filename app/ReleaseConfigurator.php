@@ -9,7 +9,9 @@
 namespace App;
 
 
+use function GuzzleHttp\default_ca_bundle;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Str;
 
 class ReleaseConfigurator implements Arrayable
 {
@@ -27,20 +29,60 @@ class ReleaseConfigurator implements Arrayable
 
     protected $supportVersion;
 
-    protected $payload;
+    protected $rawBody;
 
-    public function __construct($payload)
+    public function __construct($rawBody)
     {
-        $this->payload = $payload;
+        $this->rawBody = $rawBody;
+        $this->parseRawBody();
     }
+
+    protected function parseRawBody()
+    {
+        foreach($this->rawBody as $name => $value){
+            switch ($name) {
+                case 'domain':
+                    $this->domain = $value;
+                    $this->domain['action'] =  'set';
+                    break;
+                case 'web_view_domain':
+                    $this->webViewDomain = $value;
+                    $this->webViewDomain['action'] = 'set';
+                    break;
+                case 'ext_json':
+                    $this->extJson = $value;
+                    break;
+                case 'page_list':
+                    $this->pageList = $value;
+                    break;
+                case 'visit_status':
+                    $this->visitStatus = $value;
+                    break;
+                case 'support_version':
+                    $this->supportVersion = $value;
+                    break;
+                default:
+                    if(in_array($name, ['tester'])){
+                        $this->{$name} = $value;
+                    }
+                    break;
+            }
+        }
+    }
+
 
     public function toArray()
     {
-        return [];
+        return $this->rawBody;
     }
 
     public function __get($name)
     {
         return $this->{$name};
+    }
+
+    public function getDomain()
+    {
+        return array_merge($this->domain, ['action' => 'set']);
     }
 }

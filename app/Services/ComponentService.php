@@ -19,51 +19,6 @@ use Illuminate\Support\Facades\Log;
 
 class ComponentService
 {
-    protected $config;
-
-    public $appId;
-
-    /**
-     * @var \EasyWeChat\OpenPlatform\Application
-     */
-    public $app;
-
-
-
-    public function setAppId($appId)
-    {
-        $this->appId = $appId;
-    }
-
-    public function getParent()
-    {
-        return $this;
-    }
-
-
-    public function getConfig()
-    {
-        return Cache::remember($this->getCacheKey(), 6000, function () {
-            $component = Component::where('app_id', $this->appId)->first();
-            $config = [
-                'component_id' => $component->component_id,
-                'app_id' => $component->app_id,
-                'secret' => $component->app_secret,
-                'token' => $component->verify_token,
-                'aes_key' => $component->aes_key,
-                'component_verify_ticket' => $component->verify_ticket,
-            ];
-            $app = Factory::openPlatform($config);
-            $app['verify_ticket']->setTicket($component->verify_ticket);
-            return $config;
-        });
-    }
-
-    public function getCacheKey()
-    {
-        return 'dhb.mini-program.release.component' . $this->appId;
-    }
-
     /**
      * @param array $input
      * @return Component
@@ -94,14 +49,53 @@ class ComponentService
 
     public function updateDomain($input)
     {
-        unset($input['action']);
-        return $this->updateReleaseConfig(['domain'=> $input]);
+        $data =  [
+            'requestdomain' => $input['requestdomain'] ?? [],
+            'wsrequestdomain' => $input['wsrequestdomain'] ?? [],
+            'uploaddomain' => $input['uploaddomain'] ?? [],
+            'downloaddomain' => $input['downloaddomain'] ?? [],
+        ];
+        return $this->updateReleaseConfig(['domain'=> $data]);
     }
 
     public function updateWebViewDomain($input)
     {
-        unset($input['action']);
-        return $this->updateReleaseConfig(['web_view_domain'=> $input]);
+        $data =  [
+            'webviewdomain' => $input['webviewdomain'] ?? [],
+        ];
+        return $this->updateReleaseConfig(['web_view_domain'=> $data]);
+    }
+
+    public function updateTester($input)
+    {
+        $data =  [
+            'tester' => $input['tester'] ?? [],
+        ];
+        return $this->updateReleaseConfig($data);
+    }
+
+    public function updateVisitStatus($input)
+    {
+        $data =  [
+            'visit_status' => $input['visit_status'] ?? 'close',
+        ];
+        return $this->updateReleaseConfig($data);
+    }
+
+    public function updateSupportVersion($input)
+    {
+        $data =  [
+            'support_version' => $input['support_version'] ?? '1.0.1',
+        ];
+        return $this->updateReleaseConfig($data);
+    }
+
+    public function updateExtJson($input)
+    {
+        $data =  [
+            'ext_json' => $input ?? [],
+        ];
+        return $this->updateReleaseConfig($data);
     }
 
     public function updateReleaseConfig($input)
@@ -135,65 +129,5 @@ class ComponentService
         }
 
         return $config;
-    }
-
-    public function configSync()
-    {
-
-    }
-
-    public function server()
-    {
-        $server = $this->app->server;
-
-        // 处理授权成功事件
-        $server->push(function ($message) {
-
-        }, Guard::EVENT_AUTHORIZED);
-
-        // 处理授权更新事件
-        $server->push(function ($message) {
-
-        }, Guard::EVENT_UPDATE_AUTHORIZED);
-
-        // 处理授权取消事件
-        $server->push(function ($message) {
-
-        }, Guard::EVENT_UNAUTHORIZED);
-
-        // 处理VERIFY_TICKET
-        $server->push(function ($message) {
-            Log::info('ComponentVerifyTicket:', $message);
-            $this->setTicket($message['ComponentVerifyTicket']);
-        }, Guard::EVENT_COMPONENT_VERIFY_TICKET);
-
-        return $server->serve();
-    }
-
-    public function setTicket($ticket)
-    {
-        $this->app['verify_ticket']->setTicket($ticket);
-        Cache::forget($this->getCacheKey());
-    }
-
-    public function draftToTemplate($templateId)
-    {
-        return $this->parseResponse(
-            $this->app->code_template->createFromDraft($templateId)
-        );
-    }
-
-    public function deleteTemplate($templateId)
-    {
-        return $this->parseResponse(
-            $this->app->code_template->delete($templateId)
-        );
-    }
-
-    public function templateList()
-    {
-        return $this->parseResponse(
-            $this->app->code_template->list()
-        );
     }
 }

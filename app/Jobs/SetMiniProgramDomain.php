@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Logs\ReleaseCommonQueueLogQueueLog;
 use App\Logs\ReleaseOutQueueLog;
 use App\Models\MiniProgram;
 use App\ReleaseConfigurator;
@@ -23,7 +24,6 @@ class SetMiniProgramDomain implements ShouldQueue
     protected $templateId;
 
     const VERSION = '1.0.0';
-
     /**
      * Create a new job instance.
      *
@@ -43,18 +43,20 @@ class SetMiniProgramDomain implements ShouldQueue
      */
     public function handle()
     {
-        if(!isset($this->config->domain)){
-            return ;
-        }
+//        if(!isset($this->config->domain)){
+//            return ;
+//        }
 
         $service = Releaser::build($this->miniProgram->component->app_id);
         $app = $service->setMiniProgram($this->miniProgram->app_id);
         //step 1. 获取已经设置的业务域名
+        $setted = $app->domain->modify(['action' => 'get']);
+        ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "拉取服务器域名", $setted);
 
-        $domain = $this->config->domain;
-        $domain['action'] = 'set';
-        $app->domain->modify($domain);
-
+        $domain = $this->config->getDomain();
+        ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "推送服务器域名", $domain);
+        $response = $app->domain->modify($domain);
+        ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "推送服务器域名响应", $response);
 
         //TODO::改成匿名函数处理
         //ReleaseOutQueueLog::info($this->miniProgram, $this->config, $this->templateId, self::class, self::VERSION);
