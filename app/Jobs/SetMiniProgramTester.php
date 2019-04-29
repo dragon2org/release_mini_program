@@ -12,6 +12,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Models\Tester;
 use Illuminate\Support\Arr;
+use \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
+
 
 class SetMiniProgramTester implements ShouldQueue
 {

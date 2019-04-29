@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Logs\ReleaseCommonQueueLogQueueLog;
 use App\Models\MiniProgram;
 use App\ReleaseConfigurator;
 use App\Releaser;
@@ -10,12 +11,13 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
 
-class SetMiniProgramWebViewDomain implements ShouldQueue
+class SetMiniProgramWebViewDomain extends BaseReleaseJobWithLog implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $miniProgram;
+    public $miniProgram;
 
     protected $config;
 
@@ -42,16 +44,15 @@ class SetMiniProgramWebViewDomain implements ShouldQueue
      */
     public function handle()
     {
-//        if(!isset($this->config->webViewDomain)){
-//            return ;
-//        }
+        $this->proccess($this, function(Application $app){
+            $setted = $app->domain->setWebviewDomain([], 'get');
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "拉取业务服务器域名", $setted);
 
-        $service = Releaser::build($this->miniProgram->component->app_id);
-        $app = $service->setMiniProgram($this->miniProgram->app_id);
-        //step 1. 获取已经设置的业务域名
+            $domain = $this->config->webViewDomain;
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "推送业务服务器域名", $domain);
 
-        $domain = $this->config->webViewDomain;
-        $result = $app->domain->setWebviewDomain($domain['webviewdomain'], 'set');
-        dd($result);
+            $response = $app->domain->setWebviewDomain($domain, $domain['action']);
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "推送业务服务器域名响应", $response);
+        });
     }
 }

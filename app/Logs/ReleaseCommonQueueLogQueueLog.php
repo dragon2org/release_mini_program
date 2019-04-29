@@ -20,4 +20,11 @@ class ReleaseCommonQueueLogQueueLog
 
         CustomLogger::info(CustomLogger::LOG_COMMON_QUEUE, $message, $data);
     }
+
+    public static function error(MiniProgram $miniProgram, $message, $data)
+    {
+        $message = "小程序 {$miniProgram->app_id}; ".$message;
+
+        CustomLogger::error(CustomLogger::LOG_COMMON_QUEUE, $message, $data);
+    }
 }
