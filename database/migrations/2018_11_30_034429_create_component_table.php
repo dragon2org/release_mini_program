@@ -24,7 +24,7 @@ class CreateComponentTable extends Migration
             $table->string('name', 45)->default('')->comment('三方平台名称');
             $table->string('desc')->default('')->comment('三方平台描述');
 
-            $table->string('app_id', 32)->default('')->comment('三方平台AppID');
+            $table->string('app_id', 100)->default('')->comment('三方平台AppID');
             $table->string('app_secret', 32)->default('')->comment('三方平台AppSecret');
             $table->string('verify_token', 45)->default('')->comment('三方平台消息验证token');
             $table->string('verify_ticket', 95)->default('')->comment('三方平台消息验证verify_ticket');
@@ -39,9 +39,11 @@ class CreateComponentTable extends Migration
             $table->string('field1', 45)->default('')->comment('备用字段');
             $table->string('field2', 45)->default('')->comment('备用字段2');
 
-            $table->tinyInteger('deleted')->default(0)->comment('软删除标志');
-            $table->timestamp('created_at')->default('1970-01-01 08:00:01')->comment('记录添加时间');
-            $table->timestamp('updated_at')->default('1970-01-01 08:00:01')->comment('记录更新时间');
+            $table->tinyInteger('is_deleted')->default(0)->comment('软删除标志');
+            $table->string('create_user', 45)->default('')->comment('新建记录的用户');
+            $table->string('update_user', 45)->default('')->comment('最后一次操作的用户');
+            $table->dateTime('created_at')->default('1970-01-01 08:00:01')->comment('记录添加时间');
+            $table->dateTime('updated_at')->default('1970-01-01 08:00:01')->comment('记录更新时间');
         });
         DB::statement("ALTER TABLE `{$this->tableName}`  comment  '{$this->tableComment}'");
     }

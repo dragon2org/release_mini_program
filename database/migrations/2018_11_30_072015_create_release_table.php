@@ -37,8 +37,11 @@ class CreateReleaseTable extends Migration
             $table->index('component_app_id', 'idx_component_app_id');
             $table->index('status', 'idx_status');
 
-            $table->timestamp('created_at')->default('1970-01-01 08:00:01')->comment('记录添加时间');
-            $table->timestamp('updated_at')->default('1970-01-01 08:00:01')->comment('记录更新时间');
+            $table->tinyInteger('is_deleted')->default(0)->comment('软删除标志');
+            $table->string('create_user', 45)->default('')->comment('新建记录的用户');
+            $table->string('update_user', 45)->default('')->comment('最后一次操作的用户');
+            $table->dateTime('created_at')->default('1970-01-01 08:00:01')->comment('记录添加时间');
+            $table->dateTime('updated_at')->default('1970-01-01 08:00:01')->comment('记录更新时间');
         });
         DB::statement("ALTER TABLE `{$this->tableName}`  comment  '{$this->tableComment}'");
     }

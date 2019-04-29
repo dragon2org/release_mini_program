@@ -26,7 +26,7 @@ class CreateMiniProgramTable extends Migration
 
             $table->string('nick_name', 45)->default('')->comment('授权方昵称');
             $table->string('head_img')->default('')->comment('小程序头像');
-            $table->string('app_id', 45)->default('')->comment('小程序AppID');
+            $table->string('app_id', 100)->default('')->comment('小程序AppID');
             $table->string('user_name', 45)->default('')->comment('原始ID,审核推送要用');
             $table->string('principal_name', 45)->default('')->comment('小程序主体名称');
             $table->string('qrcode_url')->default('')->comment('二维码图片的URL');
@@ -42,9 +42,11 @@ class CreateMiniProgramTable extends Migration
             $table->string('field1', 45)->default('')->comment('备用字段');
             $table->string('field2', 45)->default('')->comment('备用字段2');
 
-            $table->tinyInteger('deleted')->default(0)->comment('软删除标志');
-            $table->timestamp('created_at')->default('1970-01-01 08:00:01')->comment('记录添加时间');
-            $table->timestamp('updated_at')->default('1970-01-01 08:00:01')->comment('记录更新时间');
+            $table->tinyInteger('is_deleted')->default(0)->comment('软删除标志');
+            $table->string('create_user', 45)->default('')->comment('新建记录的用户');
+            $table->string('update_user', 45)->default('')->comment('最后一次操作的用户');
+            $table->dateTime('created_at')->default('1970-01-01 08:00:01')->comment('记录添加时间');
+            $table->dateTime('updated_at')->default('1970-01-01 08:00:01')->comment('记录更新时间');
         });
         DB::statement("ALTER TABLE `{$this->tableName}`  comment  '{$this->tableComment}'");
     }
