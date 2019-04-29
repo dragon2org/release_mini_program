@@ -50,6 +50,7 @@ class ComponentService
     public function updateDomain($input)
     {
         $data =  [
+            'action' => $input['action'],
             'requestdomain' => $input['requestdomain'] ?? [],
             'wsrequestdomain' => $input['wsrequestdomain'] ?? [],
             'uploaddomain' => $input['uploaddomain'] ?? [],
@@ -61,6 +62,7 @@ class ComponentService
     public function updateWebViewDomain($input)
     {
         $data =  [
+            'action' => $input['action'],
             'webviewdomain' => $input['webviewdomain'] ?? [],
         ];
         return $this->updateReleaseConfig(['web_view_domain'=> $data]);
@@ -93,7 +95,7 @@ class ComponentService
     public function updateExtJson($input)
     {
         $data =  [
-            'ext_json' => $input ?? [],
+            'ext_json' => $input ? json_decode($input, true, JSON_UNESCAPED_UNICODE) : [],
         ];
         return $this->updateReleaseConfig($data);
     }

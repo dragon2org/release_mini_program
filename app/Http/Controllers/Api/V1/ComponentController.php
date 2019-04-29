@@ -210,6 +210,7 @@ class ComponentController extends Controller
     public function domain(UpdateReleaseConfigDomain $request)
     {
         $config = $this->service->updateDomain(request()->all());
+        $config['ext_json'] = json_encode($config['ext_json']);
 
         return $this->response->withArray(['data' => $config ]);
     }
@@ -253,6 +254,7 @@ class ComponentController extends Controller
     public function webViewDomain(UpdateReleaseConfigWebViewDomain $request)
     {
         $config = $this->service->updateWebViewDomain(request()->all());
+        $config['ext_json'] = json_encode($config['ext_json']);
 
         return $this->response->withArray(['data' => $config ]);
     }
@@ -299,6 +301,7 @@ class ComponentController extends Controller
     public function tester(UpdateReleaseConfigTester $request)
     {
         $config = $this->service->updateTester(request()->all());
+        $config['ext_json'] = json_encode($config['ext_json']);
 
         return $this->response->withArray(['data' => $config ]);
     }
@@ -345,6 +348,7 @@ class ComponentController extends Controller
     public function visitStatus(UpdateReleaseConfigVisitStatus $request)
     {
         $config = $this->service->updateVisitStatus(request()->all());
+        $config['ext_json'] = json_encode($config['ext_json']);
 
         return $this->response->withArray(['data' => $config ]);
     }
@@ -391,6 +395,7 @@ class ComponentController extends Controller
     public function supportVersion(UpdateReleaseConfigSupportVersion $request)
     {
         $config = $this->service->updateReleaseConfig(request()->all());
+        $config['ext_json'] = json_encode($config['ext_json']);
 
         return $this->response->withArray(['data' => $config ]);
     }
@@ -436,7 +441,8 @@ class ComponentController extends Controller
      */
     public function extJson(UpdateReleaseExtJson $request, $componentAppId)
     {
-        $config = $this->service->updateReleaseConfig(['ext_json' =>request()->all()]);
+        $config = $this->service->updateExtJson(request()->input('ext_json'));
+        $config['ext_json'] = json_encode($config['ext_json']);
 
         return $this->response->withArray(['data' => $config ]);
     }
@@ -518,6 +524,7 @@ class ComponentController extends Controller
     public function config()
     {
         $config = $this->service->getReleaseConfig();
+        $config['ext_json'] = json_encode($config['ext_json']);
 
         return $this->response->withArray(['data' => $config ]);
     }
