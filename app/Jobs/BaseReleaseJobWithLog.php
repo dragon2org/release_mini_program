@@ -21,16 +21,19 @@ class BaseReleaseJobWithLog
 
     public function proccess(ShouldQueue $job, Closure $callback)
     {
+        $class = get_class($job);
         try {
-            ReleaseCommonQueueLogQueueLog::info( $this->miniProgram, "队列任务执行 begin", ['class' => get_class($job)]);
+            ReleaseCommonQueueLogQueueLog::info( $this->miniProgram, "release queue job begin", ['class' => $class]);
             $service = Releaser::build($this->miniProgram()->component->app_id);
-            $app = $service->setMiniProgram($this->miniProgram()->app_id);
-            call_user_func($callback, $app);
-            ReleaseCommonQueueLogQueueLog::info( $this->miniProgram, "队列任务执行 end", ['class' => get_class($job)]);
+            $miniProgramApp = $service->setMiniProgram($this->miniProgram()->app_id);
+            call_user_func($callback, $miniProgramApp, $service->openPlatform);
+            ReleaseCommonQueueLogQueueLog::info( $this->miniProgram, "release queue job end", ['class' => $class]);
         } catch (\Exception $e) {
-            ReleaseCommonQueueLogQueueLog::error( $this->miniProgram, "队列任务执行 failed", ['class' => get_class($job)]);
+            ReleaseCommonQueueLogQueueLog::error( $this->miniProgram, "release queue job failed", ['class' => $class, 'message'=> $e->getMessage()]);
             throw $e;
         }
+
+        return true;
     }
 
     public function miniProgram()

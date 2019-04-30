@@ -33,7 +33,7 @@ CREATE TABLE `component_ext` (
   `create_user` varchar(45) NOT NULL DEFAULT 0 comment '新建记录的用户',
   `update_user` varchar(45) NOT NULL DEFAULT 0 comment '最后一次操作的用户',
   PRIMARY KEY (`component_ext_id`),
-  KEY `idx_component_app_id` (`component_id`)
+  KEY `idx_component_id` (`component_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8 COMMENT = '三方平台extra配置信息';
 CREATE TABLE `mini_program` (
   `mini_program_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',

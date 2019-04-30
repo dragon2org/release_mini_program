@@ -31,7 +31,7 @@ class ReleaseConfigurator implements Arrayable
 
     protected $rawBody;
 
-    public function __construct($rawBody)
+    public function __construct(array $rawBody)
     {
         $this->rawBody = $rawBody;
         $this->parseRawBody();
@@ -50,7 +50,7 @@ class ReleaseConfigurator implements Arrayable
                     $this->webViewDomain['action'] = 'set';
                     break;
                 case 'ext_json':
-                    $this->extJson = $value;
+                    $this->extJson = json_encode($value);
                     break;
                 case 'page_list':
                     $this->pageList = $value;

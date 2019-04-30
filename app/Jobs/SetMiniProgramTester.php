@@ -2,7 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Logs\ReleaseCommonQueueLogQueueLog;
 use App\Models\MiniProgram;
+use App\Models\Release;
+use App\Models\ReleaseItem;
 use App\ReleaseConfigurator;
 use App\Releaser;
 use Illuminate\Bus\Queueable;
@@ -15,7 +18,7 @@ use Illuminate\Support\Arr;
 use \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
 
 
-class SetMiniProgramTester implements ShouldQueue
+class SetMiniProgramTester extends BaseReleaseJobWithLog implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -23,7 +26,7 @@ class SetMiniProgramTester implements ShouldQueue
 
     protected $config;
 
-    protected $templateId;
+    protected $release;
 
     const VERSION = '1.0.0';
 
@@ -32,11 +35,11 @@ class SetMiniProgramTester implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(MiniProgram $miniProgram, ReleaseConfigurator $config, $templateId)
+    public function __construct(MiniProgram $miniProgram,  Release $release)
     {
         $this->miniProgram = $miniProgram;
-        $this->config = $config;
-        $this->templateId = $templateId;
+        $this->config = $release->getReleaseConfigurator();
+        $this->release = $release;
     }
 
     /**
@@ -46,21 +49,25 @@ class SetMiniProgramTester implements ShouldQueue
      */
     public function handle()
     {
-        // if(!isset($this->config->tester)){
-        //     return ;
-        // }
+        $this->proccess($this, function (Application $app) {
+            $setted = $app->tester->list();
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "pull tester", $setted);
 
-        $service = Releaser::build($this->miniProgram->component->app_id);
-        $app = $service->setMiniProgram($this->miniProgram->app_id);
+            $tester = $this->config->tester;
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push tester", $tester);
 
-        $setItems = $this->config->tester;
-        $where = [
-            'mini_program_id' => $this->miniProgram->mini_program_id,
-            'app_id' => $this->miniProgram->app_id,
-        ];
+            foreach($this->config->tester as $tester){
+                $response = $app->tester->bind($tester);
+                ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push tester: {$tester} response", $response);
 
-        foreach($setItems as $item){
-            $app->tester->bind($item);
-        }
+                ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_DOMAIN, [
+                    'online_config' => $setted,
+                    'original_config'=> $tester,
+                    'push_config' => $tester,
+                    'response' => $response
+                ]);
+            }
+
+        });
     }
 }

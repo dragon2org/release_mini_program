@@ -110,12 +110,11 @@ Route::group([
     Route::get('/component/{componentAppId}/mini_program/{miniProgram}/tester');
     Route::post('/component/{componentAppId}/mini_program/{miniProgram}/tester');
     Route::delete('/component/{componentAppId}/mini_program/{miniProgram}/tester/{wechatid}');
+
+    /*
+     * 构建管理
+     */
+    Route::get('/component/{componentAppId}/release_task', 'ReleaseController@index');
+    Route::get('/component/{componentAppId}/release_task/{releaseId}', 'ReleaseController@detail');
+    Route::get('/component/{componentAppId}/release_task/{releaseId}/retry', 'ReleaseController@retry');
 });
-
-
-
-
-
-
-
-

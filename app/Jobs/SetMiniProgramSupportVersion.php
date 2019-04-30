@@ -2,7 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Logs\ReleaseCommonQueueLogQueueLog;
 use App\Models\MiniProgram;
+use App\Models\Release;
+use App\Models\ReleaseItem;
 use App\ReleaseConfigurator;
 use App\Releaser;
 use Illuminate\Bus\Queueable;
@@ -13,7 +16,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
 
 
-class SetMiniProgramSupportVersion implements ShouldQueue
+class SetMiniProgramSupportVersion extends BaseReleaseJobWithLog implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -21,7 +24,7 @@ class SetMiniProgramSupportVersion implements ShouldQueue
 
     protected $config;
 
-    protected $templateId;
+    protected $release;
 
     const VERSION = '1.0.0';
 
@@ -30,11 +33,11 @@ class SetMiniProgramSupportVersion implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(MiniProgram $miniProgram, ReleaseConfigurator $config, $templateId)
+    public function __construct(MiniProgram $miniProgram, Release $release)
     {
         $this->miniProgram = $miniProgram;
-        $this->config = $config;
-        $this->templateId = $templateId;
+        $this->config = $release->getReleaseConfigurator();
+        $this->release = $release;
     }
 
     /**
@@ -44,12 +47,23 @@ class SetMiniProgramSupportVersion implements ShouldQueue
      */
     public function handle()
     {
+        $this->proccess($this, function (Application $app) {
 
-        $service = Releaser::build($this->miniProgram->component->app_id);
-        $app = $service->setMiniProgram($this->miniProgram->app_id);
+            $setted = $app->code->getSupportVersion();
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "pull support_version", $setted);
 
-        foreach($this->config->tester as $tester){
-            $app->tester->bind($tester);
-        }
+            $supportVersion = $this->config->supportVersion;
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push support_version", [$supportVersion]);
+
+            $response = $app->code->setSupportVersion($supportVersion);
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push support_version response", $response);
+
+            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_DOMAIN, [
+                'online_config' => $setted,
+                'original_config'=> $supportVersion,
+                'push_config' => $supportVersion,
+                'response' => $response
+            ]);
+        });
     }
 }

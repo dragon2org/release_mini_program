@@ -21,12 +21,14 @@ use App\Jobs\SetMiniProgramWebViewDomain;
 use App\Logs\ReleaseInQueueLog;
 use App\Models\Component;
 use App\Models\MiniProgram;
+use App\Models\Release;
 use App\Models\Tester;
 use App\ReleaseConfigurator;
 use EasyWeChat\Factory;
 use EasyWeChat\OpenPlatform\Server\Guard;
 use Illuminate\Support\Arr;
 use Log;
+use Symfony\Component\Cache\Tests\Adapter\MaxIdLengthAdapterTest;
 
 class ReleaseService
 {
@@ -455,33 +457,39 @@ class ReleaseService
                 throw new UnprocessableEntityHttpException(trans('暂无已绑定的小程序可发版'));
             }
 
+            $templatelist = Arr::pluck($this->templateList(), 'template_id');
+            if(!in_array($templateId, $templatelist)){
+                throw new UnprocessableEntityHttpException(trans('模板不存在'));
+            }
+
             //step 2. 获取配置文件
             $config = $this->component->extend->getReleaseConfig();
 
             $configurator = new ReleaseConfigurator($config);
-
-            //TODO::入列日志
             foreach ($miniProgramList as $miniProgram) {
-                 SetMiniProgramDomain::dispatch($miniProgram, $configurator, $templateId);
-                 ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramDomain::class, SetMiniProgramDomain::VERSION);
+                $release = (new Release());
+                $release = $release->createReleaseTrans($miniProgram, $templateId, $config);
+                $tradeNo = $release->trade_no;
+                SetMiniProgramDomain::dispatch($miniProgram, $release);
+                ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramDomain::class, SetMiniProgramDomain::VERSION);
 
-//                SetMiniProgramWebViewDomain::dispatch($miniProgram, $configurator, $templateId);
-//                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramWebViewDomain::class, SetMiniProgramWebViewDomain::VERSION);
+                SetMiniProgramWebViewDomain::dispatch($miniProgram, $release);
+                ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramWebViewDomain::class, SetMiniProgramWebViewDomain::VERSION);
+
+                SetMiniProgramTester::dispatch($miniProgram, $release);
+                ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramTester::class, SetMiniProgramTester::VERSION);
+
+                SetMiniProgramSupportVersion::dispatch($miniProgram, $release);
+                ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramSupportVersion::class, SetMiniProgramSupportVersion::VERSION);
+
+                SetMiniProgramVisitStatus::dispatch($miniProgram, $release);
+                ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramVisitStatus::class, SetMiniProgramVisitStatus::VERSION);
+
+                SetMiniProgramCodeCommit::dispatch($miniProgram, $release);
+                ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramCodeCommit::class, SetMiniProgramCodeCommit::VERSION);
 //
-//               SetMiniProgramTester::dispatch($miniProgram, $configurator, $templateId);
-//               ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramTester::class, SetMiniProgramTester::VERSION);
-//
-//                SetMiniProgramSupportVersion::dispatch($miniProgram, $configurator, $templateId);
-//                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramSupportVersion::class, SetMiniProgramSupportVersion::VERSION);
-//
-//                SetMiniProgramVisitStatus::dispatch($miniProgram, $configurator, $templateId);
-//                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramVisitStatus::class, SetMiniProgramVisitStatus::VERSION);
-//
-//                SetMiniProgramCodeCommit::dispatch($miniProgram, $configurator, $templateId);
-//                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramCodeCommit::class, SetMiniProgramCodeCommit::VERSION);
-//
-//                SetMiniProgramAudit::dispatch($miniProgram, $configurator, $templateId);
-//                ReleaseInQueueLog::info($miniProgram, $config, $templateId, SetMiniProgramAudit::class, SetMiniProgramAudit::VERSION);
+                SetMiniProgramAudit::dispatch($miniProgram, $release);
+                ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramAudit::class, SetMiniProgramAudit::VERSION);
             }
             return true;
         } catch (\Exception $e) {

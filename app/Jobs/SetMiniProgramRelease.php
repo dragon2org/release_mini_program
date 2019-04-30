@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Logs\ReleaseCommonQueueLogQueueLog;
 use App\Models\MiniProgram;
+use App\Models\Release;
 use App\ReleaseConfigurator;
 use App\Releaser;
 use Illuminate\Bus\Queueable;
@@ -22,7 +24,7 @@ class SetMiniProgramRelease implements ShouldQueue
 
     protected $config;
 
-    protected $templateId;
+    protected $release;
 
     const VERSION = '1.0.0';
 
@@ -31,11 +33,11 @@ class SetMiniProgramRelease implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(MiniProgram $miniProgram, ReleaseConfigurator $config, $templateId)
+    public function __construct(MiniProgram $miniProgram, Release $release)
     {
         $this->miniProgram = $miniProgram;
-        $this->config = $config;
-        $this->templateId = $templateId;
+        $this->config = $release->getReleaseConfigurator();
+        $this->release = $release;
     }
 
     /**
@@ -45,10 +47,19 @@ class SetMiniProgramRelease implements ShouldQueue
      */
     public function handle()
     {
-        //TODO::审核成功触发任务
-        $service = Releaser::build($this->miniProgram->component->app_id);
-        $app = $service->setMiniProgram($this->miniProgram->app_id);
+        $this->proccess($this, function(Application $app){
 
-        $app->code->release();
+            $setted = $app->domain->modify(['action' => 'get']);
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "pull domain", $setted);
+
+            $domain = $this->config->getDomain();
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push domain", $domain);
+
+            $response = $app->domain->modify($domain);
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push domain response", $response);
+
+
+            return true;
+        });
     }
 }

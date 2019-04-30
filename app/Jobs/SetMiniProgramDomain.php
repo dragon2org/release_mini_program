@@ -4,6 +4,8 @@ namespace App\Jobs;
 
 use App\Logs\ReleaseCommonQueueLogQueueLog;
 use App\Models\MiniProgram;
+use App\Models\Release;
+use App\Models\ReleaseItem;
 use App\ReleaseConfigurator;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -20,7 +22,7 @@ class SetMiniProgramDomain extends BaseReleaseJobWithLog implements ShouldQueue
 
     protected $config;
 
-    protected $templateId;
+    protected $release;
 
     const VERSION = '1.0.0';
     /**
@@ -28,11 +30,11 @@ class SetMiniProgramDomain extends BaseReleaseJobWithLog implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(MiniProgram $miniProgram, ReleaseConfigurator $config, $templateId)
+    public function __construct(MiniProgram $miniProgram, Release $release)
     {
         $this->miniProgram = $miniProgram;
-        $this->config = $config;
-        $this->templateId = $templateId;
+        $this->config = $release->getReleaseConfigurator();
+        $this->release = $release;
     }
 
     /**
@@ -45,20 +47,22 @@ class SetMiniProgramDomain extends BaseReleaseJobWithLog implements ShouldQueue
         $this->proccess($this, function(Application $app){
 
             $setted = $app->domain->modify(['action' => 'get']);
-            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "拉取服务器域名", $setted);
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "pull domain", $setted);
 
             $domain = $this->config->getDomain();
-            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "推送服务器域名", $domain);
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push domain", $domain);
 
             $response = $app->domain->modify($domain);
-            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "推送服务器域名响应", $response);
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push domain response", $response);
 
+            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_DOMAIN, [
+                'online_config' => $setted,
+                'original_config'=> $domain,
+                'push_config' => $domain,
+                'response' => $response
+            ]);
             return true;
         });
     }
 
-    public function toArray()
-    {
-        return [];
-    }
 }
