@@ -62,9 +62,9 @@ class ComponentController extends Controller
      *                 property="data",
      *                 type="object",
      *                 description="返回数据包",
-     *                 @SWG\Property(property="authorization_launch_page_domain", type="string", description="三方平台填写信息:登录授权的发起页域名"),
-     *                 @SWG\Property(property="authorization_event_notify_url", type="string", description="三方平台填写信息:授权事件接收URL"),
-     *                 @SWG\Property(property="msg_event_nofify_url", type="string", description="三方平台填写信息:消息与事件接收URL"),
+     *                 @SWG\Property(property="authorization_launch_page_domain", type="string", description="三方平台填写信息/业务域名/服务域名"),
+     *                 @SWG\Property(property="authorization_event_notify_url", type="string", description="三方平台填写信息:授权事件接收URL。临时填写信息。在开放平台创建成功之后，再在平台填写补充信息，获取正确的信息"),
+     *                 @SWG\Property(property="msg_event_nofify_url", type="string", description="三方平台填写信息:授权事件接收URL。临时填写信息。在开放平台创建成功之后，再在平台填写补充信息，获取正确的信息"),
      *                 @SWG\Property(property="white_list_ip", type="string", description="三方平台填写信息:白名单IP地址列表"),
      *             ),
      *         )
