@@ -58,12 +58,16 @@ class Component extends Model
 
     public function getAuthorizationLaunchPageDomain()
     {
-        return url('');
+        $url = url('');
+
+        return preg_replace("/http[s]*\:\/\//", '', $url);
     }
 
     public function getAuthorizationEventNotifyUrl()
     {
-        return route('componentServe', ['componentAppId' => $this->app_id]);
+        $componentAppId = $this->app_id ? $this->app_id : 'AAAAA';
+        $route = route('componentServe', ['componentAppId' => $componentAppId]);
+        return str_replace('AAAAA', '$componentAppId$', $route);
     }
 
     public function getMsgEventNotifyUrl()
@@ -79,7 +83,7 @@ class Component extends Model
     {
         $componentApp = (new self())
             ->where('app_id', $componentAppId)
-//            ->where('is_deleted', 0)
+            ->where('is_deleted', 0)
             ->first();
 
         if(!isset($componentApp)){
@@ -104,5 +108,12 @@ class Component extends Model
             return true;
         }
         return false;
+    }
+
+    public function validateFile($filename)
+    {
+        return (new self())
+            ->where('validate_filename', $filename)
+            ->first();
     }
 }

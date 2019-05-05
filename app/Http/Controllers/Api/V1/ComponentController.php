@@ -13,10 +13,12 @@ use App\Http\Requests\UpdateReleaseConfigWebViewDomain;
 use App\Http\Requests\UpdateReleaseExtJson;
 use App\Http\Requests\UpdateReleaseConfigDomain;
 use App\Http\Requests\UpdateReleaseConfigWebDomain;
+use App\Http\Requests\UploadValidateFile;
 use App\Http\Transformer\ComponentDetailTransformer;
 use App\Http\Transformer\ComponentTransformer;
 use App\Models\Component;
 use App\Services\ComponentService;
+use Illuminate\Support\Str;
 
 class ComponentController extends Controller
 {
@@ -34,6 +36,72 @@ class ComponentController extends Controller
     {
         parent::__construct($response);
         $this->service = $service;
+    }
+
+    /**
+     * @SWG\Post(
+     *     path="/component/create_before",
+     *     summary="设置平台验证文件，并获取白名单ip等",
+     *     tags={"三方平台管理"},
+     *     description="设置平台验证文件，并获取白名单ip",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="data",
+     *         in="body",
+     *         description="注册表单数据",
+     *         required=true,
+     *         type="object",
+     *         @SWG\Schema(ref="#/definitions/ComponentCreateBefore")
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="处理成功返回",
+     *         ref="$/responses/200",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 description="返回数据包",
+     *                 @SWG\Property(property="authorization_launch_page_domain", type="string", description="三方平台填写信息:登录授权的发起页域名"),
+     *                 @SWG\Property(property="authorization_event_notify_url", type="string", description="三方平台填写信息:授权事件接收URL"),
+     *                 @SWG\Property(property="msg_event_nofify_url", type="string", description="三方平台填写信息:消息与事件接收URL"),
+     *                 @SWG\Property(property="white_list_ip", type="string", description="三方平台填写信息:白名单IP地址列表"),
+     *             ),
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=422,
+     *         description="处理失败的返回",
+     *         ref="$/responses/422",
+     *     ),
+     * )
+     */
+    public function createBefore(UploadValidateFile $request)
+    {
+        $filename = request()->input('validate.filename');
+        $content = request()->input('validate.content');
+        $component = (new Component())->validateFile($filename);
+        if(!isset($component)){
+            $component = (new Component());
+            $component->validate_filename = $filename;
+        }
+        $component->validate_content = $content;
+        //生成token和ase-key;
+        if(!isset($component->verify_token)) $component->verify_token = base64_encode($filename);
+        if(!isset($component->aes_key)) $component->aes_key =  Str::random(43);
+
+        $component->save();
+
+        return $this->response->withArray([
+            'data' => [
+                'white_list_ip' => $_SERVER['SERVER_ADDR'],
+                'aes_key' => $component->aes_key,
+                'verify_token' => $component->verify_token,
+                "authorization_launch_page_domain" => $component->getAuthorizationLaunchPageDomain(),
+                "authorization_event_notify_url" => $component->getAuthorizationEventNotifyUrl(),
+                "msg_event_notify_url" => $component->getMsgEventNotifyUrl(),
+            ],
+        ]);
     }
 
     /**
@@ -61,7 +129,7 @@ class ComponentController extends Controller
      *                 type="object",
      *                 description="返回数据包",
      *                 @SWG\Property(property="authorization_launch_page_domain", type="string", description="三方平台填写信息:登录授权的发起页域名"),
-     *                 @SWG\Property(property="authorization_event_nofify_url", type="string", description="三方平台填写信息:授权事件接收URL"),
+     *                 @SWG\Property(property="authorization_event_notify_url", type="string", description="三方平台填写信息:授权事件接收URL"),
      *                 @SWG\Property(property="msg_event_nofify_url", type="string", description="三方平台填写信息:消息与事件接收URL"),
      *                 @SWG\Property(property="white_list_ip", type="string", description="三方平台填写信息:白名单IP地址列表"),
      *             ),

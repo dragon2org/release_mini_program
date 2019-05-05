@@ -23,6 +23,7 @@ Route::group([
     /**
      * 三方平台管理
      */
+    Route::post('/component/create_before', 'ComponentController@createBefore');
     Route::post('/component', 'ComponentController@create');
     Route::get('/component', 'ComponentController@list');
     Route::get('/component/{componentAppId}', 'ComponentController@show');

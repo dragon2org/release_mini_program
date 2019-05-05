@@ -25,8 +25,9 @@ class ComponentController extends Controller
 
     public function hostValidate($validateFilename)
     {
-        $content = Component::where('validate_filename', $validateFilename)->value('validate_content');
+        $file = (new Component())->validateFile($validateFilename);
 
+        $content = $file->validate_content;
         if (empty($content)) {
             abort(404, 'not found pages');
         }
