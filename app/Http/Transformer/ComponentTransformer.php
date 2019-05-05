@@ -20,6 +20,7 @@ class ComponentTransformer extends TransformerAbstract
             "authorization_launch_page_domain" => $component->getAuthorizationLaunchPageDomain(),
             "authorization_event_notify_url" => $component->getAuthorizationEventNotifyUrl(),
             "msg_event_notify_url" => $component->getMsgEventNotifyUrl(),
+            "white_list_ip" => $_SERVER['SERVER_ADDR']
         ];
     }
 }

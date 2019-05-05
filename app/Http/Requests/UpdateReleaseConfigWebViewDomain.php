@@ -27,7 +27,7 @@ class UpdateReleaseConfigWebViewDomain extends FormRequest
             'action' => ['required', function($attribute, $value, $closure){
                 if($value !== 'set') $closure('action参数仅支持: set');
             }],
-            'webviewdomain' => 'required|array',
+            'webviewdomain' => 'required|array|max:20',
             'webviewdomain.*' => ['url', function($attribute, $value, $closure){
                 if(strpos($value, 'https://') !== 0){
                     $closure($attribute . ' invalid');

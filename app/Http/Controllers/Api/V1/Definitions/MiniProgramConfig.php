@@ -18,10 +18,10 @@ class MiniProgramConfig
      *     type="object",
      *     description="服务域名配置信息",
      *     @SWG\Property(property="action", type="string", description="set覆盖"),
-     *     @SWG\Property(property="requestdomain", type="array", description="请求域名",  @SWG\Items()),
-     *     @SWG\Property(property="wsrequestdomain", type="array", description="wss域名",  @SWG\Items()),
-     *     @SWG\Property(property="uploaddomain", type="array", description="上传域名",  @SWG\Items()),
-     *     @SWG\Property(property="downloaddomain", type="array", description="下载域名",  @SWG\Items()),
+     *     @SWG\Property(property="requestdomain", type="array", description="请求域名;最多20个",  @SWG\Items()),
+     *     @SWG\Property(property="wsrequestdomain", type="array", description="wss域名;最多20个",  @SWG\Items()),
+     *     @SWG\Property(property="uploaddomain", type="array", description="上传域名;最多20个",  @SWG\Items()),
+     *     @SWG\Property(property="downloaddomain", type="array", description="下载域名;最多20个",  @SWG\Items()),
      * )
      */
     public $domain;
@@ -31,7 +31,7 @@ class MiniProgramConfig
      *     type="object",
      *     description="业务域名",
      *     @SWG\Property(property="action", type="string", description="set覆盖"),
-     *     @SWG\Property(property="webviewdomain", type="array", description="业务域名",  @SWG\Items()),
+     *     @SWG\Property(property="webviewdomain", type="array", description="业务域名;最多20个",  @SWG\Items()),
      * )
      */
     public $web_view_domain;
