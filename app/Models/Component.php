@@ -123,4 +123,10 @@ class Component extends Model
             ->where('validate_filename', $filename)
             ->first();
     }
+
+    public function updateVerifyTicket($verifyTicket)
+    {
+        $this->verify_ticket = $verifyTicket;
+        $this->save();
+    }
 }

@@ -126,7 +126,7 @@ class ReleaseService
         // 处理VERIFY_TICKET
         $server->push(function ($message) {
             Log::info('ComponentVerifyTicket:', $message);
-            $this->setTicket($message['ComponentVerifyTicket']);
+            $this->component->updateVerifyTicket($message['ComponentVerifyTicket']);
         }, Guard::EVENT_COMPONENT_VERIFY_TICKET);
 
         return $server->serve();
@@ -487,7 +487,7 @@ class ReleaseService
 
                 SetMiniProgramCodeCommit::dispatch($miniProgram, $release);
                 ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramCodeCommit::class, SetMiniProgramCodeCommit::VERSION);
-//
+
                 SetMiniProgramAudit::dispatch($miniProgram, $release);
                 ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramAudit::class, SetMiniProgramAudit::VERSION);
             }
