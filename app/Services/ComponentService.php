@@ -26,8 +26,21 @@ class ComponentService
      */
     public function register(array $input)
     {
-        $component = new Component();
+        $component =  (new Component())->where('app_id', $input['app_id'])->first();
+        if(isset($component)){
+            throw new UnprocessableEntityHttpException(trans('平台已存在'));
+        }
+
+        $tokenValidateFilename = base64_decode($input['verify_token']);
+        if($tokenValidateFilename){
+            $component = (new Component())->where('validate_filename', $tokenValidateFilename)->first();
+        }
+
+        if(!isset($component)){
+            $component = new Component();
+        }
         $component->fill($input);
+
         $validateFile = Arr::get($input, 'validate');
         $component->validate_filename = $validateFile['filename'];
         $component->validate_content = $validateFile['content'];

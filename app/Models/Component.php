@@ -65,18 +65,25 @@ class Component extends Model
 
     public function getAuthorizationEventNotifyUrl()
     {
-        $componentAppId = $this->app_id ? $this->app_id : 'AAAAA';
-        $route = route('componentServe', ['componentAppId' => $componentAppId]);
-        return str_replace('AAAAA', '$componentAppId$', $route);
+        $route = route('componentServe', ['componentAppId' => $this->getAppId()]);
+        return str_replace('ZZZZZ', '$componentAppId$', $route);
     }
 
     public function getMsgEventNotifyUrl()
     {
         $route = route('componentMiniProgramServe', [
-            'componentAppId' => $this->app_id,
+            'componentAppId' => $this->getAppId(),
             'miniProgram' => 'AAAAA'
             ]);
+
+        $route = str_replace('ZZZZZ', '$componentAppId$', $route);
         return str_replace('AAAAA', '$APPID$', $route);
+    }
+
+    private function getAppId()
+    {
+        $appId = $this->app_id ? $this->app_id : 'ZZZZZ';
+        return $appId;
     }
 
     public function getComponent($componentAppId)
