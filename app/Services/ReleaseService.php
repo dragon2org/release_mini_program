@@ -176,9 +176,8 @@ class ReleaseService
         $refreshToken = $authorization['authorization_info']['authorizer_refresh_token'];
 
         //TODO::判断function_info
-        $miniProgram = new MiniProgram();
+        $miniProgram = (new MiniProgram())->firstOrNew(['app_id' => $miniProgramAppId]);
         $miniProgram->component_id = $this->component->component_id;
-        $miniProgram->app_id = $miniProgramAppId;
         $miniProgram->company_id = request()->query('company_id', 0);
         $miniProgram->inner_name = request()->query('inner_name', '');
         $miniProgram->inner_desc = request()->query('inner_desc', '');
@@ -335,15 +334,13 @@ class ReleaseService
 
     public function sessionKey(string $code)
     {
-        return $this->parseResponse(
-            $this->openPlatform->auth->session($code)
-        );
+        return $this->miniProgramApp->auth->session($code);
     }
 
     public function decryptData(string $jscode, string $iv, string $encryptedData)
     {
-        $sessionKey = $this->sessionKey($jscode);
-        return $this->miniProgramApp->encryptor->decryptData($sessionKey, $iv, $encryptedData);
+        $session = $this->sessionKey($jscode);
+        return $this->miniProgramApp->encryptor->decryptData($session['session_key'], $iv, $encryptedData);
     }
 
     public function getAccessToken()

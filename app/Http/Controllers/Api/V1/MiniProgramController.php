@@ -80,7 +80,7 @@ class MiniProgramController extends Controller
      *         required=false,
      *         default="pc",
      *         in="query",
-     *         description="生成类型:移动端: mobile；电脑端:pc",
+     *         description="生成类型:移动微信端: mobile；电脑端:pc",
      *     ),
      *     @SWG\Response(
      *         response=200,
@@ -624,7 +624,6 @@ class MiniProgramController extends Controller
      */
     public function sessionKey(GetMiniProgramSessionKey $request)
     {
-
         $response = app('dhb.component.core')->sessionKey(request()->input('code'));
         return $this->response->withArray($response);
     }

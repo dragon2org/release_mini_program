@@ -8,11 +8,6 @@ namespace Http\Controllers\Api\V1\Definitions;
 class Draft
 {
     /**
-     * @SWG\Property(type="string", description="三方平台ID")
-     */
-    public $component_app_id;
-
-    /**
      * @SWG\Property(type="string", description="草稿id")
      */
     public $draft_id;
@@ -33,8 +28,17 @@ class Draft
     public $create_time;
 
     /**
-     * @SWG\Property(type="string", description="备注")
+     * @SWG\Property(type="string", description="开源小程序")
      */
-    public $desc;
+    public $source_miniprogram_appid;
 
+    /**
+     * @SWG\Property(type="string", description="开源小程序名称")
+     */
+    public $source_miniprogram;
+
+    /**
+     * @SWG\Property(type="string", description="开发者")
+     */
+    public $developer;
 }
