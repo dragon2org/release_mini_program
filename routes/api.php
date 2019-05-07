@@ -53,7 +53,8 @@ Route::group([
     /**
      * 小程序管理
      */
-    Route::get('/component/{componentAppId}/bind_url', 'MiniProgramController@bindUrl');
+    Route::post('/component/{componentAppId}/bind_url', 'MiniProgramController@bindUrl');
+    Route::get('/component/{componentAppId}/bind', 'MiniProgramController@bind')->name('MiniProgramBind');
     Route::get('/component/{componentAppId}/bind/callback', 'MiniProgramController@bindCallback')->name('MiniProgramBindCallback');
     Route::get('/component/{componentAppId}/mini_program', 'MiniProgramController@index');
     Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}', 'MiniProgramController@show');

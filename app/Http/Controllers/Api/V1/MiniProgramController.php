@@ -33,7 +33,7 @@ class MiniProgramController extends Controller
     }
 
     /**
-     * @SWG\Get(
+     * @SWG\Post(
      *     path="/component/{componentAppId}/bind_url",
      *     summary="添加(绑定)小程序",
      *     tags={"小程序管理"},
@@ -101,9 +101,26 @@ class MiniProgramController extends Controller
      *     )
      * )
      */
-    public function bindUrl(GetBindMiniProgramUri $request)
+    public function bindUrl(GetBindMiniProgramUri $request, $componentAppId)
     {
-        return view('authorize_boot_page', ['uri' => app('dhb.component.core')->getBindUri()]);
+        $url = route('MiniProgramBind', [
+            'componentAppId' => $componentAppId,
+            'redirect_uri' => $request->input('redirect_uri'),
+            'inner_name' => $request->input('inner_name'),
+            'inner_desc' => $request->input('inner_desc'),
+            'company_id' => $request->input('company_id'),
+            'biz_appid' => $request->input('biz_appid'),
+        ], true);
+        return $this->response->withArray([
+            'data' => $url
+        ]);
+    }
+
+    public function bind()
+    {
+        $url = app('dhb.component.core')->getBindUri();
+
+        return redirect($url);
     }
 
     public function bindCallback()
