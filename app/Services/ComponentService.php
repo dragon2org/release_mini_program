@@ -31,11 +31,6 @@ class ComponentService
             throw new UnprocessableEntityHttpException(trans('平台已存在'));
         }
 
-        $tokenValidateFilename = base64_decode($input['verify_token']);
-        if($tokenValidateFilename){
-            $component = (new Component())->where('validate_filename', $tokenValidateFilename)->first();
-        }
-
         if(!isset($component)){
             $component = new Component();
         }
@@ -45,6 +40,7 @@ class ComponentService
         $component->validate_filename = $validateFile['filename'];
         $component->validate_content = $validateFile['content'];
         $component->save();
+
         return $component;
     }
 
