@@ -24,6 +24,18 @@ class ReleaseItem extends Model
 
     const CONFIG_KEY_WEB_VIEW_DOMAIN = 'web_view_domain';
 
+    const CONFIG_KEY_AUDIT = 'audit';
+
+    const CONFIG_KEY_CODE_COMMIT = 'code_commit';
+
+    const CONFIG_KEY_RELEASE = 'release';
+
+    const CONFIG_KEY_SUPPORT_VERSION = 'support_version';
+
+    const CONFIG_KEY_TESTER = 'tester';
+
+    const CONFIG_KEY_VISIT_STATUS = 'visit_status';
+
     public function release()
     {
         return $this->belongsTo(Release::class, 'release_id', 'release_id');

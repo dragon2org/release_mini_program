@@ -9,8 +9,11 @@
 </head>
 <body>
 <a href="{{$uri}}">授权</a>
+<button onclick="window.location.href='{{$uri}}'">授权跳转测试,js直接跳转有问题。</button>
 </body>
 </html>
 <script>
-
+    setTimeout(function(){
+        window.location.href='{{$uri}}';
+    }, 5000)
 </script>

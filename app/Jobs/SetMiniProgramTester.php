@@ -60,7 +60,7 @@ class SetMiniProgramTester extends BaseReleaseJobWithLog implements ShouldQueue
                 $response = $app->tester->bind($tester);
                 ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push tester: {$tester} response", $response);
 
-                ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_DOMAIN, [
+                ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_TESTER, [
                     'online_config' => $setted,
                     'original_config'=> $tester,
                     'push_config' => $tester,

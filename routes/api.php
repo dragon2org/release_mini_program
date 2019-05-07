@@ -8,7 +8,7 @@ Route::get('/{validateFilename}', 'ComponentController@hostValidate');
 Route::group([
     'middleware' => ['force-json', 'component-injection']
 ], function(){
-    Route::any('/component/{componentAppId}/mini_program/{miniProgram}/serve', 'MiniProgramController@serve')->name('componentMiniProgramServe');
+    Route::any('/component/{componentAppId}/mini_program/{miniProgramAppId}/serve', 'MiniProgramController@serve')->name('componentMiniProgramServe');
     Route::post('/component/{componentAppId}/serve', 'ComponentController@serve')->name('componentServe');;
 
 });

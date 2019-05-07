@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Logs\ReleaseCommonQueueLogQueueLog;
 use App\Models\MiniProgram;
 use App\Models\Release;
+use App\Models\ReleaseItem;
 use App\ReleaseConfigurator;
 use App\Releaser;
 use Illuminate\Bus\Queueable;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 use \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
 
 
-class SetMiniProgramRelease implements ShouldQueue
+class MiniProgramRelease implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -49,16 +50,15 @@ class SetMiniProgramRelease implements ShouldQueue
     {
         $this->proccess($this, function(Application $app){
 
-            $setted = $app->domain->modify(['action' => 'get']);
-            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "pull domain", $setted);
-
-            $domain = $this->config->getDomain();
-            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push domain", $domain);
-
-            $response = $app->domain->modify($domain);
+            $response = $app->code->release();
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push domain response", $response);
 
-
+            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_SUPPORT_VERSION, [
+                'online_config' => '',
+                'original_config'=> '',
+                'push_config' => '',
+                'response' => $response
+            ]);
             return true;
         });
     }

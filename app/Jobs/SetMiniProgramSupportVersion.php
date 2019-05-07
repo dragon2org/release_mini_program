@@ -58,7 +58,7 @@ class SetMiniProgramSupportVersion extends BaseReleaseJobWithLog implements Shou
             $response = $app->code->setSupportVersion($supportVersion);
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push support_version response", $response);
 
-            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_DOMAIN, [
+            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_SUPPORT_VERSION, [
                 'online_config' => $setted,
                 'original_config'=> $supportVersion,
                 'push_config' => $supportVersion,

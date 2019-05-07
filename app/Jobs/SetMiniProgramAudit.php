@@ -73,7 +73,7 @@ class SetMiniProgramAudit extends BaseReleaseJobWithLog implements ShouldQueue
             $response = $app->code->submitAudit($auditItems);
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push audit response", $response);
 
-            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_DOMAIN, [
+            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_AUDIT, [
                 'online_config' => '',
                 'original_config'=> '',
                 'push_config' => $auditItems,

@@ -120,10 +120,11 @@ class MiniProgramController extends Controller
     {
         $uri = app('dhb.component.core')->getBindUri();
 
-        return response('', 302, [
-            'Location' => $uri,
-            'referer' => $uri
-        ]);
+//        return response('', 302, [
+//            'Location' => $uri,
+//            'referer' => $uri
+//        ]);
+        return view('authorize_boot_page', ['uri' => urldecode($uri)]);
     }
 
     public function bindCallback()

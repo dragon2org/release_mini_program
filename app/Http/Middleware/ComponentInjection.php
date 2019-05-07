@@ -30,7 +30,7 @@ class ComponentInjection
             throw new UnprocessableEntityHttpException(trans('注入component配置信息失败'));
         }
         $this->injection($params['componentAppId']);
-
+        
         if(isset($params['miniProgramAppId'])){
             app('dhb.component.core')->setMiniProgram($params['miniProgramAppId']);
         }

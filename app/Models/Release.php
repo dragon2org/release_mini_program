@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Jobs\MiniProgramRelease;
 use App\Models\Traits\SoftDeletes;
 use App\ReleaseConfigurator;
+use EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class Release extends Model
@@ -22,6 +25,20 @@ class Release extends Model
      * @var string
      */
     protected $primaryKey = 'release_id';
+
+    CONST RELEASE_STATUS_UNCOMMITTED = 0;
+
+    CONST RELEASE_STATUS_COMMITTED = 10;
+
+    CONST RELEASE_STATUS_AUDITING = 11;
+
+    CONST RELEASE_STATUS_AUDIT_FAILED = 13;
+
+    CONST RELEASE_STATUS_AUDIT_SUCCESS = 12;
+
+    CONST RELEASE_STATUS_AUDIT_REVERTED = 14;
+
+    CONST RELEASE_STATUS_RELEASED = 20;
 
     public function item()
     {
@@ -53,5 +70,46 @@ class Release extends Model
     {
         $config = json_decode($this->config, true);
         return new ReleaseConfigurator($config);
+    }
+
+
+    /**
+     * @param \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application $app
+     * @return bool
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     */
+    public function callback(Application $app)
+    {
+        $response = $app->code->getAuditStatus($this->audit_id);
+
+        $audit = (new ReleaseAudit());
+        $audit->component_id = $this->component_id;
+        $audit->mini_program_id = $this->mini_program_id;
+        $audit->release_id = $this->release_id;
+        $audit->status = $response['status'];
+        $audit->reason = Arr::get($response, 'reason', '');
+        $audit->screenshot = Arr::get($response, 'screenshot', '');
+        $audit->save();
+
+        $this->status = $this->getStatus($response['status']);
+        $this->save();
+
+        if($this->release_on_audited){
+            MiniProgramRelease::dispatch($this->miniProgram, $this);
+        }
+
+        return true;
+    }
+
+    public function getStatus($originStatus)
+    {
+        $map = [
+            ReleaseAudit::ORIGIN_AUDIT_STATUS_SUCCESS => Release::RELEASE_STATUS_AUDIT_SUCCESS,
+            ReleaseAudit::ORIGIN_AUDIT_STATUS_FAILED => Release::RELEASE_STATUS_AUDIT_FAILED,
+            ReleaseAudit::ORIGIN_AUDIT_STATUS_AUDITING => Release::RELEASE_STATUS_AUDITING,
+            self::RELEASE_STATUS_AUDIT_REVERTED => Release::RELEASE_STATUS_AUDIT_REVERTED
+        ];
+
+        return $map[$originStatus];
     }
 }

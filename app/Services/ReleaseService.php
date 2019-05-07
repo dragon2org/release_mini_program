@@ -24,7 +24,9 @@ use App\Models\MiniProgram;
 use App\Models\Release;
 use App\Models\Tester;
 use App\ReleaseConfigurator;
+use App\ServeMessageHandler\EventMessageHandler;
 use EasyWeChat\Factory;
+use EasyWeChat\Kernel\Messages\Message;
 use EasyWeChat\OpenPlatform\Server\Guard;
 use Illuminate\Support\Arr;
 use Log;
@@ -137,6 +139,9 @@ class ReleaseService
         $server = $this->miniProgramApp->server;
 
 
+        $server->push(EventMessageHandler::class, Message::EVENT);
+
+        return $server->serve();
     }
 
     public function updateReleaseConfig($input)

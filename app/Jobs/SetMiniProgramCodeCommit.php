@@ -93,7 +93,7 @@ class SetMiniProgramCodeCommit extends BaseReleaseJobWithLog implements ShouldQu
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push code commit response", $response);
 
 
-            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_DOMAIN, [
+            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_CODE_COMMIT, [
                 'online_config' => '',
                 'original_config'=> $this->config->extJson,
                 'push_config' => $extJson,

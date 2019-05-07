@@ -55,7 +55,7 @@ class SetMiniProgramVisitStatus extends BaseReleaseJobWithLog implements ShouldQ
             $response = $app->code->changeVisitStatus($visitStatus);
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push visit_status response", $response);
 
-            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_DOMAIN, [
+            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_VISIT_STATUS, [
                 'online_config' => '',
                 'original_config'=> $visitStatus,
                 'push_config' => $visitStatus,
