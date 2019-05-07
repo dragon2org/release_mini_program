@@ -24,8 +24,8 @@ class GetBindMiniProgramUri extends FormRequest
     public function rules()
     {
         return [
-            'inner_name' => 'required|max:45',
-            'inner_desc' => 'required|max:45',
+            'inner_name' => 'max:45',
+            'inner_desc' => 'max:45',
             'company_id' => 'required|int',
             'type' => 'required|in:pc,mobile',
         ];
