@@ -29,6 +29,8 @@ class CustomLogger
 
     const LOG_COMMON_QUEUE = 'queue-common';
 
+    const LOG_AUDIT_NOTICE = 'audit-notice';
+
 
     private static $loggers = array();
 

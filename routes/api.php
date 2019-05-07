@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::pattern('validateFilename', '[A-Za-z0-9_]+\.txt$');
 Route::get('/{validateFilename}', 'ComponentController@hostValidate');
@@ -58,6 +58,7 @@ Route::group([
     Route::get('/component/{componentAppId}/mini_program', 'MiniProgramController@index');
     Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}', 'MiniProgramController@show');
     Route::put('/component/{componentAppId}/mini_program/{miniProgramAppId}', 'MiniProgramController@update');
+    Route::delete('/component/{componentAppId}/mini_program/{miniProgramAppId}', 'MiniProgramController@delete');
     Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/access_token', 'MiniProgramController@accessToken');
     Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/session_key', 'MiniProgramController@sessionKey');
     Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/commit', 'CodeController@commit');

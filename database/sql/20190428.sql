@@ -49,7 +49,6 @@ CREATE TABLE `mini_program` (
   `qrcode_url` varchar(255) NOT NULL DEFAULT '' COMMENT '二维码图片的URL',
   `desc` varchar(255) NOT NULL DEFAULT '' COMMENT '小程序平台描述',
   `authorizer_refresh_token` varchar(100) NOT NULL DEFAULT '' COMMENT '获取（刷新）授权公众号或小程序的接口调用凭据',
-  `user_version` varchar(43) NOT NULL DEFAULT '' COMMENT '当前版本',
   `field1` varchar(45) NOT NULL DEFAULT '' COMMENT '备用字段',
   `field2` varchar(45) NOT NULL DEFAULT '' COMMENT '备用字段2',
   `is_deleted` tinyint(1) NOT NULl DEFAULT 0 COMMENT '软删除标记',

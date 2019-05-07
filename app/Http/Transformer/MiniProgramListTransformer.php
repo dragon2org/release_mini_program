@@ -27,8 +27,7 @@ class MiniProgramListTransformer extends TransformerAbstract
             "user_name" => $item->user_name,
             "principal_name" => $item->principal_name,
             "qrcode_url" => $item->qrcode_url,
-            "desc" => $item->desc,
-            "user_version" => $item->user_version,
+            "authorization_status" => $item->authorization_status === 10 ? 'authorized' : 'unauthorized',
         ];
     }
 }

@@ -132,6 +132,13 @@ class ReleaseService
         return $server->serve();
     }
 
+    public function miniProgramServe()
+    {
+        $server = $this->miniProgramApp->server;
+
+
+    }
+
     public function updateReleaseConfig($input)
     {
         $config = $this->component->extend->getReleaseConfig();

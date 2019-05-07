@@ -73,7 +73,7 @@ class CodeController extends Controller
      *             @SWG\Property(
      *                 property="ext_json",
      *                 type="string",
-     *                 description="自定义ext_json",
+     *                 description="自定义ext_json; json字符串",
      *             ),
      *         )
      *     ),
@@ -93,7 +93,6 @@ class CodeController extends Controller
      */
     public function commit(CodeCommit $request)
     {
-
         $response = app('dhb.component.core')->commit(
             request()->input('template_id'),
             request()->input('user_version'),

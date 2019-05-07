@@ -215,11 +215,6 @@ class TemplateController extends Controller
      *                 type="string",
      *                 default="T",
      *                 description="接口返回状态['T'->成功; 'F'->失败]"
-     *             ),
-     *             @SWG\Property(
-     *                 property="data",
-     *                 type="Object",
-     *                 ref="#/definitions/Component"
      *             )
      *         )
      *     )

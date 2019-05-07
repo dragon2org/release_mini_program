@@ -37,7 +37,7 @@ class MiniProgramController extends Controller
      *     path="/component/{componentAppId}/bind_url",
      *     summary="添加(绑定)小程序",
      *     tags={"小程序管理"},
-     *     description="管理三方平台",
+     *     description="管理三方平台. 直接跳转这个地址",
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="redirect_uri",
@@ -344,10 +344,6 @@ class MiniProgramController extends Controller
      *                 type="string",
      *                 default="T",
      *                 description="接口返回状态['T'->成功; 'F'->失败]"
-     *             ),
-     *             @SWG\Property(
-     *                 property="data",
-     *                 type="object",
      *             )
      *         )
      *     )
@@ -358,6 +354,7 @@ class MiniProgramController extends Controller
         $miniProgram = (new MiniProgram())
             ->where('component_id', app('dhb.component.core')->component->component_id)
             ->where('app_id', $miniProgramAppId)
+            ->where('is_deleted', 0)
             ->first();
 
         if(!isset($miniProgram)){
@@ -744,5 +741,4 @@ class MiniProgramController extends Controller
     {
         return $this->response->withArray(['data' => app('dhb.component.core')->getAccessToken()]);
     }
-
 }
