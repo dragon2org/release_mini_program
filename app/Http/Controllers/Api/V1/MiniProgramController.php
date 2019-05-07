@@ -103,7 +103,7 @@ class MiniProgramController extends Controller
      */
     public function bindUrl(GetBindMiniProgramUri $request, $componentAppId)
     {
-        $url = route('MiniProgramBind', [
+        $uri = route('MiniProgramBind', [
             'componentAppId' => $componentAppId,
             'redirect_uri' => $request->input('redirect_uri'),
             'inner_name' => $request->input('inner_name'),
@@ -112,7 +112,9 @@ class MiniProgramController extends Controller
         ], true);
 
         return $this->response->withArray([
-            'data' => $url
+            'data' => [
+                'uri' => $uri
+            ]
         ]);
     }
 
