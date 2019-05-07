@@ -31,6 +31,8 @@ class CustomLogger
 
     const LOG_AUDIT_NOTICE = 'audit-notice';
 
+    const LOG_CODE_COMMIT = 'code-commit';
+
 
     private static $loggers = array();
 

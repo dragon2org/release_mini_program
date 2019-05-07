@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Component;
+use App\Models\ValidateFile;
 use App\Services\ComponentService;
 use EasyWeChat\Factory;
 use EasyWeChat\OpenPlatform\Server\Guard;
@@ -25,9 +26,9 @@ class ComponentController extends Controller
 
     public function hostValidate($validateFilename)
     {
-        $file = (new Component())->validateFile($validateFilename);
+        $file = (new ValidateFile())->where('filename', $validateFilename)->first();
 
-        $content = $file->validate_content;
+        $content = $file->content;
         if (empty($content)) {
             abort(404, 'not found pages');
         }

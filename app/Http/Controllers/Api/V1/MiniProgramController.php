@@ -77,7 +77,7 @@ class MiniProgramController extends Controller
      *     @SWG\Parameter(
      *         name="type",
      *         type="string",
-     *         required=false,
+     *         required=true,
      *         default="pc",
      *         in="query",
      *         description="生成类型:移动微信端: mobile；电脑端:pc",

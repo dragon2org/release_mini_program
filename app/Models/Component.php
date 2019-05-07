@@ -41,6 +41,11 @@ class Component extends Model
         'aes_key',
     ];
 
+    public function validateFile()
+    {
+        return $this->hasOne(ValidateFile::class, 'component_id', 'component_id');
+    }
+
     public function getConfig()
     {
         if($config = json_decode($this->config, true)){
@@ -115,13 +120,6 @@ class Component extends Model
             return true;
         }
         return false;
-    }
-
-    public function validateFile($filename)
-    {
-        return (new self())
-            ->where('validate_filename', $filename)
-            ->first();
     }
 
     public function updateVerifyTicket($verifyTicket)

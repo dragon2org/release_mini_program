@@ -18,9 +18,11 @@ use App\Jobs\SetMiniProgramSupportVersion;
 use App\Jobs\SetMiniProgramTester;
 use App\Jobs\SetMiniProgramVisitStatus;
 use App\Jobs\SetMiniProgramWebViewDomain;
+use App\Logs\CodeCommitLog;
 use App\Logs\ReleaseInQueueLog;
 use App\Models\Component;
 use App\Models\MiniProgram;
+use App\Models\MiniProgramExt;
 use App\Models\Release;
 use App\Models\Tester;
 use App\ReleaseConfigurator;
@@ -362,6 +364,16 @@ class ReleaseService
 
     public function commit($templateId, $userVersion, $extJson = '{}')
     {
+
+        MiniProgramExt::updateOrCreate([
+            'component_id' => $this->miniProgram->component_id,
+            'template_id' => $templateId,
+            'mini_program_id' => $this->miniProgram->mini_program_id,
+            'company_id' => $this->miniProgram->company_id
+        ], ['config' => $extJson]);
+
+        $extJson = $this->miniProgram->assign($extJson);
+
         $response = $this->parseResponse(
             $this->miniProgramApp->code->commit($templateId, $extJson, $userVersion, $userVersion)
         );

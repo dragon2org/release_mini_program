@@ -70,3 +70,20 @@ CREATE TABLE `tester`  (
 
 DROP TABLE `mini_program_template`;
 
+CREATE TABLE `validate_file`(
+  `validate_file` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `component_id` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '关联的三方平台ID',
+  `filename` varchar(45)  NOT NULL DEFAULT '' COMMENT '文件名',
+  `content` varchar(255)  NOT NULL DEFAULT ''  COMMENT '文件内容',
+  `field1` varchar(45)  NOT NULL DEFAULT '' COMMENT '备用字段',
+  `field2` varchar(45)  NOT NULL DEFAULT '' COMMENT '备用字段2',
+  `is_deleted` tinyint(4) NOT NULL DEFAULT 0 COMMENT '软删除标志',
+  `create_user` varchar(45)  NOT NULL DEFAULT '' COMMENT '新建记录的用户',
+  `update_user` varchar(45)  NOT NULL DEFAULT '' COMMENT '最后一次操作的用户',
+  `created_at` DATETIME NOT NULL DEFAULT '1970-01-01 08:00:01' COMMENT '记录添加时间',
+  `updated_at` DATETIME NOT NULL DEFAULT '1970-01-01 08:00:01' COMMENT '记录更新时间',
+  PRIMARY KEY (`validate_file`) USING BTREE,
+  INDEX `idx_filename`(`filename`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8  COMMENT = '验证文件表';
+
+ALTER TABLE `component` DROP COLUMN `validate_filename`,DROP COLUMN `validate_content`;

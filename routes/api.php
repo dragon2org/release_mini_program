@@ -122,3 +122,15 @@ Route::group([
     Route::get('/component/{componentAppId}/release_task/{releaseId}', 'ReleaseController@detail');
     Route::get('/component/{componentAppId}/release_task/{releaseId}/retry', 'ReleaseController@retry');
 });
+
+
+Route::group([
+    'middleware' => 'force-json',
+    'prefix' => 'api/v1',
+    'namespace' => 'Api\V1',
+], function () {
+    /**
+     *  工具类方法
+     */
+    Route::post('/tools/buildCodeCommitParams', 'ToolsController@buildCodeCommitParams');
+});

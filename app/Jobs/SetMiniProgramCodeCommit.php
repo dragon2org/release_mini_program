@@ -75,8 +75,12 @@ class SetMiniProgramCodeCommit extends BaseReleaseJobWithLog implements ShouldQu
             $extJson = $this->config->extJson;
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push miniProgram code commit ext_json origin", [$extJson]);
 
-            $extJson = str_replace('$APP_ID$', $this->miniProgram->app_id,  $extJson);
-            $extJson = str_replace('$COMPANY_ID$', $this->miniProgram->company_id,  $extJson);
+            if($this->miniProgram->ext && empty($this->miniProgram->ext->ext_json) && $this->miniProgram->ext->ext_json !== '{}'){
+                $extJson = $this->miniProgram->extJson;
+                ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push miniProgram code commit ext_json independent origin", [$extJson]);
+            }
+
+            $extJson = $this->miniProgram->assign($extJson);
 
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push miniProgram code commit ext_json result", [$extJson]);
 

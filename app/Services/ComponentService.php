@@ -10,6 +10,7 @@ namespace App\Services;
 
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Models\ComponentExt;
+use App\Models\ValidateFile;
 use EasyWeChat\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
@@ -35,11 +36,12 @@ class ComponentService
             $component = new Component();
         }
         $component->fill($input);
-
-        $validateFile = Arr::get($input, 'validate');
-        $component->validate_filename = $validateFile['filename'];
-        $component->validate_content = $validateFile['content'];
         $component->save();
+        $file = Arr::get($input, 'validate');
+        ValidateFile::updateOrCreate(['filename' => $file['filename']], [
+            'content'=> $file['content'],
+            'component_id' => $component->component_id
+        ]);
 
         return $component;
     }
@@ -52,6 +54,11 @@ class ComponentService
         }
         $component->fill($input);
         $component->save();
+        $file = Arr::get($input, 'validate');
+        ValidateFile::updateOrCreate(['filename' => $file['filename']], [
+            'content'=> $file['content'],
+            'component_id' => $component->component_id
+        ]);
 
         return $component;
     }

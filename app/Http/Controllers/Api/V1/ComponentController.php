@@ -17,6 +17,7 @@ use App\Http\Requests\UploadValidateFile;
 use App\Http\Transformer\ComponentDetailTransformer;
 use App\Http\Transformer\ComponentTransformer;
 use App\Models\Component;
+use App\Models\ValidateFile;
 use App\Services\ComponentService;
 use Illuminate\Support\Str;
 
@@ -80,17 +81,13 @@ class ComponentController extends Controller
     {
         $filename = request()->input('validate.filename');
         $content = request()->input('validate.content');
-        $component = (new Component())->validateFile($filename);
-        if(!isset($component)){
-            $component = (new Component());
-            $component->validate_filename = $filename;
-        }
-        $component->validate_content = $content;
-        //生成token和ase-key;
-        if(!isset($component->verify_token)) $component->verify_token = base64_encode($filename);
-        if(!isset($component->aes_key)) $component->aes_key =  Str::random(43);
 
-        $component->save();
+        ValidateFile::firstOrCreate(['filename' => $filename], ['content' => $content]);
+
+        $component = (new Component());
+        //生成token和ase-key;
+        $component->verify_token = base64_encode($filename);
+        $component->aes_key =  Str::random(43);
 
         return $this->response->withArray([
             'data' => [
