@@ -7,14 +7,9 @@ use App\Exceptions\UnprocessableEntityHttpException;
 use App\Http\ApiResponse;
 use App\Http\Requests\DeleteTemplate;
 use App\Http\Requests\DraftToTemplate;
-use App\Http\Transformer\MiniProgramListTransformer;
 use App\Http\Transformer\TemplateListTransformer;
-use App\Models\Component;
 use App\Models\ComponentTemplate;
 use App\Models\Template;
-use App\Services\ComponentService;
-use EasyWeChat\Factory;
-use Illuminate\Support\Arr;
 
 class TemplateController extends Controller
 {
