@@ -43,7 +43,7 @@ class ComponentController extends Controller
      *     path="/component/create_before",
      *     summary="设置平台验证文件，并获取白名单ip等",
      *     tags={"三方平台管理"},
-     *     description="设置平台验证文件，并获取白名单ip",
+     *     description="设置平台验证文件，并获取白名单ip. 测试使用接口",
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="data",
