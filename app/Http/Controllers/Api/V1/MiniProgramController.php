@@ -120,7 +120,9 @@ class MiniProgramController extends Controller
     {
         $url = app('dhb.component.core')->getBindUri();
 
-        return redirect($url);
+        return redirect($url, 302, [
+            'Referrer' => $url
+        ]);
     }
 
     public function bindCallback()
