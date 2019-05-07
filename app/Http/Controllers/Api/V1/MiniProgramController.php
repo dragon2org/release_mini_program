@@ -110,6 +110,7 @@ class MiniProgramController extends Controller
             'inner_desc' => $request->input('inner_desc'),
             'company_id' => $request->input('company_id'),
         ], true);
+
         return $this->response->withArray([
             'data' => $url
         ]);
@@ -118,7 +119,7 @@ class MiniProgramController extends Controller
     public function bind()
     {
         $uri = app('dhb.component.core')->getBindUri();
-        return view('authorize_boot_page', ['uri' => $uri]);
+        return view('authorize_boot_page', ['uri' => urldecode($uri)]);
     }
 
     public function bindCallback()
