@@ -327,11 +327,6 @@ class MiniProgramController extends Controller
 
         $miniProgram->inner_name = $request->inner_name;
         $miniProgram->inner_desc = $request->inner_desc;
-        $miniProgram->nick_name = $request->nick_namem;
-        $miniProgram->head_img = $request->head_img;
-        $miniProgram->principal_name = $request->principal_name;
-        $miniProgram->qrcode_url = $request->qrcode_url;
-        $miniProgram->desc = $request->desc;
         $miniProgram->save();
 
         return $this->response->withItem($miniProgram, new MiniProgramTransformer($miniProgram));
