@@ -561,6 +561,18 @@ class MiniProgramController extends Controller
      *             ),
      *         )
      *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *         )
+     *     )
      * )
      */
     public function unbindTester(UnbindMiniProgramTester $request)
