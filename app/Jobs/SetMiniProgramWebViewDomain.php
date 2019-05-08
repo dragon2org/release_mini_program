@@ -25,18 +25,19 @@ class SetMiniProgramWebViewDomain extends BaseReleaseJobWithLog implements Shoul
 
     protected $release;
 
-    const VERSION = '1.0.0';
+    protected $task;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(MiniProgram $miniProgram, Release $release)
+    public function __construct(ReleaseItem $task)
     {
-        $this->miniProgram = $miniProgram;
-        $this->config = $release->getReleaseConfigurator();
-        $this->release = $release;
+        $this->task = $task;
+        $this->miniProgram = $task->miniProgram;
+        $this->config = json_decode($task->original_config, true);
+        $this->release = $task->release;
     }
 
     /**
@@ -50,18 +51,13 @@ class SetMiniProgramWebViewDomain extends BaseReleaseJobWithLog implements Shoul
             $setted = $app->domain->setWebviewDomain([], 'get');
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "pull web_view_domain", $setted);
 
-            $domain = $this->config->webViewDomain;
+            $domain = $this->config;
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push web_view domain", $domain);
 
             $response = $app->domain->setWebviewDomain($domain['webviewdomain'], $domain['action']);
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push web_view_domain response", $response);
 
-            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_DOMAIN, [
-                'online_config' => $setted,
-                'original_config'=> $domain,
-                'push_config' => $domain,
-                'response' => $response
-            ]);
+            $this->task->building($domain, $response, ReleaseItem::STATUS_SUCCESS, $setted);
         });
     }
 }

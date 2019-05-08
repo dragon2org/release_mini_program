@@ -27,18 +27,19 @@ class SetMiniProgramCodeCommit extends BaseReleaseJobWithLog implements ShouldQu
 
     protected $release;
 
-    const VERSION = '1.0.0';
+    protected $task;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(MiniProgram $miniProgram, Release $release)
+    public function __construct(ReleaseItem $task)
     {
-        $this->miniProgram = $miniProgram;
-        $this->config = $release->getReleaseConfigurator();
-        $this->release = $release;
+        $this->task = $task;
+        $this->miniProgram = $task->miniProgram;
+        $this->config = json_decode($task->original_config, true);
+        $this->release = $task->release;
     }
 
     /**
@@ -72,7 +73,7 @@ class SetMiniProgramCodeCommit extends BaseReleaseJobWithLog implements ShouldQu
             $this->release->user_version = $templateInfo['user_desc'];
             $this->release->save();
 
-            $extJson = $this->config->extJson;
+            $extJson = $this->config;
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push miniProgram code commit ext_json origin", [$extJson]);
 
             if($this->miniProgram->ext && empty($this->miniProgram->ext->ext_json) && $this->miniProgram->ext->ext_json !== '{}'){
@@ -96,13 +97,8 @@ class SetMiniProgramCodeCommit extends BaseReleaseJobWithLog implements ShouldQu
             $response = $app->code->commit($templateId, $extJson, $params['user_version'], $params['user_desc']);
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push code commit response", $response);
 
+            $this->task->building($extJson, $response, ReleaseItem::STATUS_SUCCESS, '');
 
-            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_CODE_COMMIT, [
-                'online_config' => '',
-                'original_config'=> $this->config->extJson,
-                'push_config' => $extJson,
-                'response' => $response
-            ]);
             return true;
         });
     }

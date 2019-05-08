@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Exceptions\UnprocessableEntityHttpException;
 use App\Jobs\MiniProgramRelease;
 use App\ReleaseConfigurator;
 use EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class Release extends Model
@@ -40,24 +42,37 @@ class Release extends Model
 
     CONST RELEASE_STATUS_RELEASED = 20;
 
+    public $buildItems = [];
+
     public function item()
     {
         return $this->hasMany(ReleaseItem::class, 'release_id', release_id);
     }
 
 
-    public function createReleaseTrans(MiniProgram $miniProgram, $templateId, $config)
+    public function make(MiniProgram $miniProgram, $templateId, $config)
     {
-        $tradeNo = $this->genTradeNo($miniProgram->mini_program_id);
-        $model = (new self());
-        $model->component_id = $miniProgram->component_id;
-        $model->mini_program_id = $miniProgram->mini_program_id;
-        $model->template_id = $templateId;
-        $model->trade_no = $tradeNo;
-        $model->config = json_encode($config, JSON_UNESCAPED_UNICODE);
-        $model->save();
+        $taskNum = 0;
+        try {
+            DB::beginTransaction();
+            $tradeNo = $this->genTradeNo($miniProgram->mini_program_id);
+            $model = (new self());
+            $model->component_id = $miniProgram->component_id;
+            $model->mini_program_id = $miniProgram->mini_program_id;
+            $model->template_id = $templateId;
+            $model->trade_no = $tradeNo;
+            $model->config = json_encode($config, JSON_UNESCAPED_UNICODE);
+            $model->save();
 
-        return $model;
+            $taskNum = ReleaseItem::make($model, $miniProgram, $templateId, $config);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw  $e;
+        }
+
+        return $taskNum;
     }
 
     protected function genTradeNo($id)

@@ -26,18 +26,19 @@ class SetMiniProgramVisitStatus extends BaseReleaseJobWithLog implements ShouldQ
 
     protected $release;
 
-    const VERSION = '1.0.0';
+    protected $task;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(MiniProgram $miniProgram, Release $release)
+    public function __construct(ReleaseItem $task)
     {
-        $this->miniProgram = $miniProgram;
-        $this->config = $release->getReleaseConfigurator();
-        $this->release = $release;
+        $this->task = $task;
+        $this->miniProgram = $task->miniProgram;
+        $this->config = json_decode($task->original_config, true);
+        $this->release = $task->release;
     }
 
     /**
@@ -49,18 +50,13 @@ class SetMiniProgramVisitStatus extends BaseReleaseJobWithLog implements ShouldQ
     {
         $this->proccess($this, function(Application $app){
 
-            $visitStatus = $this->config->visitStatus;
+            $visitStatus = $this->config;
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push visit_status", [$visitStatus]);
 
             $response = $app->code->changeVisitStatus($visitStatus);
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push visit_status response", $response);
 
-            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_VISIT_STATUS, [
-                'online_config' => '',
-                'original_config'=> $visitStatus,
-                'push_config' => $visitStatus,
-                'response' => $response
-            ]);
+            $this->task->building($visitStatus, $response, ReleaseItem::STATUS_SUCCESS, '');
         });
     }
 }

@@ -24,17 +24,19 @@ class SetMiniProgramDomain extends BaseReleaseJobWithLog implements ShouldQueue
 
     protected $release;
 
-    const VERSION = '1.0.0';
+    protected $task;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(MiniProgram $miniProgram, Release $release)
+    public function __construct(ReleaseItem $task)
     {
-        $this->miniProgram = $miniProgram;
-        $this->config = $release->getReleaseConfigurator();
-        $this->release = $release;
+        $this->task = $task;
+        $this->miniProgram = $task->miniProgram;
+        $this->config = json_decode($task->original_config, true);
+        $this->release = $task->release;
     }
 
     /**
@@ -49,18 +51,14 @@ class SetMiniProgramDomain extends BaseReleaseJobWithLog implements ShouldQueue
             $setted = $app->domain->modify(['action' => 'get']);
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "pull domain", $setted);
 
-            $domain = $this->config->getDomain();
+            $domain = $this->config;
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push domain", $domain);
 
             $response = $app->domain->modify($domain);
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push domain response", $response);
 
-            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_DOMAIN, [
-                'online_config' => $setted,
-                'original_config'=> $domain,
-                'push_config' => $domain,
-                'response' => $response
-            ]);
+            $this->task->building($domain, $response, ReleaseItem::STATUS_SUCCESS, '');
+
             return true;
         });
     }

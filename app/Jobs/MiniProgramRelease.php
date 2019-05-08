@@ -49,16 +49,8 @@ class MiniProgramRelease implements ShouldQueue
     public function handle()
     {
         $this->proccess($this, function(Application $app){
-
             $response = $app->code->release();
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push domain response", $response);
-
-            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_SUPPORT_VERSION, [
-                'online_config' => '',
-                'original_config'=> '',
-                'push_config' => '',
-                'response' => $response
-            ]);
             return true;
         });
     }

@@ -28,18 +28,19 @@ class SetMiniProgramTester extends BaseReleaseJobWithLog implements ShouldQueue
 
     protected $release;
 
-    const VERSION = '1.0.0';
+    protected $task;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(MiniProgram $miniProgram,  Release $release)
+    public function __construct(ReleaseItem $task)
     {
-        $this->miniProgram = $miniProgram;
-        $this->config = $release->getReleaseConfigurator();
-        $this->release = $release;
+        $this->task = $task;
+        $this->miniProgram = $task->miniProgram;
+        $this->config = json_decode($task->original_config, true);
+        $this->release = $task->release;
     }
 
     /**
@@ -53,21 +54,18 @@ class SetMiniProgramTester extends BaseReleaseJobWithLog implements ShouldQueue
             $setted = $app->tester->list();
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "pull tester", $setted);
 
-            $tester = $this->config->tester;
-            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push tester", $tester);
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push tester", $this->config);
 
-            foreach($this->config->tester as $tester){
+            $pushConfig = [];
+            $result = [];
+            foreach($this->config as $tester){
                 $response = $app->tester->bind($tester);
                 ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push tester: {$tester} response", $response);
+                $pushConfig[] = $tester;
+                $result[] = $response;
 
-                ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_TESTER, [
-                    'online_config' => $setted,
-                    'original_config'=> $tester,
-                    'push_config' => $tester,
-                    'response' => $response
-                ]);
             }
-
+            $this->task->building($pushConfig, $result, ReleaseItem::STATUS_SUCCESS, $setted);
         });
     }
 }

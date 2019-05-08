@@ -8,14 +8,7 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Models\Component;
 use App\Models\ValidateFile;
-use App\Services\ComponentService;
-use EasyWeChat\Factory;
-use EasyWeChat\OpenPlatform\Server\Guard;
-use Illuminate\Support\Facades\Cache;
-use Log;
 
 class ComponentController extends Controller
 {

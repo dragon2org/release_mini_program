@@ -379,9 +379,11 @@ class ReleaseService
 
     public function getQrCode($path = null)
     {
-        //TODO::尝试转换成地址
         $response = $this->miniProgramApp->code->getQrCode($path);
+
+        //TODO::二进制流转base64
         return $response;
+        return base64_encode($response->getBodyContents());
     }
 
     public function getCategory()
@@ -474,41 +476,25 @@ class ReleaseService
                 throw new UnprocessableEntityHttpException(trans('暂无已绑定的小程序可发版'));
             }
 
-            $templatelist = Arr::pluck($this->templateList(), 'template_id');
-            if(!in_array($templateId, $templatelist)){
+            $templateList = Arr::pluck($this->templateList(), 'template_id');
+            if(!in_array($templateId, $templateList)){
                 throw new UnprocessableEntityHttpException(trans('模板不存在'));
             }
 
             //step 2. 获取配置文件
+            if(!isset($this->component->extend)){
+                throw new UnprocessableEntityHttpException(trans('批量发版配置不存在'));
+            }
             $config = $this->component->extend->getReleaseConfig();
 
-            $configurator = new ReleaseConfigurator($config);
+            $data = [];
             foreach ($miniProgramList as $miniProgram) {
-                $release = (new Release());
-                $release = $release->createReleaseTrans($miniProgram, $templateId, $config);
-                $tradeNo = $release->trade_no;
-                SetMiniProgramDomain::dispatch($miniProgram, $release);
-                ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramDomain::class, SetMiniProgramDomain::VERSION);
-
-                SetMiniProgramWebViewDomain::dispatch($miniProgram, $release);
-                ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramWebViewDomain::class, SetMiniProgramWebViewDomain::VERSION);
-
-                SetMiniProgramTester::dispatch($miniProgram, $release);
-                ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramTester::class, SetMiniProgramTester::VERSION);
-
-                SetMiniProgramSupportVersion::dispatch($miniProgram, $release);
-                ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramSupportVersion::class, SetMiniProgramSupportVersion::VERSION);
-
-                SetMiniProgramVisitStatus::dispatch($miniProgram, $release);
-                ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramVisitStatus::class, SetMiniProgramVisitStatus::VERSION);
-
-                SetMiniProgramCodeCommit::dispatch($miniProgram, $release);
-                ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramCodeCommit::class, SetMiniProgramCodeCommit::VERSION);
-
-                SetMiniProgramAudit::dispatch($miniProgram, $release);
-                ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, SetMiniProgramAudit::class, SetMiniProgramAudit::VERSION);
+               $data[] =  [
+                   'mini_program' => $miniProgram->app_id,
+                   'task_num' => (new Release())->make($miniProgram, $templateId, $config)
+               ];
             }
-            return true;
+            return $data;
         } catch (\Exception $e) {
             throw $e;
         }

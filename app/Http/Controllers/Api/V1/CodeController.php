@@ -137,7 +137,12 @@ class CodeController extends Controller
      *                 property="status",
      *                 type="string",
      *                 default="T",
-     *                 description="直接返回图片"
+     *                 description=""
+     *             )
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @SWG\Property(property="qrcode", type="string", description="base64编码的"),
      *             )
      *         )
      *     )
@@ -147,7 +152,11 @@ class CodeController extends Controller
     {
         $response = app('dhb.component.core')->getQrCode(request()->input('path'));
 
-        return $response;
+        return $this->response->withArray([
+            'data' => [
+                'qrcode' => base64_encode($response)
+            ]
+        ]);
     }
     /**
      * @SWG\Get(

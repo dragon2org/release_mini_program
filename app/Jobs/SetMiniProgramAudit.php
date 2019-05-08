@@ -27,17 +27,19 @@ class SetMiniProgramAudit extends BaseReleaseJobWithLog implements ShouldQueue
 
     protected $release;
 
-    const VERSION = '1.0.0';
+    protected $task;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(MiniProgram $miniProgram, Release $release)
+    public function __construct(ReleaseItem $task)
     {
-        $this->miniProgram = $miniProgram;
-        $this->config = $release->getReleaseConfigurator();
-        $this->release = $release;
+        $this->task = $task;
+        $this->miniProgram = $task->miniProgram;
+        $this->config = json_decode($task->original_config, true);
+        $this->release = $task->release;
     }
 
     /**
@@ -73,12 +75,7 @@ class SetMiniProgramAudit extends BaseReleaseJobWithLog implements ShouldQueue
             $response = $app->code->submitAudit($auditItems);
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push audit response", $response);
 
-            ReleaseItem::createReleaseLog($this->release, ReleaseItem::CONFIG_KEY_AUDIT, [
-                'online_config' => '',
-                'original_config'=> '',
-                'push_config' => $auditItems,
-                'response' => $response
-            ]);
+            $this->task->building($auditItems, $response, ReleaseItem::STATUS_SUCCESS, '');
 
             if(isset($response['auditid'])){
                 $this->release->audit_id =$response['auditid'];
