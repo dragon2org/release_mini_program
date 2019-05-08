@@ -10,6 +10,7 @@ namespace App\Services;
 
 
 use App\Exceptions\UnprocessableEntityHttpException;
+use App\Exceptions\WechatGatewayException;
 use App\Helper\CustomLogger;
 use App\Jobs\SetMiniProgramAudit;
 use App\Jobs\SetMiniProgramCodeCommit;
@@ -18,7 +19,6 @@ use App\Jobs\SetMiniProgramSupportVersion;
 use App\Jobs\SetMiniProgramTester;
 use App\Jobs\SetMiniProgramVisitStatus;
 use App\Jobs\SetMiniProgramWebViewDomain;
-use App\Logs\CodeCommitLog;
 use App\Logs\ReleaseInQueueLog;
 use App\Models\Component;
 use App\Models\MiniProgram;
@@ -26,14 +26,13 @@ use App\Models\MiniProgramExt;
 use App\Models\Release;
 use App\Models\Tester;
 use App\ReleaseConfigurator;
-use App\ServeMessageHandler\EventMessageHandler;
-use App\ServeMessageHandler\MiniProgramUnauthorizedEventMessageHandler;
+use App\ServeMessageHandlers\EventMessageHandler;
+use App\ServeMessageHandlers\MiniProgramUnauthorizedEventMessageHandler;
 use EasyWeChat\Factory;
 use EasyWeChat\Kernel\Messages\Message;
 use EasyWeChat\OpenPlatform\Server\Guard;
 use Illuminate\Support\Arr;
 use Log;
-use Symfony\Component\Cache\Tests\Adapter\MaxIdLengthAdapterTest;
 
 class ReleaseService
 {
@@ -224,8 +223,8 @@ class ReleaseService
             unset($data['errcode']);
             return $data;
         }
-        //TODO::返回正常的微信code
-        throw new UnprocessableEntityHttpException($data['errmsg']);
+        if($data['errcode'] === -1) $data['errmsg'] = '微信网关繁忙';
+        throw new WechatGatewayException($data['errmsg'], $data['errcode']);
     }
 
     public function getDrafts()
@@ -332,14 +331,10 @@ class ReleaseService
             $query->orWhere('wechat_id', $userStr);
             return $query;
         })->first();
-        if ($tester) {
-            //完善软删除
-            $tester->is_deleted = 1;
-            $tester->save();
-            //$tester->delete();
-        }
 
-        return true;
+        if ($tester) $tester->delete();
+
+        return $response;
     }
 
     public function sessionKey(string $code)

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\ServeMessageHandler;
+namespace App\ServeMessageHandlers;
 
 use App\Events\AuditEvent;
 use App\Events\EmailNoticeEvent;

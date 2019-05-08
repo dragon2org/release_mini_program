@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Exceptions\UnprocessableEntityHttpException;
+use App\Exceptions\WechatGatewayException;
 use App\Http\ApiResponse;
 use App\Http\Requests\RegisterComponent;
 use App\Http\Requests\UpdateComponent;
@@ -79,6 +80,7 @@ class ComponentController extends Controller
      */
     public function createBefore(UploadValidateFile $request)
     {
+        throw new WechatGatewayException('版本输入错误', 85015);
         $filename = request()->input('validate.filename');
         $content = request()->input('validate.content');
 
