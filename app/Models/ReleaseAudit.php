@@ -2,13 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Traits\SoftDeletes;
-use App\ReleaseConfigurator;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class ReleaseAudit extends Model
 {
+    use SoftDeletes;
     /**
      * The table associated with the model.
      *

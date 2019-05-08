@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Jobs\MiniProgramRelease;
-use App\Models\Traits\SoftDeletes;
 use App\ReleaseConfigurator;
 use EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +11,7 @@ use Illuminate\Support\Str;
 
 class Release extends Model
 {
+    use SoftDeletes;
     /**
      * The table associated with the model.
      *

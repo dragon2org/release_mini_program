@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ComponentTemplate extends Model
 {
+    use SoftDeletes;
+
     /**
      * The table associated with the model.
      *

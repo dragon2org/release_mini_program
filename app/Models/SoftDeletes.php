@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Models\Traits;
-
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+namespace App\Models;
 
 trait SoftDeletes
 {
@@ -114,7 +112,7 @@ trait SoftDeletes
      */
     public function trashed()
     {
-        return ! is_null($this->{$this->getDeletedAtColumn()});
+        return 0 !== ($this->{$this->getDeletedAtColumn()});
     }
 
     /**

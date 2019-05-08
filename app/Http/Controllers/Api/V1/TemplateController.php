@@ -145,8 +145,7 @@ class TemplateController extends Controller
             $remote[] = $item['template_id'];
         }
 
-        $noItems = (new ComponentTemplate())
-            ->whereIn('template_id', $remote)
+        $noItems = ComponentTemplate::whereIn('template_id', $remote)
             ->select('template_id')
             ->get();
         $no = [];
@@ -218,18 +217,14 @@ class TemplateController extends Controller
 
     public function delete($componentAppId, $templateId)
     {
-        $template = (new ComponentTemplate())
-            ->where('template_id', $templateId)
-            ->where('is_deleted', 0)
-            ->first();
+        $template = ComponentTemplate::where('template_id', $templateId)->first();
 
         if(!isset($template)){
             throw new UnprocessableEntityHttpException(trans('模板不存在'));
         }
 
         $response = app('dhb.component.core')->deleteTemplate($templateId);
-        $template->is_delete=1;
-        $template->save();
+        $template->delete();
 
         return $this->response->withArray([
             'data' => $response
@@ -283,9 +278,7 @@ class TemplateController extends Controller
 
     public function index()
     {
-        $items = (new ComponentTemplate())
-            ->where('component_id', app('dhb.component.core')->component->component_id)
-            ->where('is_deleted', 0)
+        $items = ComponentTemplate::where('component_id', app('dhb.component.core')->component->component_id)
             ->paginate();
 
         return $this->response->withCollection($items, new TemplateListTransformer($items));

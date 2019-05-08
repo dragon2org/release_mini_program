@@ -3,12 +3,11 @@
 namespace App\Models;
 
 use App\Exceptions\UnprocessableEntityHttpException;
-use EasyWeChat\Factory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 
 class Component extends Model
 {
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -95,7 +94,6 @@ class Component extends Model
     {
         $componentApp = (new self())
             ->where('app_id', $componentAppId)
-            ->where('is_deleted', 0)
             ->first();
 
         if(!isset($componentApp)){

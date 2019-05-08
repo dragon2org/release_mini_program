@@ -257,7 +257,7 @@ class MiniProgramController extends Controller
      */
     public function show($componentAppId, $miniProgramAppId)
     {
-        $item = (new MiniProgram())->where('app_id', $miniProgramAppId)->first();
+        $item = MiniProgram::where('app_id', $miniProgramAppId)->first();
         return $this->response->withItem($item, new MiniProgramTransformer($item));
     }
 
@@ -316,8 +316,7 @@ class MiniProgramController extends Controller
      */
     public function update(PutMiniProgramInfo $request, $componentAppId, $miniProgramAppId)
     {
-        $miniProgram = (new MiniProgram())
-            ->where('component_id', app('dhb.component.core')->component->component_id)
+        $miniProgram = MiniProgram::where('component_id', app('dhb.component.core')->component->component_id)
             ->where('app_id', $miniProgramAppId)
             ->first();
 
@@ -369,18 +368,15 @@ class MiniProgramController extends Controller
      */
     public function delete($componentAppId, $miniProgramAppId)
     {
-        $miniProgram = (new MiniProgram())
-            ->where('component_id', app('dhb.component.core')->component->component_id)
+        $miniProgram = MiniProgram::where('component_id', app('dhb.component.core')->component->component_id)
             ->where('app_id', $miniProgramAppId)
-            ->where('is_deleted', 0)
             ->first();
 
         if(!isset($miniProgram)){
             throw new UnprocessableEntityHttpException(trans('小程序不存在'));
         }
 
-        $miniProgram->is_deleted = 1;
-        $miniProgram->save();
+        $miniProgram->delete();
 
         return $this->response->withArray();
     }

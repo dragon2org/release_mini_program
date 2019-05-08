@@ -19,9 +19,7 @@ class ReleaseController extends Controller
 
     public function index()
     {
-        $items = (new Release())
-            ->where('component_id', app('dhb.component.core')->component->component_id)
-            ->where('is_deleted', 0)
+        $items = Release::where('component_id', app('dhb.component.core')->component->component_id)
             ->orderBy('release_id', 'desc')
             ->paginate();
 
@@ -33,9 +31,7 @@ class ReleaseController extends Controller
 
     public function detail($componentAppId, $releaseId)
     {
-        $items = (new ReleaseItem())
-            ->where('release_id', $releaseId)
-            ->where('is_deleted', 0)
+        $items = ReleaseItem::where('release_id', $releaseId)
             ->orderBy('release_item_id', 'desc')
             ->paginate();
 

@@ -71,7 +71,7 @@ CREATE TABLE `tester`  (
 DROP TABLE `mini_program_template`;
 
 CREATE TABLE `validate_file`(
-  `validate_file` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `validate_file_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `component_id` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '关联的三方平台ID',
   `filename` varchar(45)  NOT NULL DEFAULT '' COMMENT '文件名',
   `content` varchar(255)  NOT NULL DEFAULT ''  COMMENT '文件内容',

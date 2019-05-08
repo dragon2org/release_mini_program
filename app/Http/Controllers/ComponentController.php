@@ -26,17 +26,16 @@ class ComponentController extends Controller
 
     public function hostValidate($validateFilename)
     {
-        $file = (new ValidateFile())->where('filename', $validateFilename)->first();
+        $file = ValidateFile::where('filename', $validateFilename)->first();
 
-        $content = $file->content;
-        if (empty($content)) {
+        if(!isset($file->content)){
             abort(404, 'not found pages');
         }
 
-        return response($content, 200, [
+        return response($file->content, 200, [
             "Content-type" => "application/octet-stream",
             "Accept-Ranges" => "bytes",
-            "Accept-Length" => strlen($content),
+            "Accept-Length" => strlen($file->content),
             "Content-Disposition" => "attachment; filename={$validateFilename}"
         ]);
     }

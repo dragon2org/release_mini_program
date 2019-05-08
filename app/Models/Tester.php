@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Traits\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 class Tester extends Model
 {
+    use SoftDeletes;
     /**
      * The table associated with the model.
      *

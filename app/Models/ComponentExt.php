@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Cache;
 
 class ComponentExt extends Model
 {
-
+    use SoftDeletes;
     /**
      * The table associated with the model.
      *
