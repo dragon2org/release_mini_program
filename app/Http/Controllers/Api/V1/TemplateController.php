@@ -166,6 +166,9 @@ class TemplateController extends Controller
             $model->user_desc = $item['user_desc'];
             $model->create_time = date('Y-m-d H:i:s', $item['create_time']);
             $model->branch = $item['user_desc'];
+            $model->source_miniprogram = $item['source_miniprogram'];
+            $model->source_miniprogram_appid = $item['source_miniprogram_appid'];
+            $model->developer = $item['developer'];
             $model->save();
 
             $handleNum++;

@@ -82,7 +82,7 @@ CREATE TABLE `validate_file`(
   `update_user` varchar(45)  NOT NULL DEFAULT '' COMMENT '最后一次操作的用户',
   `created_at` DATETIME NOT NULL DEFAULT '1970-01-01 08:00:01' COMMENT '记录添加时间',
   `updated_at` DATETIME NOT NULL DEFAULT '1970-01-01 08:00:01' COMMENT '记录更新时间',
-  PRIMARY KEY (`validate_file`) USING BTREE,
+  PRIMARY KEY (`validate_file_id`) USING BTREE,
   INDEX `idx_filename`(`filename`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8  COMMENT = '验证文件表';
 

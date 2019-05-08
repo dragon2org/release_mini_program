@@ -348,7 +348,12 @@ class ReleaseService
 
     public function sessionKey(string $code)
     {
-        return $this->miniProgramApp->auth->session($code);
+        $response = $this->miniProgramApp->auth->session($code);
+
+        if(isset($response['errcode'])){
+            return $this->parseResponse($response);
+        }
+        return $response;
     }
 
     public function decryptData(string $jscode, string $iv, string $encryptedData)
