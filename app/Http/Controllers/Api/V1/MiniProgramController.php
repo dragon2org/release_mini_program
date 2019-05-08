@@ -494,7 +494,7 @@ class MiniProgramController extends Controller
      *     @SWG\Parameter(
      *         name="data",
      *         in="body",
-     *         description="注册表单数据",
+     *         description="表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
@@ -528,7 +528,7 @@ class MiniProgramController extends Controller
 
     /**
      * @SWG\Delete(
-     *     path="/component/{componentAppId}/mini_program/{miniProgram}/tester/{wechatid}",
+     *     path="/component/{componentAppId}/mini_program/{miniProgram}/tester",
      *     summary="解绑体验者",
      *     tags={"小程序管理-成员管理"},
      *     description="绑定体验者",
@@ -548,24 +548,19 @@ class MiniProgramController extends Controller
      *         type="string"
      *     ),
      *     @SWG\Parameter(
-     *         description="微信号",
-     *         in="path",
-     *         name="wechatid",
+     *         name="data",
+     *         in="body",
+     *         description="表单数据",
      *         required=true,
-     *         type="string"
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="成功返回",
+     *         type="object",
      *         @SWG\Schema(
      *             @SWG\Property(
-     *                 property="status",
+     *                 property="wechat_id",
      *                 type="string",
-     *                 default="T",
-     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *                 description="wechat_id/userstr",
      *             ),
      *         )
-     *     )
+     *     ),
      * )
      */
     public function unbindTester(UnbindMiniProgramTester $request)
