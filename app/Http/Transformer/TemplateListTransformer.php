@@ -18,7 +18,7 @@ class TemplateListTransformer extends TransformerAbstract
             "user_version" => $item->user_version,
             "user_desc" => $item->user_desc,
             "branch" => $item->branch,
-            "created_at" => $item->created_at,
+            "created_at" => (string) $item->created_at,
             'developer' => $item->developer,
             'source_miniprogram' => $item->source_miniprogram,
             'source_miniprogram_appid' => $item->source_miniprogram_appid,

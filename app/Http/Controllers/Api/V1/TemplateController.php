@@ -132,6 +132,7 @@ class TemplateController extends Controller
      *                 @SWG\Property(property="count", type="integer", description="模板总数"),
      *                 @SWG\Property(property="synced", type="integer", description="已同步"),
      *                 @SWG\Property(property="not_change", type="integer", description="未变化"),
+     *                 @SWG\Property(property="deleted", type="integer", description="已经删除的"),
      *             )
      *         )
      *     )
@@ -174,11 +175,18 @@ class TemplateController extends Controller
             $handleNum++;
         }
 
+        //删除没有的模板
+        $deleted = ComponentTemplate::whereNotIn('template_id', $remote)
+            ->where('component_id', app('dhb.component.core')->component->component_id)
+            ->delete();
+
+
         return $this->response->withArray([
             'data' => [
                 'count' => count($remoteTemplateList),
                 'synced' => $handleNum,
                 'not_change' => count($no),
+                'deleted' => $deleted,
             ]
         ]);
     }
@@ -282,6 +290,7 @@ class TemplateController extends Controller
     public function index()
     {
         $items = ComponentTemplate::where('component_id', app('dhb.component.core')->component->component_id)
+            ->orderBy('template_id', 'desc')
             ->paginate();
 
         return $this->response->withCollection($items, new TemplateListTransformer($items));
