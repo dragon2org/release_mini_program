@@ -27,6 +27,7 @@ use App\Models\Release;
 use App\Models\Tester;
 use App\ReleaseConfigurator;
 use App\ServeMessageHandler\EventMessageHandler;
+use App\ServeMessageHandler\MiniProgramUnauthorizedEventMessageHandler;
 use EasyWeChat\Factory;
 use EasyWeChat\Kernel\Messages\Message;
 use EasyWeChat\OpenPlatform\Server\Guard;
@@ -112,20 +113,15 @@ class ReleaseService
     {
         $server = $this->openPlatform->server;
 
-        // 处理授权成功事件
         $server->push(function ($message) {
 
         }, Guard::EVENT_AUTHORIZED);
 
-        // 处理授权更新事件
         $server->push(function ($message) {
 
         }, Guard::EVENT_UPDATE_AUTHORIZED);
 
-        // 处理授权取消事件
-        $server->push(function ($message) {
-
-        }, Guard::EVENT_UNAUTHORIZED);
+        $server->push(MiniProgramUnauthorizedEventMessageHandler::class, Guard::EVENT_UNAUTHORIZED);
 
         // 处理VERIFY_TICKET
         $server->push(function ($message) {

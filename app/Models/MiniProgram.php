@@ -9,6 +9,10 @@ class MiniProgram extends Model
 {
     use SoftDeletes;
 
+    const AUTHORIZATION_STATUS_AUTHORIZED = 10;
+
+    const AUTHORIZATION_STATUS_UNAUTHORIZED = 20;
+
     /**
      * The table associated with the model.
      *
