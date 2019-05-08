@@ -128,7 +128,7 @@ class TemplateController extends Controller
      *             ),
      *             @SWG\Property(
      *                 property="data",
-     *                 type="Object",
+     *                 type="object",
      *                 @SWG\Property(property="count", type="integer", description="模板总数"),
      *                 @SWG\Property(property="synced", type="integer", description="已同步"),
      *                 @SWG\Property(property="not_change", type="integer", description="未变化"),
