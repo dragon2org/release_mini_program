@@ -69,7 +69,7 @@ return [
             'sasl'=> false,
             'sasl_plain_username' => env('KAFKA_SASL_PLAIN_USERNAME', 'YOUR AK'), // 阿里云 ak
             'sasl_plain_password' => env('KAFKA_SASL_PLAIN_PASSWORD', 'YOUR AC'),// 阿里云 ac后10位
-            'bootstrap_servers' => "127.0.0.1:9092", // broker
+            'bootstrap_servers' => env('KAFKA_BROKER_LIST'), // broker
             'ssl.ca.location' => storage_path('config/ca-cert'), // cr 证书 下载 https://help.aliyun.com/document_detail/52376.html
             'message.send.max.retries' => 5,
             'queue' => env('KAFKA_TOPIC', 'release-mini-program'),  // 这里填入你在阿里云控制台配置的topic
