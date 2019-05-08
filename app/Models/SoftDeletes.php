@@ -64,9 +64,9 @@ trait SoftDeletes
 
         $time = $this->freshTimestamp();
 
-        $columns = [$this->getDeletedAtColumn() => 1];
+        $columns = [$this->getDeletedAtColumn() => strtotime($time)];
 
-        $this->{$this->getDeletedAtColumn()} = 1;
+        $this->{$this->getDeletedAtColumn()} = strtotime($time);
 
         if ($this->timestamps && ! is_null($this->getUpdatedAtColumn())) {
             $this->{$this->getUpdatedAtColumn()} = $time;
@@ -154,7 +154,7 @@ trait SoftDeletes
      */
     public function getDeletedAtColumn()
     {
-        return defined('static::DELETED_AT') ? static::DELETED_AT : 'is_deleted';
+        return defined('static::DELETED_AT') ? static::DELETED_AT : 'deleted_at';
     }
 
     /**
