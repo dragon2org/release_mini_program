@@ -85,7 +85,7 @@ Route::group([
     Route::get('/component/{componentAppId}/template', 'TemplateController@index');
     Route::delete('/component/{componentAppId}/template/{templateId}', 'TemplateController@delete');
     Route::post('/component/{componentAppId}/template', 'TemplateController@draftToTemplate');
-    Route::post('/component/{componentAppId}/template/sync', 'TemplateController@templateSync');
+    Route::post('/component/{componentAppId}/template/sync', 'TemplateController@sync');
     Route::post('/component/{componentAppId}/template/{templateId}/release', 'TemplateController@release');
 
     /**

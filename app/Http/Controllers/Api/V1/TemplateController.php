@@ -138,7 +138,7 @@ class TemplateController extends Controller
      *     )
      * )
      */
-    public function templateSync()
+    public function sync()
     {
         $remoteTemplateList = app('dhb.component.core')->templateList();
         $remote = [];
