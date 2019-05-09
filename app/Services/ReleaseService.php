@@ -88,6 +88,10 @@ class ReleaseService
         if (!isset($miniProgram)) {
             throw new UnprocessableEntityHttpException(trans('小程序未绑定'));
         }
+        if($miniProgram->authorization_status !== MiniProgram::AUTHORIZATION_STATUS_AUTHORIZED){
+            throw new UnprocessableEntityHttpException(trans('小程序授权已取消'));
+        }
+
         $this->miniProgram = $miniProgram;
 
         return $this->miniProgramApp = $this->openPlatform->miniProgram(
