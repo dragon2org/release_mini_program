@@ -61,16 +61,6 @@ class CodeController extends Controller
      *                 description="模板id",
      *             ),
      *             @SWG\Property(
-     *                 property="user_version",
-     *                 type="string",
-     *                 description="用户自定义版本",
-     *             ),
-     *             @SWG\Property(
-     *                 property="user_desc",
-     *                 type="string",
-     *                 description="用户自定义描述",
-     *             ),
-     *             @SWG\Property(
      *                 property="ext_json",
      *                 type="string",
      *                 description="自定义ext_json; json字符串",
@@ -95,8 +85,7 @@ class CodeController extends Controller
     {
         $response = app('dhb.component.core')->commit(
             request()->input('template_id'),
-            request()->input('user_version'),
-            request()->input('ext_json'));
+            request()->input('ext_json', '{}'));
 
         return $this->response->withArray(['data' => $response]);
     }

@@ -25,7 +25,6 @@ class CodeCommit extends FormRequest
     {
         return [
             'template_id' => 'required|integer',
-            'user_version' => 'required|string',
             'ext_json' => 'required|json',
         ];
     }

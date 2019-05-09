@@ -12,15 +12,8 @@ namespace App\Services;
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Exceptions\WechatGatewayException;
 use App\Helper\CustomLogger;
-use App\Jobs\SetMiniProgramAudit;
-use App\Jobs\SetMiniProgramCodeCommit;
-use App\Jobs\SetMiniProgramDomain;
-use App\Jobs\SetMiniProgramSupportVersion;
-use App\Jobs\SetMiniProgramTester;
-use App\Jobs\SetMiniProgramVisitStatus;
-use App\Jobs\SetMiniProgramWebViewDomain;
-use App\Logs\ReleaseInQueueLog;
 use App\Models\Component;
+use App\Models\ComponentTemplate;
 use App\Models\MiniProgram;
 use App\Models\MiniProgramExt;
 use App\Models\Release;
@@ -358,7 +351,7 @@ class ReleaseService
         return $this->miniProgramApp->access_token->getToken();
     }
 
-    public function commit($templateId, $userVersion, $extJson = '{}')
+    public function commit($templateId, $extJson = '{}')
     {
 
         MiniProgramExt::updateOrCreate([
@@ -370,8 +363,15 @@ class ReleaseService
 
         $extJson = $this->miniProgram->assign($extJson);
 
+        $template = ComponentTemplate::where('template_id', $templateId)
+            ->where('component_id', $this->component->component_id)
+            ->orderBy('component_template_id', 'desc')->first();
+        if(!isset($template)){
+            throw new UnprocessableEntityHttpException(trans('模板未同步或已删除'));
+        }
+
         $response = $this->parseResponse(
-            $this->miniProgramApp->code->commit($templateId, $extJson, $userVersion, $userVersion)
+            $this->miniProgramApp->code->commit($templateId, $extJson, $template->user_version, $template->user_desc)
         );
 
         return $response;
