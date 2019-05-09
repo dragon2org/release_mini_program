@@ -57,6 +57,8 @@ class SetMiniProgramVisitStatus extends BaseReleaseJobWithLog implements ShouldQ
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push visit_status response", $response);
 
             $this->task->building($visitStatus, $response, ReleaseItem::STATUS_SUCCESS, '');
+
+            return $response;
         });
     }
 }

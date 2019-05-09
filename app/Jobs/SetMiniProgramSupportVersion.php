@@ -60,6 +60,8 @@ class SetMiniProgramSupportVersion extends BaseReleaseJobWithLog implements Shou
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push support_version response", $response);
 
             $this->task->building($supportVersion, $response, ReleaseItem::STATUS_SUCCESS, $setted);
+
+            return $response;
         });
     }
 }

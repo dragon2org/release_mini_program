@@ -59,7 +59,7 @@ class SetMiniProgramDomain extends BaseReleaseJobWithLog implements ShouldQueue
 
             $this->task->building($domain, $response, ReleaseItem::STATUS_SUCCESS, '');
 
-            return true;
+            return $response;
         });
     }
 

@@ -66,6 +66,21 @@ class SetMiniProgramTester extends BaseReleaseJobWithLog implements ShouldQueue
 
             }
             $this->task->building($pushConfig, $result, ReleaseItem::STATUS_SUCCESS, $setted);
+
+            return $result;
         });
+    }
+
+    protected function isResponseOk($response)
+    {
+        $status = true;
+        foreach($response as $res){
+            if(false === parent::isResponseOk($res)){
+                $status =  false;
+                break;
+            }
+        }
+
+        return $status;
     }
 }

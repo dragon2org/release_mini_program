@@ -489,10 +489,7 @@ class ReleaseService
 
             $data = [];
             foreach ($miniProgramList as $miniProgram) {
-               $data[] =  [
-                   'mini_program' => $miniProgram->app_id,
-                   'task_num' => (new Release())->make($miniProgram, $templateId, $config)
-               ];
+               $data[] =  (new Release())->make($miniProgram, $templateId, $config);
             }
             return $data;
         } catch (\Exception $e) {

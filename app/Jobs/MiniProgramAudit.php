@@ -17,7 +17,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
 
 
-class SetMiniProgramAudit extends BaseReleaseJobWithLog implements ShouldQueue
+class MiniProgramAudit extends BaseReleaseJobWithLog implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -81,7 +81,7 @@ class SetMiniProgramAudit extends BaseReleaseJobWithLog implements ShouldQueue
                 $this->release->audit_id =$response['auditid'];
                 $this->release->save();
             }
-            return true;
+            return $response;
         });
     }
 }

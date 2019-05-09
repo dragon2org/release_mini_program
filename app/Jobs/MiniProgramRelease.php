@@ -34,11 +34,11 @@ class MiniProgramRelease implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(MiniProgram $miniProgram, Release $release)
+    public function __construct(ReleaseItem $task)
     {
-        $this->miniProgram = $miniProgram;
-        $this->config = $release->getReleaseConfigurator();
-        $this->release = $release;
+        $this->task = $task;
+        $this->miniProgram = $task->miniProgram;
+        $this->release = $task->release;
     }
 
     /**
@@ -51,7 +51,7 @@ class MiniProgramRelease implements ShouldQueue
         $this->proccess($this, function(Application $app){
             $response = $app->code->release();
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push domain response", $response);
-            return true;
+            return $response;
         });
     }
 }

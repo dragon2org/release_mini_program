@@ -52,7 +52,6 @@ class Release extends Model
 
     public function make(MiniProgram $miniProgram, $templateId, $config)
     {
-        $taskNum = 0;
         try {
             DB::beginTransaction();
             $tradeNo = $this->genTradeNo($miniProgram->mini_program_id);
@@ -64,15 +63,19 @@ class Release extends Model
             $model->config = json_encode($config, JSON_UNESCAPED_UNICODE);
             $model->save();
 
-            $taskNum = ReleaseItem::make($model, $miniProgram, $templateId, $config);
 
+            $collect = ReleaseItem::make($model, $miniProgram, $config);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             throw  $e;
         }
 
-        return $taskNum;
+        return [
+            'task_num' => $collect->count(),
+            'app_id' => $miniProgram->app_id,
+            'trade_no' => $tradeNo
+        ];
     }
 
     protected function genTradeNo($id)
@@ -110,7 +113,7 @@ class Release extends Model
         $this->save();
 
         if($this->release_on_audited){
-            MiniProgramRelease::dispatch($this->miniProgram, $this);
+            $task = ReleaseItem::createReleaseTask($this, $this->miniProgram, $this->config);
         }
 
         return true;

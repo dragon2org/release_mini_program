@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Logs\ReleaseCommonQueueLogQueueLog;
+use App\Logs\ReleaseInQueueLog;
 use App\Models\MiniProgram;
 use App\Models\Release;
 use App\Models\ReleaseItem;
@@ -73,7 +74,7 @@ class SetMiniProgramCodeCommit extends BaseReleaseJobWithLog implements ShouldQu
             $this->release->user_version = $templateInfo['user_desc'];
             $this->release->save();
 
-            $extJson = $this->config;
+            $extJson = is_array($this->config['ext_json']) ? json_encode($this->config['ext_json']) : $this->config['ext_json'] ;
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push miniProgram code commit ext_json origin", [$extJson]);
 
             if($this->miniProgram->ext && !empty($this->miniProgram->ext->ext_json) && $this->miniProgram->ext->ext_json !== '{}'){
@@ -99,8 +100,16 @@ class SetMiniProgramCodeCommit extends BaseReleaseJobWithLog implements ShouldQu
 
             $this->task->building($extJson, $response, ReleaseItem::STATUS_SUCCESS, '');
 
-
-            return true;
+            return $response;
         });
+    }
+
+    protected function isResponseOk($response)
+    {
+        if(parent::isResponseOk($response)){
+            ReleaseItem::createAuditTask($this->release, $this->miniProgram, $this->config);
+            return true;
+        }
+        return false;
     }
 }

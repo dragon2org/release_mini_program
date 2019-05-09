@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Jobs\MiniProgramAudit;
+use App\Jobs\MiniProgramRelease;
 use App\Jobs\SetMiniProgramDomain;
 use App\Jobs\SetMiniProgramWebViewDomain;
 use App\Logs\ReleaseInQueueLog;
@@ -69,34 +71,9 @@ class ReleaseItem extends Model
         return $this->belongsTo(Release::class, 'release_id', 'release_id');
     }
 
-    public static function createReleaseLog(Release $release, $type, $params = [])
+    public static function make(Release $release, MiniProgram $miniProgram, $config)
     {
-        $param = array_merge([
-            'online_config' => [],
-            'push_config' => [],
-            'response' => [],
-            'original_config' => [],
-        ], $params);
-
-        $model = (new self());
-        $model->name = $type;
-        $model->release_id = $release->release_id;
-        $model->online_config = json_encode($params['online_config'], JSON_UNESCAPED_UNICODE);
-        $model->push_config = json_encode($params['push_config'], JSON_UNESCAPED_UNICODE);
-        $model->original_config = json_encode($params['original_config'], JSON_UNESCAPED_UNICODE);
-        $model->response = json_encode($params['response'], JSON_UNESCAPED_UNICODE);
-
-        $errcode = $params['response']['errcode'] ?? null;
-        $model->status = 0;
-        if($errcode === 0){
-            $model->status = 1;
-        }
-        return $model->save();
-    }
-
-    public static function make(Release $release, MiniProgram $miniProgram, $templateId, $config)
-    {
-        $taskNum = 0;
+        $result = [];
         foreach($config as $key => $value){
             if(!in_array($key, self::SUPPORT_CONFIG_KEY)){
                 continue;
@@ -109,14 +86,68 @@ class ReleaseItem extends Model
                 'original_config' => json_encode($value),
                 'status' => self::STATUS_PREPARE
             ]);
-            $tradeNo = $release->trade_no;
             $className = 'App\Jobs\SetMiniProgram' . Str::studly($key);
             $className::dispatch($task);
-            ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $templateId, $className);
-            $taskNum++;
+            ReleaseInQueueLog::info($release->trade_no, $miniProgram, $config, $release->release_id, $className);
+            $result[] = $task;
         }
 
-        return $taskNum;
+        $result[] = ReleaseItem::createCommitTask($release, $miniProgram, $config);
+
+        return collect($result);
+    }
+
+    public static function createCommitTask(Release $release, MiniProgram $miniProgram, $config)
+    {
+        $key = self::CONFIG_KEY_CODE_COMMIT;
+        $task =  self::create([
+            'release_id' => $release->release_id,
+            'mini_program_id' => $miniProgram->mini_program_id,
+            'name' => self::CONFIG_KEY_CODE_COMMIT,
+            'original_config' => json_encode($config),
+            'status' => self::STATUS_PREPARE
+        ]);
+
+        $tradeNo = $release->trade_no;
+        $className = 'App\Jobs\SetMiniProgram' . Str::studly($key);
+        $className::dispatch($task);
+        ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $release->release_id, $className);
+
+        return $task;
+    }
+
+    public static function createAuditTask(Release $release, MiniProgram $miniProgram, $config)
+    {
+        $key = self::CONFIG_KEY_AUDIT;
+        $task =  self::create([
+            'release_id' => $release->release_id,
+            'mini_program_id' => $miniProgram->mini_program_id,
+            'name' => $key,
+            'original_config' => json_encode($config),
+            'status' => self::STATUS_PREPARE
+        ]);
+
+        $tradeNo = $release->trade_no;
+        MiniProgramAudit::dispatch($task);
+        ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $release->release_id, MiniProgramAudit::class);
+
+        return $task;
+    }
+
+    public static function createReleaseTask(Release $release, MiniProgram $miniProgram, $config)
+    {
+        $task =  self::create([
+            'release_id' => $release->release_id,
+            'mini_program_id' => $miniProgram->mini_program_id,
+            'name' => self::CONFIG_KEY_RELEASE,
+            'status' => self::STATUS_PREPARE
+        ]);
+
+        $tradeNo = $release->trade_no;
+        MiniProgramRelease::dispatch($task);
+        ReleaseInQueueLog::info($tradeNo, $miniProgram, $config, $release->release_id, MiniProgramRelease::class);
+
+        return $task;
     }
 
     public function building($pushConfig, $response, $status, $onlineConfig = [])
@@ -126,6 +157,24 @@ class ReleaseItem extends Model
         $this->response = json_encode($response);
         $this->status = $status;
 
+        $this->save();
+    }
+
+    public function applyBuilding()
+    {
+        $this->status = self::STATUS_ING;
+        $this->save();
+    }
+
+    public function applyBuildFailed()
+    {
+        $this->status = self::STATUS_FAILED;
+        $this->save();
+    }
+
+    public function applyBuildSuccess()
+    {
+        $this->status = self::STATUS_SUCCESS;
         $this->save();
     }
 }

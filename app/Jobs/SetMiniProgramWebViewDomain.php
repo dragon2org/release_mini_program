@@ -58,6 +58,8 @@ class SetMiniProgramWebViewDomain extends BaseReleaseJobWithLog implements Shoul
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push web_view_domain response", $response);
 
             $this->task->building($domain, $response, ReleaseItem::STATUS_SUCCESS, $setted);
+
+            return $response;
         });
     }
 }
