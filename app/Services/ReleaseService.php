@@ -18,12 +18,12 @@ use App\Models\MiniProgram;
 use App\Models\MiniProgramExt;
 use App\Models\Release;
 use App\Models\Tester;
-use App\ReleaseConfigurator;
 use App\ServeMessageHandlers\EventMessageHandler;
 use App\ServeMessageHandlers\MiniProgramUnauthorizedEventMessageHandler;
 use EasyWeChat\Factory;
 use EasyWeChat\Kernel\Messages\Message;
 use EasyWeChat\OpenPlatform\Server\Guard;
+use http\Env\Request;
 use Illuminate\Support\Arr;
 use Log;
 
@@ -210,11 +210,12 @@ class ReleaseService
 
     /**
      * @param array $data
+     * @param bool $isRaw
      * @return array
-     * @throws UnprocessableEntityHttpException
      */
-    protected function parseResponse(array $data)
+    protected function parseResponse(array $data, $isRaw = false)
     {
+        if($isRaw) return $data;
         if ($data['errcode'] === 0) {
             unset($data['errmsg']);
             unset($data['errcode']);
@@ -355,15 +356,23 @@ class ReleaseService
         return $this->miniProgramApp->access_token->getToken();
     }
 
-    public function commit($templateId, $extJson = '{}')
+    public function commit($templateId, $extJson = null)
     {
+        if(is_null($extJson)){
+            if(!isset($this->component->extend)){
+                throw new UnprocessableEntityHttpException(trans('平台为设置发版配置'));
+            }
 
-        MiniProgramExt::updateOrCreate([
-            'component_id' => $this->miniProgram->component_id,
-            'template_id' => $templateId,
-            'mini_program_id' => $this->miniProgram->mini_program_id,
-            'company_id' => $this->miniProgram->company_id
-        ], ['config' => $extJson]);
+            $config = json_decode($this->component->extend->config, true);
+            $extJson = $config['ext_json'] ? json_encode($config['ext_json']) : '{}';
+        }else{
+            MiniProgramExt::updateOrCreate([
+                'component_id' => $this->miniProgram->component_id,
+                'template_id' => $templateId,
+                'mini_program_id' => $this->miniProgram->mini_program_id,
+                'company_id' => $this->miniProgram->company_id
+            ], ['config' => json_encode(['ext_json'=> $extJson])]);
+        }
 
         $extJson = $this->miniProgram->assign($extJson);
 
@@ -376,9 +385,13 @@ class ReleaseService
 
         $response = $this->parseResponse(
             $this->miniProgramApp->code->commit($templateId, $extJson, $template->user_version, $template->user_desc)
-        );
+        , false);
 
-        return $response;
+        $extJson = json_decode($extJson, true);
+        $config = json_encode(['ext_json'=> $extJson]);
+        $release = (new Release())->syncMake($this->miniProgram, $templateId, $config, $response);
+
+        return $release;
     }
 
     public function getQrCode($path = null)

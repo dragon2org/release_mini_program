@@ -3,12 +3,7 @@
 namespace App\Jobs;
 
 use App\Logs\ReleaseCommonQueueLogQueueLog;
-use App\Logs\ReleaseInQueueLog;
-use App\Models\MiniProgram;
-use App\Models\Release;
 use App\Models\ReleaseItem;
-use App\ReleaseConfigurator;
-use App\Releaser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -74,12 +69,16 @@ class SetMiniProgramCodeCommit extends BaseReleaseJobWithLog implements ShouldQu
             $this->release->user_version = $templateInfo['user_desc'];
             $this->release->save();
 
-            $extJson = is_array($this->config['ext_json']) ? json_encode($this->config['ext_json']) : $this->config['ext_json'] ;
+            $extJson = isset($this->config['ext_json']) ? json_encode($this->config['ext_json']) : '{}';
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push miniProgram code commit ext_json origin", [$extJson]);
+            $miniProgramTemplateConfig = $this->miniProgram->getTemplateConfig($templateId);
+            if($miniProgramTemplateConfig){
+                $config = json_decode($miniProgramTemplateConfig->config, true);
+                if(isset($config['ext_json'])){
+                    $extJson = json_encode($config['ext_json']);
+                    ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push miniProgram code commit ext_json independent origin", [$extJson]);
+                }
 
-            if($this->miniProgram->ext && !empty($this->miniProgram->ext->ext_json) && $this->miniProgram->ext->ext_json !== '{}'){
-                $extJson = $this->miniProgram->extJson;
-                ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push miniProgram code commit ext_json independent origin", [$extJson]);
             }
 
             $extJson = $this->miniProgram->assign($extJson);

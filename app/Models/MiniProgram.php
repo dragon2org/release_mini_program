@@ -49,6 +49,12 @@ class MiniProgram extends Model
         return $this->hasOne(MiniProgramExt::class, 'mini_program_id', 'mini_program_id')->orderBy('mini_program_ext_id', 'desc');
     }
 
+    public function getTemplateConfig($templateId)
+    {
+        $config = $this->ext()->where('template_id', $templateId)->orderBy('mini_program_ext_id', 'desc')->first();
+        return $config;
+    }
+
     /**
      * 替换模板变量
      * @param string $extJson

@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use App\Exceptions\UnprocessableEntityHttpException;
-use App\Jobs\MiniProgramRelease;
-use App\ReleaseConfigurator;
+
 use EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class Release extends Model
@@ -72,6 +69,35 @@ class Release extends Model
             'app_id' => $miniProgram->app_id,
             'trade_no' => $tradeNo
         ];
+    }
+
+    /**
+     * @param MiniProgram $miniProgram
+     * @param $templateId
+     * @param string $config
+     * @param array $response
+     * @return Release
+     */
+    public function syncMake(MiniProgram $miniProgram, $templateId, string $config, array $response)
+    {
+        $tradeNo = $this->genTradeNo($miniProgram->mini_program_id);
+        $model = (new self());
+        $model->component_id = $miniProgram->component_id;
+        $model->mini_program_id = $miniProgram->mini_program_id;
+        $model->template_id = $templateId;
+        $model->trade_no = $tradeNo;
+        $model->config = $config;
+        $model->save();
+
+        $task = (new ReleaseItem());
+        $task->release_id = $model->release_id;
+        $task->name = ReleaseItem::CONFIG_KEY_CODE_COMMIT;
+        $task->status = ReleaseItem::STATUS_SUCCESS;
+        $task->push_config = $config;
+        $task->response = json_encode($response);
+        $task->mini_program_id = $miniProgram->mini_program_id;
+
+        return $model;
     }
 
     protected function genTradeNo($id)

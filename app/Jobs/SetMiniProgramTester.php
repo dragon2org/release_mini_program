@@ -3,18 +3,13 @@
 namespace App\Jobs;
 
 use App\Logs\ReleaseCommonQueueLogQueueLog;
-use App\Models\MiniProgram;
-use App\Models\Release;
 use App\Models\ReleaseItem;
-use App\ReleaseConfigurator;
-use App\Releaser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Models\Tester;
-use Illuminate\Support\Arr;
 use \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
 
 
@@ -54,15 +49,19 @@ class SetMiniProgramTester extends BaseReleaseJobWithLog implements ShouldQueue
             $setted = $app->tester->list();
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "pull tester", $setted);
 
-            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push tester", $this->config);
 
+            ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push tester", $this->config);
             $pushConfig = [];
             $result = [];
+
             foreach($this->config as $tester){
                 $response = $app->tester->bind($tester);
                 ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push tester: {$tester} response", $response);
                 $pushConfig[] = $tester;
-                $result[] = $response;
+                $result[] = [
+                    'response' => $response,
+                    'tester' => $tester
+                ];
 
             }
             $this->task->building($pushConfig, $result, ReleaseItem::STATUS_SUCCESS, $setted);
@@ -75,10 +74,16 @@ class SetMiniProgramTester extends BaseReleaseJobWithLog implements ShouldQueue
     {
         $status = true;
         foreach($response as $res){
-            if(false === parent::isResponseOk($res)){
+            if(false === parent::isResponseOk($res['response'])){
                 $status =  false;
-                break;
+                continue;
             }
+
+            Tester::create([
+                'wechat_id' => $res['tester'],
+                'userstr' => $res['response']['userstr'],
+                'mini_program_id' => $this->miniProgram->mini_program_id
+            ]);
         }
 
         return $status;

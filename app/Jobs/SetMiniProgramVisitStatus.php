@@ -3,11 +3,7 @@
 namespace App\Jobs;
 
 use App\Logs\ReleaseCommonQueueLogQueueLog;
-use App\Models\MiniProgram;
-use App\Models\Release;
 use App\Models\ReleaseItem;
-use App\ReleaseConfigurator;
-use App\Releaser;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

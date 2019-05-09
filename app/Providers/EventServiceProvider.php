@@ -18,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\EmailNoticeEvent' => [
             'App\Listeners\EmailNoticeEventListener',
+        ],
+        'App\Event\TemplateReleaseTaskEvent' => [
+            'App\Listeners\TemplateReleaseTaskEventListener',
         ]
     ];
 

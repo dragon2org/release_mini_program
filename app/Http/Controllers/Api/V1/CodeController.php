@@ -76,6 +76,11 @@ class CodeController extends Controller
      *                 type="string",
      *                 default="T",
      *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @SWG\Property(property="trade_no", type="string", description="发版编号"),
      *             )
      *         )
      *     )
@@ -83,11 +88,13 @@ class CodeController extends Controller
      */
     public function commit(CodeCommit $request)
     {
-        $response = app('dhb.component.core')->commit(
+        $release = app('dhb.component.core')->commit(
             request()->input('template_id'),
-            request()->input('ext_json', '{}'));
+            request()->input('ext_json'));
 
-        return $this->response->withArray(['data' => $response]);
+        return $this->response->withArray(['data' => [
+            'trade_no' => $release->trade_no
+        ]]);
     }
 
     /**
@@ -127,7 +134,7 @@ class CodeController extends Controller
      *                 type="string",
      *                 default="T",
      *                 description=""
-     *             )
+     *             ),
      *             @SWG\Property(
      *                 property="data",
      *                 type="object",

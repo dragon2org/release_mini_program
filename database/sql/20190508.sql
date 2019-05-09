@@ -12,3 +12,5 @@ DROP TABLE `template_ext`;
 DROP TABLE `mini_program_template_draft`;
 
 ALTER TABLE `release_item` ADD COLUMN `mini_program_id` int(11) NOT NULL DEFAULT 0 COMMENT '小程序id';
+
+ALTER TABLE `component_template` ADD COLUMN

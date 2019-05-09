@@ -30,6 +30,5 @@ class Tester extends Model
         'wechat_id',
         'userstr',
         'mini_program_id',
-        'app_id',
     ];
 }

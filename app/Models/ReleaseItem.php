@@ -74,6 +74,7 @@ class ReleaseItem extends Model
     public static function make(Release $release, MiniProgram $miniProgram, $config)
     {
         $result = [];
+        $config = [];
         foreach($config as $key => $value){
             if(!in_array($key, self::SUPPORT_CONFIG_KEY)){
                 continue;
