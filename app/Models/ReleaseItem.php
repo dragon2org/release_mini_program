@@ -177,4 +177,20 @@ class ReleaseItem extends Model
         $this->status = self::STATUS_SUCCESS;
         $this->save();
     }
+
+    public function getStatusTrans()
+    {
+        switch ($this->status){
+            case self::STATUS_PREPARE:
+                return '正在等待';
+            case self::STATUS_ING:
+                return '正在构建';
+            case self::STATUS_SUCCESS:
+                return '构建成功';
+            case self::STATUS_FAILED:
+                return '构建失败';
+            default:
+                return '未知';
+        }
+    }
 }

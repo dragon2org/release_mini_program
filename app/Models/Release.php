@@ -53,7 +53,6 @@ class Release extends Model
     public function make(MiniProgram $miniProgram, $templateId, $config)
     {
         try {
-            DB::beginTransaction();
             $tradeNo = $this->genTradeNo($miniProgram->mini_program_id);
             $model = (new self());
             $model->component_id = $miniProgram->component_id;
@@ -63,11 +62,8 @@ class Release extends Model
             $model->config = json_encode($config, JSON_UNESCAPED_UNICODE);
             $model->save();
 
-
             $collect = ReleaseItem::make($model, $miniProgram, $config);
-            DB::commit();
         } catch (\Exception $e) {
-            DB::rollback();
             throw  $e;
         }
 
@@ -83,13 +79,6 @@ class Release extends Model
         $id = str_pad($id, 4, 0, 0);
         return 'R' .  date('YmdHis') . $id . Str::random(5);
     }
-
-    public function getReleaseConfigurator()
-    {
-        $config = json_decode($this->config, true);
-        return new ReleaseConfigurator($config);
-    }
-
 
     /**
      * @param \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application $app
@@ -125,7 +114,7 @@ class Release extends Model
             ReleaseAudit::ORIGIN_AUDIT_STATUS_SUCCESS => Release::RELEASE_STATUS_AUDIT_SUCCESS,
             ReleaseAudit::ORIGIN_AUDIT_STATUS_FAILED => Release::RELEASE_STATUS_AUDIT_FAILED,
             ReleaseAudit::ORIGIN_AUDIT_STATUS_AUDITING => Release::RELEASE_STATUS_AUDITING,
-            self::RELEASE_STATUS_AUDIT_REVERTED => Release::RELEASE_STATUS_AUDIT_REVERTED
+            ReleaseAudit::ORIGIN_AUDIT_STATUS_REVERTED => Release::RELEASE_STATUS_AUDIT_REVERTED
         ];
 
         return $map[$originStatus];

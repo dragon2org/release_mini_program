@@ -16,7 +16,7 @@ class ReleaseItemsTransformer extends TransformerAbstract
             "template_id" => $item->template_id,
             "user_version" => $item->user_version,
             "user_desc" => $item->user_desc,
-            "config" => $item->config,
+            "config" => $item->config ? json_decode($item->config, true) : [],
             "desc" => $item->desc,
             "audit_id" => $item->audit_id,
             "trade_no" => $item->trade_no,
