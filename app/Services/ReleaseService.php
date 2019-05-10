@@ -459,6 +459,7 @@ class ReleaseService
         $response = $this->parseResponse(
             $this->miniProgramApp->code->getAuditStatus($audit)
         );
+
         return $response;
     }
 
