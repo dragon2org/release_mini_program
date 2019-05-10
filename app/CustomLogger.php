@@ -47,7 +47,7 @@ class CustomLogger
     {
         if (empty(self::$loggers[$type])) {
             self::$loggers[$type] = new \Illuminate\Log\Writer(new \Monolog\Logger($type));
-            $file = env('CUSTOM_LOGGER_DIR') . '/release-mini-program-' . $type . '.log';
+            $file = env('CUSTOM_LOGGER_DIR') . '/'. env('APP_NAME') .'-' . $type . '.log';
             $log = self::$loggers[$type];
             $log->useDailyFiles($file, $day);
         }

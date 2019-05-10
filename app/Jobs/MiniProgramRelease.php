@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Logs\ReleaseCommonQueueLogQueueLog;
+use App\Models\Release;
 use App\Models\ReleaseItem;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -12,7 +13,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
 
 
-class MiniProgramRelease implements ShouldQueue
+class MiniProgramRelease extends BaseReleaseJobWithLog implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -49,4 +50,24 @@ class MiniProgramRelease implements ShouldQueue
             return $response;
         });
     }
+
+    protected function isResponseOk($response)
+    {
+        if(parent::isResponseOk($response)){
+            ReleaseItem::create([
+                'release_id' => $this->release->release_id,
+                'name' => ReleaseItem::CONFIG_KEY_RELEASE,
+                'original_config' => $this->release->config,
+                'response' => json_encode($response),
+                'status' => ReleaseItem::STATUS_SUCCESS,
+                'mini_program_id' => $this->miniProgram->mini_program_id,
+            ]);
+            $this->release->status = Release::RELEASE_STATUS_RELEASED;
+            $this->release->save();
+
+            return true;
+        }
+        return false;
+    }
+
 }

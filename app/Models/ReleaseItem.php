@@ -30,6 +30,8 @@ class ReleaseItem extends Model
 
     const CONFIG_KEY_VISIT_STATUS = 'visit_status';
 
+    const NAME_REVERT_AUDIT = 'revert_audit';
+
     const SUPPORT_CONFIG_KEY = [
         'domain', 'web_view_domain', 'audit', 'code_commit', 'release', 'support_version', 'tester', 'visit_status'
     ];
@@ -57,7 +59,7 @@ class ReleaseItem extends Model
     protected $primaryKey = 'release_item_id';
 
     protected $fillable = [
-        'release_id', 'name', 'original_config', 'status', 'mini_program_id',
+        'release_id', 'name', 'original_config', 'push_config', 'online_config', 'response', 'status', 'mini_program_id',
     ];
 
     public function miniProgram()

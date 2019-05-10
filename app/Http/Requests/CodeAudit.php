@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Release;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CodeAudit extends FormRequest

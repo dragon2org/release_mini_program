@@ -69,6 +69,7 @@ Route::group([
     Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/audit', 'CodeController@audit');
     Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/audit/{audit}', 'CodeController@auditStatus');
     Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/last_audit', 'CodeController@lastAuditStatus');
+    Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/withdraw_audit', 'CodeController@withdrawAudit');
     Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/release', 'CodeController@release');
     Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/revert_code_release', 'CodeController@revertCodeRelease');
 
@@ -77,7 +78,7 @@ Route::group([
     Route::delete('/component/{componentAppId}/mini_program/{miniProgramAppId}/tester', 'MiniProgramController@unbindTester');
     Route::get('/component/{componentAppId}/mini_program/{miniProgramAppId}/support_version', 'CodeController@supportVersion');
     Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/support_version', 'CodeController@SetSupportVersion');
-
+    Route::post('/component/{componentAppId}/mini_program/{miniProgramAppId}/visit_status', 'CodeController@visitStatus');
     /**
      * 模板管理
      */
@@ -88,20 +89,6 @@ Route::group([
     Route::post('/component/{componentAppId}/template/sync', 'TemplateController@sync');
     Route::post('/component/{componentAppId}/template/{templateId}/release', 'TemplateController@release');
 
-    /**
-     * 代码管理
-     */
-    Route::post('/component/{componentAppId}/mini_program/{miniProgram}/commit');
-    Route::get('/component/{componentAppId}/mini_program/{miniProgram}/qrcode');
-    Route::get('/component/{componentAppId}/mini_program/{miniProgram}/category');
-    Route::get('/component/{componentAppId}/mini_program/{miniProgram}/page');
-    Route::post('/component/{componentAppId}/mini_program/{miniProgram}/audit');
-    Route::get('/component/{componentAppId}/mini_program/{miniProgram}/audit/{audit}');
-    Route::get('/component/{componentAppId}/mini_program/{miniProgram}/last_audit');
-    Route::post('/component/{componentAppId}/mini_program/{miniProgram}/release');
-    Route::post('/component/{componentAppId}/mini_program/{miniProgram}/visit_status');
-    Route::get('/component/{componentAppId}/mini_program/{miniProgram}/revert_code_release');
-    Route::post('/component/{componentAppId}/mini_program/{miniProgram}/support_version');
 
     /**
      * 微信登录和解密. 上报js_code

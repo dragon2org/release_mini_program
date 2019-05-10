@@ -17,6 +17,7 @@ use App\Models\ComponentTemplate;
 use App\Models\MiniProgram;
 use App\Models\MiniProgramExt;
 use App\Models\Release;
+use App\Models\ReleaseItem;
 use App\Models\Tester;
 use App\ServeMessageHandlers\EventMessageHandler;
 use App\ServeMessageHandlers\MiniProgramUnauthorizedEventMessageHandler;
@@ -61,12 +62,14 @@ class ReleaseService
      */
     public function setOpenPlatform()
     {
-        $openPlatform = Factory::openPlatform([
+        $componentConfig = [
             'app_id' => $this->component->app_id,
             'secret' => $this->component->app_secret,
             'token' => $this->component->verify_token,
             'aes_key' => $this->component->aes_key,
-        ]);
+        ];
+        $config = array_merge(config('wechat.defaults'), $componentConfig);
+        $openPlatform = Factory::openPlatform($config);
 
         $openPlatform['verify_ticket']->setTicket($this->component->verify_ticket);
 
@@ -215,8 +218,8 @@ class ReleaseService
      */
     protected function parseResponse(array $data, $isRaw = false)
     {
-        if($isRaw) return $data;
         if ($data['errcode'] === 0) {
+            if($isRaw) return $data;
             unset($data['errmsg']);
             unset($data['errcode']);
             return $data;
@@ -385,7 +388,7 @@ class ReleaseService
 
         $response = $this->parseResponse(
             $this->miniProgramApp->code->commit($templateId, $extJson, $template->user_version, $template->user_desc)
-        , false);
+        , true);
 
         $extJson = json_decode($extJson, true);
         $config = json_encode(['ext_json'=> $extJson]);
@@ -421,11 +424,34 @@ class ReleaseService
 
     public function audit($itemList)
     {
-        //TODO::做详细的验证参数
+        $release = Release::where('mini_program_id', $this->miniProgram->mini_program_id)
+            ->where('status', Release::RELEASE_STATUS_COMMITTED)
+            ->orderBy('release_id', 'desc')
+            ->first();
+        if(!isset($release)){
+            throw new UnprocessableEntityHttpException(trans('构建单已失效'));
+        }
+
         $response = $this->parseResponse(
             $response = $this->miniProgramApp->code->submitAudit($itemList)
-        );
-        return $response;
+        , true);
+
+        ReleaseItem::create([
+            'release_id' => $release->release_id,
+            'name' => ReleaseItem::CONFIG_KEY_AUDIT,
+            'original_config' => $release->config,
+            'push_config' => $itemList,
+            'response' => json_encode($response),
+            'status' => ReleaseItem::STATUS_SUCCESS,
+            'mini_program_id' => $release->mini_program_id,
+        ]);
+
+        $release->audit_id = $response['auditid'];
+        $release->save();
+
+        return [
+            'audit_id' => $release->audit_id
+        ];
     }
 
     public function getAuditStatus($audit)
@@ -444,12 +470,60 @@ class ReleaseService
         return $response;
     }
 
-    public function release()
+    public function withdrawAudit()
     {
+        $release = Release::where('mini_program_id', $this->miniProgram->mini_program_id)
+            ->where('status', Release::RELEASE_STATUS_AUDITING)
+            ->orderBy('release_id', 'desc')->first();
+        if(!isset($release)){
+            throw new UnprocessableEntityHttpException(trans('平台没有发版数据,无法操作'));
+        }
+
+        $response = $this->parseResponse(
+            $this->miniProgramApp->code->withdrawAudit()
+            , true);
+
+        $release->status = Release::RELEASE_STATUS_AUDIT_REVERTED;
+        $release->save();
+
+        ReleaseItem::create([
+            'release_id' => $release->release_id,
+            'name' => ReleaseItem::NAME_REVERT_AUDIT,
+            'original_config' => $release->config,
+            'response' => json_encode($response),
+            'status' => ReleaseItem::STATUS_SUCCESS,
+            'mini_program_id' => $release->mini_program_id,
+        ]);
+
+        return true;
+    }
+
+    public function release($tradeNo)
+    {
+        $release = Release::where('mini_program_id', $this->miniProgram->mini_program_id)
+            ->where('status', Release::RELEASE_STATUS_AUDIT_SUCCESS)
+            ->orderBy('release_id', 'desc')->first();
+        if(!isset($release)){
+            throw new UnprocessableEntityHttpException(trans('平台不存在发版数据'));
+        }
+
         $response = $this->parseResponse(
             $this->miniProgramApp->code->release()
-        );
-        return $response;
+        , true);
+
+        $release->status = Release::RELEASE_STATUS_RELEASED;
+        $release->save();
+
+        ReleaseItem::create([
+            'release_id' => $release->release_id,
+            'name' => ReleaseItem::CONFIG_KEY_RELEASE,
+            'original_config' => $release->config,
+            'response' => json_encode($response),
+            'status' => ReleaseItem::STATUS_SUCCESS,
+            'mini_program_id' => $release->mini_program_id,
+        ]);
+
+        return [];
     }
 
     public function revertCodeRelease()

@@ -13,12 +13,8 @@ use App\Http\ApiResponse;
 use App\Http\Requests\CodeAudit;
 use App\Http\Requests\CodeCommit;
 use App\Http\Requests\GetTestQrcode;
+use App\Http\Requests\Release;
 use App\Http\Requests\SetSupportVersion;
-use App\Models\Component;
-use App\Models\ComponentExt;
-use App\Models\MiniProgram;
-use App\Services\MiniProgramService;
-use EasyWeChat\Factory;
 
 class CodeController extends Controller
 {
@@ -270,10 +266,16 @@ class CodeController extends Controller
      *     @SWG\Parameter(
      *         name="data",
      *         in="body",
-     *         description="提交审核项的一个列表（至少填写1项，至多填写5项）",
+     *         type="object",
      *         required=true,
-     *         type="array",
-     *         @SWG\Schema(ref="#/definitions/Audit")
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="item_list",
+     *                 type="array",
+     *                 description="提交审核项的一个列表（至少填写1项，至多填写5项）",
+     *                 @SWG\Items(ref="#/definitions/Audit")
+     *             ),
+     *         ),
      *     ),
      *     @SWG\Response(
      *         response=200,
@@ -381,13 +383,6 @@ class CodeController extends Controller
      *         required=true,
      *         type="string",
      *     ),
-     *     @SWG\Parameter(
-     *         name="auditid",
-     *         in="formData",
-     *         description="审核ID",
-     *         required=true,
-     *         type="integer",
-     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="成功返回",
@@ -425,6 +420,48 @@ class CodeController extends Controller
 
     /**
      * @SWG\Post(
+     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/withdraw_audit",
+     *     summary="小程序审核撤回",
+     *     tags={"小程序管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         description="三方平台AppID",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="miniProgramAppId",
+     *         in="path",
+     *         description="小程序AppId",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *         )
+     *     )
+     * )
+     */
+    public function withdrawAudit()
+    {
+        app('dhb.component.core')->withdrawAudit();
+
+        return $this->response->withArray();
+    }
+
+    /**
+     * @SWG\Post(
      *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/release",
      *     summary="发布已通过审核的小程序",
      *     tags={"小程序管理-代码管理"},
@@ -458,8 +495,7 @@ class CodeController extends Controller
      *     )
      * )
      */
-
-    public function release()
+    public function release(Release $release)
     {
         $response = app('dhb.component.core')->release();
 

@@ -28,4 +28,9 @@ class ReleaseAudit extends Model
     const ORIGIN_AUDIT_STATUS_AUDITING = 2;
 
     const ORIGIN_AUDIT_STATUS_REVERTED = 3;
+
+    public function isSuccess()
+    {
+        return $this->status === self::ORIGIN_AUDIT_STATUS_SUCCESS ? true : false;
+    }
 }

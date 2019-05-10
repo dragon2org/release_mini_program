@@ -87,6 +87,7 @@ class Release extends Model
         $model->template_id = $templateId;
         $model->trade_no = $tradeNo;
         $model->config = $config;
+        $model->status = Release::RELEASE_STATUS_COMMITTED;
         $model->save();
 
         $task = (new ReleaseItem());
@@ -96,6 +97,7 @@ class Release extends Model
         $task->push_config = $config;
         $task->response = json_encode($response);
         $task->mini_program_id = $miniProgram->mini_program_id;
+        $task->save();
 
         return $model;
     }
@@ -127,8 +129,8 @@ class Release extends Model
         $this->status = $this->getStatus($response['status']);
         $this->save();
 
-        if($this->release_on_audited){
-            $task = ReleaseItem::createReleaseTask($this, $this->miniProgram, $this->config);
+        if($audit->isSuccess() && $this->release_on_audited){
+            ReleaseItem::createReleaseTask($this, $this->miniProgram, $this->config);
         }
 
         return true;
