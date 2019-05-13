@@ -188,6 +188,7 @@ class ReleaseController extends Controller
      *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
+     *     deprecated=true,
      *     @SWG\Parameter(
      *         name="componentAppId",
      *         in="path",
