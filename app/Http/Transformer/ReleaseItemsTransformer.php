@@ -18,6 +18,8 @@ class ReleaseItemsTransformer extends TransformerAbstract
             "user_desc" => $item->user_desc,
             "config" => $item->config ? json_decode($item->config, true) : [],
             "desc" => $item->desc,
+            'status' => $item->status,
+            'status_trans' => $item->getStatusTrans(),
             "audit_id" => $item->audit_id,
             "trade_no" => $item->trade_no,
             'created_at' => (string) $item->created_at,

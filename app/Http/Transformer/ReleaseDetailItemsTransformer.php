@@ -21,7 +21,6 @@ class ReleaseDetailItemsTransformer extends TransformerAbstract
             "response" => $item->response ? json_decode($item->response, true) : [],
             "status" => $item->status,
             "status_trans" => $item->getStatusTrans(),
-            "audit_id" => $item->audit_id,
             'created_at' => (string) $item->created_at,
             'updated_at' => (string) $item->updated_at,
         ];

@@ -154,8 +154,12 @@ class Release extends Model
     public static function statistical($componentId, $templateId)
     {
         $collect = collect([
+            'unset' => Release::RELEASE_STATUS_SETTING,
+            'setting' => Release::RELEASE_STATUS_SETTING,
+            'setted' => Release::RELEASE_STATUS_SETTING,
             'uncommitted' => Release::RELEASE_STATUS_UNCOMMITTED,
             'committed' => Release::RELEASE_STATUS_COMMITTED,
+            'auditing' => Release::RELEASE_STATUS_AUDITING,
             'audit_failed' => Release::RELEASE_STATUS_AUDIT_FAILED,
             'audit_success' => Release::RELEASE_STATUS_AUDIT_SUCCESS,
             'audit_reverted' => Release::RELEASE_STATUS_AUDIT_REVERTED,
@@ -172,5 +176,10 @@ class Release extends Model
     public function scopeComponentTemplate($query, $componentId, $templateId)
     {
         return $query->where('template_id', $templateId)->where('component_id', $componentId);
+    }
+
+    public function getStatusTrans()
+    {
+        return '';
     }
 }

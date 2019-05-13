@@ -339,6 +339,41 @@ class TemplateController extends Controller
         ]);
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/component/{componentAppId}/template/{templateId}/statistical",
+     *     summary="模板统计",
+     *     tags={"三方平台管理-模板管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @SWG\Property(property="unset", type="integer", description="待设置"),
+     *                 @SWG\Property(property="setting", type="integer", description="设置中"),
+     *                 @SWG\Property(property="setted", type="integer", description="已设置"),
+     *                 @SWG\Property(property="uncommitted", type="integer", description="待提交代码"),
+     *                 @SWG\Property(property="committed", type="integer", description="已提交代码"),
+     *                 @SWG\Property(property="auditing", type="integer", description="已提审"),
+     *                 @SWG\Property(property="audit_failed", type="integer", description="审核失败"),
+     *                 @SWG\Property(property="audit_success", type="integer", description="审核成功"),
+     *                 @SWG\Property(property="audit_reverted", type="integer", description="撤回审核"),
+     *                 @SWG\Property(property="released", type="integer", description="已发布"),
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function statistical($componentAppId, $templateId)
     {
         $response = app('dhb.component.core')->templateStatistical($templateId);
