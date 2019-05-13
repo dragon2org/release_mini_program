@@ -67,4 +67,14 @@ class Release
      * @SWG\Property(type="string", description="更新时间")
      */
     public $updated_at;
+
+    /**
+     * @SWG\Property(type="string", description="审核失败原因")
+     */
+    public $reason;
+
+    /**
+     * @SWG\Property(type="string", description="对应截图")
+     */
+    public $screenshot;
 }
