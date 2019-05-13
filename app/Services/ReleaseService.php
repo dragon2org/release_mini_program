@@ -588,4 +588,9 @@ class ReleaseService
             throw $e;
         }
     }
+
+    public function templateStatistical($templateId)
+    {
+        return Release::statistical($this->component->component_id, $templateId);
+    }
 }

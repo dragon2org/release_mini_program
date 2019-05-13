@@ -25,7 +25,9 @@ class Release extends Model
      */
     protected $primaryKey = 'release_id';
 
-    CONST RELEASE_STATUS_UNCOMMITTED = 0;
+    CONST RELEASE_STATUS_SETTING = 0;
+
+    CONST RELEASE_STATUS_UNCOMMITTED = 1;
 
     CONST RELEASE_STATUS_COMMITTED = 10;
 
@@ -57,6 +59,7 @@ class Release extends Model
             $model->template_id = $templateId;
             $model->trade_no = $tradeNo;
             $model->config = json_encode($config, JSON_UNESCAPED_UNICODE);
+            $model->status = Release::RELEASE_STATUS_SETTING;
             $model->save();
 
             $collect = ReleaseItem::make($model, $miniProgram, $config);
@@ -105,7 +108,7 @@ class Release extends Model
     protected function genTradeNo($id)
     {
         $id = str_pad($id, 4, 0, 0);
-        return 'R' .  date('YmdHis') . $id . Str::random(5);
+        return 'R' . date('YmdHis') . $id . Str::random(5);
     }
 
     /**
@@ -129,7 +132,7 @@ class Release extends Model
         $this->status = $this->getStatus($response['status']);
         $this->save();
 
-        if($audit->isSuccess() && $this->release_on_audited){
+        if ($audit->isSuccess() && $this->release_on_audited) {
             ReleaseItem::createReleaseTask($this, $this->miniProgram, $this->config);
         }
 
@@ -146,5 +149,28 @@ class Release extends Model
         ];
 
         return $map[$originStatus];
+    }
+
+    public static function statistical($componentId, $templateId)
+    {
+        $collect = collect([
+            'uncommitted' => Release::RELEASE_STATUS_UNCOMMITTED,
+            'committed' => Release::RELEASE_STATUS_COMMITTED,
+            'audit_failed' => Release::RELEASE_STATUS_AUDIT_FAILED,
+            'audit_success' => Release::RELEASE_STATUS_AUDIT_SUCCESS,
+            'audit_reverted' => Release::RELEASE_STATUS_AUDIT_REVERTED,
+            'released' => Release::RELEASE_STATUS_RELEASED,
+        ]);
+
+        $return[] = $collect->map(function ($status) use ($componentId, $templateId) {
+            return (new self())->componentTemplate($componentId, $templateId)->where('status', $status)->count();
+        });
+
+        return $return;
+    }
+
+    public function scopeComponentTemplate($query, $componentId, $templateId)
+    {
+        return $query->where('template_id', $templateId)->where('component_id', $componentId);
     }
 }

@@ -23,8 +23,10 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
-
+        Route::pattern('templateId', '[0-9]+');
+        Route::pattern('componentAppId', '[A-Za-z0-9]+');
+        Route::pattern('miniProgramAppId', '[A-Za-z0-9]+');
+        Route::pattern('releaseId', '[0-9]+');
         parent::boot();
     }
 

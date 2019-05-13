@@ -9,6 +9,7 @@ use App\Http\Requests\DeleteTemplate;
 use App\Http\Requests\DraftToTemplate;
 use App\Http\Transformer\TemplateListTransformer;
 use App\Models\ComponentTemplate;
+use App\Models\Release;
 use App\Models\Template;
 
 class TemplateController extends Controller
@@ -332,6 +333,15 @@ class TemplateController extends Controller
     public function release($componentAppId, $templateId)
     {
         $response = app('dhb.component.core')->templateRelease($templateId);
+
+        return $this->response->withArray([
+            'data' => $response
+        ]);
+    }
+
+    public function statistical($componentAppId, $templateId)
+    {
+        $response = app('dhb.component.core')->templateStatistical($templateId);
 
         return $this->response->withArray([
             'data' => $response

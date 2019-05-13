@@ -2,11 +2,17 @@
 
 namespace App\Models;
 
+use App\Exceptions\UnprocessableEntityHttpException;
 use App\Jobs\MiniProgramAudit;
 use App\Jobs\MiniProgramRelease;
+use App\Jobs\SetMiniProgramCodeCommit;
 use App\Jobs\SetMiniProgramDomain;
+use App\Jobs\SetMiniProgramSupportVersion;
+use App\Jobs\SetMiniProgramTester;
+use App\Jobs\SetMiniProgramVisitStatus;
 use App\Jobs\SetMiniProgramWebViewDomain;
 use App\Logs\ReleaseInQueueLog;
+use App\Logs\RetryReleaseInQueueLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -38,7 +44,7 @@ class ReleaseItem extends Model
 
     const STATUS_PREPARE = 0;
 
-    const STATUS_ING = 1;
+    const STATUS_PROCESSING = 1;
 
     const STATUS_SUCCESS = 2;
 
@@ -164,7 +170,7 @@ class ReleaseItem extends Model
 
     public function applyBuilding()
     {
-        $this->status = self::STATUS_ING;
+        $this->status = self::STATUS_PROCESSING;
         $this->save();
     }
 
@@ -185,7 +191,7 @@ class ReleaseItem extends Model
         switch ($this->status){
             case self::STATUS_PREPARE:
                 return '正在等待';
-            case self::STATUS_ING:
+            case self::STATUS_PROCESSING:
                 return '正在构建';
             case self::STATUS_SUCCESS:
                 return '构建成功';
@@ -194,5 +200,60 @@ class ReleaseItem extends Model
             default:
                 return '未知';
         }
+    }
+
+    public function scopeComponentTemplate($query, $releaseId)
+    {
+        return $query->where('release_id', $releaseId);
+    }
+
+    public static function statistical($releaseId)
+    {
+        $collect = collect([
+            'prepare' => ReleaseItem::STATUS_PREPARE,
+            'processing' => ReleaseItem::STATUS_PROCESSING,
+            'success' => ReleaseItem::STATUS_SUCCESS,
+            'failed' => ReleaseItem::STATUS_FAILED,
+        ]);
+
+        $return[] = $collect->map(function ($status) use ($releaseId) {
+            return  (new self())->componentTemplate($releaseId)->where('status', $status)->count();
+        });
+
+        return $return;
+    }
+
+    public function retry($releaseItemId, $config = null)
+    {
+        $releaseItem = ReleaseItem::find($releaseItemId);
+
+        if(!isset($releaseItem)){
+            throw new UnprocessableEntityHttpException(trans('任务不存在'));
+        }
+
+        if($config){
+            $releaseItem->original_config = json_encode($config);
+            $releaseItem->save();
+        }
+
+        $map = [
+            ReleaseItem::CONFIG_KEY_DOMAIN => SetMiniProgramDomain::class,
+            ReleaseItem::CONFIG_KEY_WEB_VIEW_DOMAIN => SetMiniProgramWebViewDomain::class,
+            ReleaseItem::CONFIG_KEY_TESTER => SetMiniProgramTester::class,
+            ReleaseItem::CONFIG_KEY_VISIT_STATUS => SetMiniProgramVisitStatus::class,
+            ReleaseItem::CONFIG_KEY_SUPPORT_VERSION => SetMiniProgramSupportVersion::class,
+            ReleaseItem::CONFIG_KEY_CODE_COMMIT => SetMiniProgramCodeCommit::class,
+            ReleaseItem::CONFIG_KEY_AUDIT => MiniProgramAudit::class,
+            ReleaseItem::CONFIG_KEY_RELEASE => MiniProgramRelease::class,
+        ];
+        if(!isset($map[$releaseItem->name])){
+            throw new UnprocessableEntityHttpException(trans('不支持的操作类型'));
+        }
+
+        $class = $map[$releaseItem->name];
+        $class::dispatch($releaseItem)->onConnection('sync');
+        RetryReleaseInQueueLog::info($releaseItem->release->trade_no, $releaseItem->miniProgram, json_decode($releaseItem->original_config, true), $releaseItem->release->release_id, $class);
+
+        return true;
     }
 }

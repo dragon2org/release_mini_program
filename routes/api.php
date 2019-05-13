@@ -88,6 +88,7 @@ Route::group([
     Route::post('/component/{componentAppId}/template', 'TemplateController@draftToTemplate');
     Route::post('/component/{componentAppId}/template/sync', 'TemplateController@sync');
     Route::post('/component/{componentAppId}/template/{templateId}/release', 'TemplateController@release');
+    Route::get('/component/{componentAppId}/template/{templateId}/statistical', 'TemplateController@statistical');
 
 
     /**
@@ -107,7 +108,8 @@ Route::group([
      */
     Route::get('/component/{componentAppId}/release_task', 'ReleaseController@index');
     Route::get('/component/{componentAppId}/release_task/{releaseId}', 'ReleaseController@detail');
-    Route::get('/component/{componentAppId}/release_task/{releaseId}/retry', 'ReleaseController@retry');
+    Route::post('/component/{componentAppId}/release_task/{releaseId}/retry', 'ReleaseController@retry');
+    Route::get('/component/{componentAppId}/release_task/{releaseId}/statistical', 'ReleaseController@statistical');
 });
 
 
