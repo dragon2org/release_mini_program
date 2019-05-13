@@ -59,6 +59,7 @@ class Release extends Model
             $model->template_id = $templateId;
             $model->trade_no = $tradeNo;
             $model->config = json_encode($config, JSON_UNESCAPED_UNICODE);
+            $model->config_version = sha1($model->config);
             $model->status = Release::RELEASE_STATUS_SETTING;
             $model->save();
 
@@ -166,7 +167,7 @@ class Release extends Model
             'released' => Release::RELEASE_STATUS_RELEASED,
         ]);
 
-        $return[] = $collect->map(function ($status) use ($componentId, $templateId) {
+        $return = $collect->map(function ($status) use ($componentId, $templateId) {
             return (new self())->componentTemplate($componentId, $templateId)->where('status', $status)->count();
         });
 

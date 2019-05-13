@@ -216,7 +216,7 @@ class ReleaseItem extends Model
             'failed' => ReleaseItem::STATUS_FAILED,
         ]);
 
-        $return[] = $collect->map(function ($status) use ($releaseId) {
+        $return = $collect->map(function ($status) use ($releaseId) {
             return  (new self())->componentTemplate($releaseId)->where('status', $status)->count();
         });
 
