@@ -3519,6 +3519,59 @@
         ]
     },
     {
+        "name": "rapide/laravel-queue-kafka",
+        "version": "1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/rapideinternet/laravel-queue-kafka.git",
+            "reference": "409eb0366c2cde0c3831ced521f5e5ed1f0e2835"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/rapideinternet/laravel-queue-kafka/zipball/409eb0366c2cde0c3831ced521f5e5ed1f0e2835",
+            "reference": "409eb0366c2cde0c3831ced521f5e5ed1f0e2835",
+            "shasum": ""
+        },
+        "require": {
+            "ext-rdkafka": "*",
+            "illuminate/database": "5.4.*|5.5.*||5.6.*|5.7.*",
+            "illuminate/queue": "5.4.*|5.5.*|5.6.*|5.7.*",
+            "illuminate/support": "5.4.*|5.5.*|5.6.*|5.7.*",
+            "php": ">=5.6.4"
+        },
+        "require-dev": {
+            "mockery/mockery": "^0.9.5",
+            "phpunit/phpunit": "^5.5"
+        },
+        "time": "2018-11-10T14:58:14+00:00",
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "Rapide\\LaravelQueueKafka\\LaravelQueueKafkaServiceProvider"
+                ]
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Rapide\\LaravelQueueKafka\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Peter Mein",
+                "email": "petermein@gmail.com"
+            }
+        ],
+        "description": "Kafka driver for Laravel Queue"
+    },
+    {
         "name": "sebastian/code-unit-reverse-lookup",
         "version": "1.0.1",
         "version_normalized": "1.0.1.0",
@@ -4098,58 +4151,6 @@
         ],
         "description": "Library that helps with managing the version number of Git-hosted PHP projects",
         "homepage": "https://github.com/sebastianbergmann/version"
-    },
-    {
-        "name": "sjje/laravel-kafka",
-        "version": "1.0.0",
-        "version_normalized": "1.0.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/sjje/laravel-kafka.git",
-            "reference": "cf6408363d273d8394e45c95d7e028d707d0407b"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/sjje/laravel-kafka/zipball/cf6408363d273d8394e45c95d7e028d707d0407b",
-            "reference": "cf6408363d273d8394e45c95d7e028d707d0407b",
-            "shasum": ""
-        },
-        "require": {
-            "illuminate/queue": "~5.3|~5.4|~5.5",
-            "illuminate/support": "~5.3|~5.4|~5.5",
-            "php": "^7.0"
-        },
-        "time": "2018-12-18T11:02:18+00:00",
-        "type": "library",
-        "extra": {
-            "laravel": {
-                "providers": [
-                    "Sjje\\LaravelKafka\\LaravelKafkaServiceProvider"
-                ]
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Sjje\\LaravelKafka\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "sjje",
-                "email": "377304925@qq.com"
-            }
-        ],
-        "description": "aliyun kafka for laravel5, based on kasimchen/laravel-aliyun-kafka",
-        "keywords": [
-            "aliyun laravel kafka",
-            "laravel aliyun kafka",
-            "laravel kafka"
-        ]
     },
     {
         "name": "sjje/swaggervel",

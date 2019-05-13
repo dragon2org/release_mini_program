@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "91132a82266eb53cf80c60185b84f523",
+    "content-hash": "bc500dab636e8fe27af695537e89e037",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2319,35 +2319,41 @@
             "time": "2018-07-19T23:38:55+00:00"
         },
         {
-            "name": "sjje/laravel-kafka",
-            "version": "1.0.0",
+            "name": "rapide/laravel-queue-kafka",
+            "version": "1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/sjje/laravel-kafka.git",
-                "reference": "cf6408363d273d8394e45c95d7e028d707d0407b"
+                "url": "https://github.com/rapideinternet/laravel-queue-kafka.git",
+                "reference": "409eb0366c2cde0c3831ced521f5e5ed1f0e2835"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sjje/laravel-kafka/zipball/cf6408363d273d8394e45c95d7e028d707d0407b",
-                "reference": "cf6408363d273d8394e45c95d7e028d707d0407b",
+                "url": "https://api.github.com/repos/rapideinternet/laravel-queue-kafka/zipball/409eb0366c2cde0c3831ced521f5e5ed1f0e2835",
+                "reference": "409eb0366c2cde0c3831ced521f5e5ed1f0e2835",
                 "shasum": ""
             },
             "require": {
-                "illuminate/queue": "~5.3|~5.4|~5.5",
-                "illuminate/support": "~5.3|~5.4|~5.5",
-                "php": "^7.0"
+                "ext-rdkafka": "*",
+                "illuminate/database": "5.4.*|5.5.*||5.6.*|5.7.*",
+                "illuminate/queue": "5.4.*|5.5.*|5.6.*|5.7.*",
+                "illuminate/support": "5.4.*|5.5.*|5.6.*|5.7.*",
+                "php": ">=5.6.4"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9.5",
+                "phpunit/phpunit": "^5.5"
             },
             "type": "library",
             "extra": {
                 "laravel": {
                     "providers": [
-                        "Sjje\\LaravelKafka\\LaravelKafkaServiceProvider"
+                        "Rapide\\LaravelQueueKafka\\LaravelQueueKafkaServiceProvider"
                     ]
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Sjje\\LaravelKafka\\": "src"
+                    "Rapide\\LaravelQueueKafka\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2356,17 +2362,12 @@
             ],
             "authors": [
                 {
-                    "name": "sjje",
-                    "email": "377304925@qq.com"
+                    "name": "Peter Mein",
+                    "email": "petermein@gmail.com"
                 }
             ],
-            "description": "aliyun kafka for laravel5, based on kasimchen/laravel-aliyun-kafka",
-            "keywords": [
-                "aliyun laravel kafka",
-                "laravel aliyun kafka",
-                "laravel kafka"
-            ],
-            "time": "2018-12-18T11:02:18+00:00"
+            "description": "Kafka driver for Laravel Queue",
+            "time": "2018-11-10T14:58:14+00:00"
         },
         {
             "name": "sjje/swaggervel",

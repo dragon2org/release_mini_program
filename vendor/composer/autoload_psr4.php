@@ -34,7 +34,7 @@ return array(
     'Symfony\\Component\\Cache\\' => array($vendorDir . '/symfony/cache'),
     'Symfony\\Bridge\\PsrHttpMessage\\' => array($vendorDir . '/symfony/psr-http-message-bridge'),
     'Swagger\\' => array($vendorDir . '/zircote/swagger-php/src'),
-    'Sjje\\LaravelKafka\\' => array($vendorDir . '/sjje/laravel-kafka/src'),
+    'Rapide\\LaravelQueueKafka\\' => array($vendorDir . '/rapide/laravel-queue-kafka/src'),
     'Ramsey\\Uuid\\' => array($vendorDir . '/ramsey/uuid/src'),
     'Psy\\' => array($vendorDir . '/psy/psysh/src'),
     'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
