@@ -23,22 +23,22 @@ class ReleaseItem
     public $name;
 
     /**
-     * @SWG\Property(type="string", description="原始配置; 建议前段序列化后使用")
+     * @SWG\Property(type="object", description="原始配置; 建议前段序列化后使用")
      */
     public $original_config;
 
     /**
-     * @SWG\Property(type="string", description="线上配置; 建议前段序列化后使用")
+     * @SWG\Property(type="object", description="线上配置; 建议前段序列化后使用")
      */
     public $online_config;
 
     /**
-     * @SWG\Property(type="string", description="推送配置; 建议前段序列化后使用")
+     * @SWG\Property(type="object", description="推送配置; 建议前段序列化后使用")
      */
     public $push_config;
 
     /**
-     * @SWG\Property(type="string", description="请求响应; 建议前段序列化后使用")
+     * @SWG\Property(type="object", description="请求响应; 建议前段序列化后使用")
      */
     public $response;
 
@@ -50,7 +50,7 @@ class ReleaseItem
     /**
      * @SWG\Property(type="string", description="构建状态中文")
      */
-    public $status_status;
+    public $status_trans;
 
     /**
      * @SWG\Property(type="string", description="创建时间")

@@ -29,7 +29,7 @@ class Release
     public $user_desc;
 
     /**
-     * @SWG\Property(type="string", description="构建配置;为方便查看，返回的json对象.前端需要做序列化处理看情况展示。")
+     * @SWG\Property(type="object", description="构建配置;为方便查看，返回的json对象.前端需要做序列化处理看情况展示。")
      */
     public $config;
 
@@ -56,7 +56,7 @@ class Release
     /**
      * @SWG\Property(type="string", description="构建状态中文")
      */
-    public $status_status;
+    public $status_trans;
 
     /**
      * @SWG\Property(type="string", description="创建时间")

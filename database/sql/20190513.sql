@@ -1,0 +1,1 @@
+ALTER TABLE `release_audit` MODIFY COLUMN `reason` TEXT COMMENT '审核失败原因';
