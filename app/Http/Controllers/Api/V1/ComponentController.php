@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Exceptions\UnprocessableEntityHttpException;
-use App\Exceptions\WechatGatewayException;
 use App\Http\ApiResponse;
+use App\Http\Requests\ComponetConfigSync;
 use App\Http\Requests\RegisterComponent;
 use App\Http\Requests\UpdateComponent;
 use App\Http\Requests\UpdateReleaseConfigSupportVersion;
@@ -80,7 +80,6 @@ class ComponentController extends Controller
      */
     public function createBefore(UploadValidateFile $request)
     {
-        throw new WechatGatewayException('版本输入错误', 85015);
         $filename = request()->input('validate.filename');
         $content = request()->input('validate.content');
 
@@ -435,7 +434,7 @@ class ComponentController extends Controller
      *         type="object",
      *         @SWG\Schema(
      *             @SWG\Property(
-     *                 property="version",
+     *                 property="support_version",
      *                 type="string",
      *                 description="版本.如:1.0.0",
      *             )
@@ -556,7 +555,7 @@ class ComponentController extends Controller
      * )
      */
 
-    public function configSync()
+    public function configSync(ComponetConfigSync $request)
     {
         app('dhb.component.core')->configSync();
 

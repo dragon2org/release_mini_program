@@ -3,7 +3,6 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Exceptions\UnprocessableEntityHttpException;
 use App\Http\ApiResponse;
 use App\Http\Requests\RetryRelease;
 use App\Http\Transformer\ReleaseDetailItemsTransformer;
@@ -253,13 +252,6 @@ class ReleaseController extends Controller
      *         required=true,
      *         type="string"
      *     ),
-     *     @SWG\Parameter(
-     *         name="release_item_id",
-     *         in="query",
-     *         description="构建任务id",
-     *         required=true,
-     *         type="integer"
-     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="成功返回",
@@ -276,7 +268,8 @@ class ReleaseController extends Controller
      */
     public function retry($componentAppId, $releaseId, RetryRelease $request)
     {
-        (new ReleaseItem())->retry(request()->input('release_item_id'), request()->input('config'));
+
+        (new ReleaseItem())->retry(request()->input('config'));
 
         return $this->response->withArray();
     }

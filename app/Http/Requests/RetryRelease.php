@@ -24,7 +24,6 @@ class RetryRelease extends FormRequest
     public function rules()
     {
         return [
-            'release_item_id' => 'required|integer',
             'config' => ['array', function($attribute, $value, $closure){
                 if(!is_array($value)){
                     $closure($attribute . ' invalid');

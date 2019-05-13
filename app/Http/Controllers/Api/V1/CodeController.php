@@ -627,7 +627,7 @@ class CodeController extends Controller
      *         type="object",
      *         @SWG\Schema(
      *             @SWG\Property(
-     *                 property="version",
+     *                 property="support_version",
      *                 type="string",
      *                 description="版本.如1.0.0。可在开发者工具中获取"
      *             ),

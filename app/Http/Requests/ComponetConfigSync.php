@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SetSupportVersion extends FormRequest
+class ComponetConfigSync extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,13 @@ class SetSupportVersion extends FormRequest
     public function rules()
     {
         return [
-            'support_version' => 'required|string',
+            'category' => ['required', 'string', function($attribute, $value, $closure){
+                if(!in_array($value, [
+                    'domain', 'web_view_domain', 'tester', 'visit_status', 'support_version', 'all'
+                ])){
+                    $closure($attribute . ' invalid');
+                }
+            }]
         ];
     }
 }
