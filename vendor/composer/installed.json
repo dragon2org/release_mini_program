@@ -3524,14 +3524,8 @@
         "version_normalized": "1.0.0.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/rapideinternet/laravel-queue-kafka.git",
+            "url": "https://github.com/sjje/laravel-queue-kafka",
             "reference": "409eb0366c2cde0c3831ced521f5e5ed1f0e2835"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/rapideinternet/laravel-queue-kafka/zipball/409eb0366c2cde0c3831ced521f5e5ed1f0e2835",
-            "reference": "409eb0366c2cde0c3831ced521f5e5ed1f0e2835",
-            "shasum": ""
         },
         "require": {
             "ext-rdkafka": "*",
@@ -3553,13 +3547,12 @@
                 ]
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Rapide\\LaravelQueueKafka\\": "src/"
             }
         },
-        "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"
         ],

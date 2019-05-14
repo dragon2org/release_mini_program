@@ -83,7 +83,7 @@ class ReleaseItem extends Model
         return $this->belongsTo(Release::class, 'release_id', 'release_id');
     }
 
-    public static function make(Release $release, MiniProgram $miniProgram, $config)
+    public static function make(Release $release, MiniProgram $miniProgram, $config, $force = false)
     {
         $result = [];
 
@@ -94,7 +94,7 @@ class ReleaseItem extends Model
             }
             if(in_array($key, self::CACHED_CONFIG_KEY) && isset($lastRelease)){
 
-                if($lastRelease->config_version === $release->config_version){
+                if(false === $force && $lastRelease->config_version === $release->config_version){
                     continue;
                 }
             }

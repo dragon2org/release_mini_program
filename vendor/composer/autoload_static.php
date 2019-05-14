@@ -553,6 +553,7 @@ class ComposerStaticInit57c3ca7400b4875d3c65b4e72a8fe30b
         'App\\Jobs\\SetMiniProgramTester' => __DIR__ . '/../..' . '/app/Jobs/SetMiniProgramTester.php',
         'App\\Jobs\\SetMiniProgramVisitStatus' => __DIR__ . '/../..' . '/app/Jobs/SetMiniProgramVisitStatus.php',
         'App\\Jobs\\SetMiniProgramWebViewDomain' => __DIR__ . '/../..' . '/app/Jobs/SetMiniProgramWebViewDomain.php',
+        'App\\Jobs\\TestJob' => __DIR__ . '/../..' . '/app/Jobs/TestJob.php',
         'App\\Listeners\\AuditEventListener' => __DIR__ . '/../..' . '/app/Listeners/AuditEventListener.php',
         'App\\Listeners\\EmailNoticeEventListener' => __DIR__ . '/../..' . '/app/Listeners/EmailNoticeEventListener.php',
         'App\\Listeners\\TemplateReleaseTaskEventListener' => __DIR__ . '/../..' . '/app/Listeners/TemplateReleaseTaskEventListener.php',

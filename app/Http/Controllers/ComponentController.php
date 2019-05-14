@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\TestJob;
 use App\Models\ValidateFile;
 
 class ComponentController extends Controller
@@ -31,5 +32,15 @@ class ComponentController extends Controller
             "Accept-Length" => strlen($file->content),
             "Content-Disposition" => "attachment; filename={$validateFilename}"
         ]);
+    }
+
+    public function debug()
+    {
+        if('local' !==  env('APP_ENV')){
+            abort(404);
+        }
+
+        TestJob::dispatch([111]);
+        echo 1;die;
     }
 }

@@ -87,6 +87,7 @@ return array(
     'App\\Jobs\\SetMiniProgramTester' => $baseDir . '/app/Jobs/SetMiniProgramTester.php',
     'App\\Jobs\\SetMiniProgramVisitStatus' => $baseDir . '/app/Jobs/SetMiniProgramVisitStatus.php',
     'App\\Jobs\\SetMiniProgramWebViewDomain' => $baseDir . '/app/Jobs/SetMiniProgramWebViewDomain.php',
+    'App\\Jobs\\TestJob' => $baseDir . '/app/Jobs/TestJob.php',
     'App\\Listeners\\AuditEventListener' => $baseDir . '/app/Listeners/AuditEventListener.php',
     'App\\Listeners\\EmailNoticeEventListener' => $baseDir . '/app/Listeners/EmailNoticeEventListener.php',
     'App\\Listeners\\TemplateReleaseTaskEventListener' => $baseDir . '/app/Listeners/TemplateReleaseTaskEventListener.php',

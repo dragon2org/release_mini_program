@@ -14,6 +14,7 @@ Route::group([
 });
 
 
+Route::get('/debug', 'ComponentController@debug');
 
 Route::group([
     'middleware' => 'force-json',

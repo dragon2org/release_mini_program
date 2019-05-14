@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Exceptions\UnprocessableEntityHttpException;
 use App\Http\ApiResponse;
 use App\Http\Requests\RetryRelease;
 use App\Http\Transformer\ReleaseDetailItemsTransformer;
@@ -278,9 +279,15 @@ class ReleaseController extends Controller
      */
     public function retry($componentAppId, $releaseId, RetryRelease $request)
     {
+        $release = (new Release())->where('release_id', $releaseId)->first();
+        if(!isset($release)){
+            throw new UnprocessableEntityHttpException(trans('任务不存在'));
+        }
 
-        (new ReleaseItem())->retry(request()->input('config'));
+        $result  = $release->retry(request()->input('config'));
 
-        return $this->response->withArray();
+        return $this->response->withArray([
+            'data' => $result
+        ]);
     }
 }

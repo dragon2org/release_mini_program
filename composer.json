@@ -1,7 +1,10 @@
 {
     "name": "laravel/laravel",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -39,12 +42,13 @@
         "psr-4": {
             "Tests\\": "tests/"
         },
-        "files": ["tests/Utilities/functions.php"]
+        "files": [
+            "tests/Utilities/functions.php"
+        ]
     },
     "extra": {
         "laravel": {
-            "dont-discover": [
-            ]
+            "dont-discover": []
         }
     },
     "scripts": {
@@ -59,6 +63,12 @@
             "@php artisan package:discover"
         ]
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/sjje/laravel-queue-kafka"
+        }
+    ],
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,

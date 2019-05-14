@@ -3,6 +3,7 @@
 namespace App\Models;
 
 
+use App\Exceptions\UnprocessableEntityHttpException;
 use EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -48,6 +49,11 @@ class Release extends Model
         return $this->hasMany(ReleaseItem::class, 'release_id', release_id);
     }
 
+    public function miniProgram()
+    {
+        return $this->hasOne(MiniProgram::class, 'mini_program_id', 'mini_program_id');
+    }
+
 
     public function make(MiniProgram $miniProgram, $templateId, $config)
     {
@@ -91,6 +97,7 @@ class Release extends Model
         $model->template_id = $templateId;
         $model->trade_no = $tradeNo;
         $model->config = $config;
+        $model->release_on_audited = 0;
         $model->status = Release::RELEASE_STATUS_COMMITTED;
         $model->save();
 
@@ -193,5 +200,27 @@ class Release extends Model
             ->first();
 
         return $model;
+    }
+
+    public function retry($config)
+    {
+        if(!is_null($config)){
+            $newConfig = json_encode($this->config, true);
+            if(sha1($newConfig) === $this->config_version){
+                throw new UnprocessableEntityHttpException(trans('配置文件未发生变动'));
+            }
+            $this->config = $newConfig;
+            $this->save();
+        }else{
+            $config = json_decode($this->config, true);
+        }
+
+        $collect = ReleaseItem::make($this, $this->miniProgram, $config, true);
+
+        return [
+            'task_num' => $collect->count(),
+            'app_id' => $this->miniProgram->app_id,
+            'trade_no' => $this->trade_no
+        ];
     }
 }

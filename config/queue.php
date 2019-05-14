@@ -93,9 +93,10 @@ return [
              */
             'sleep_on_deadlock' => env('KAFKA_DEADLOCK_SLEEP', 2),
 
+            'sasl_enable' => true,
+            'ssl.ca.location' => '',
             'sasl_plain_username' => env('KAFKA_SASL_PLAIN_USERNAME'),
             'sasl_plain_password' => env('KAFKA_SASL_PLAIN_PASSWORD'),
-            'sasl_enable' => false,
         ],
 
     ],
