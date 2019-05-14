@@ -66,17 +66,36 @@ return [
 
         'kafka' => [
             'driver' => 'kafka',
-            'sasl'=> false,
-            'sasl_plain_username' => env('KAFKA_SASL_PLAIN_USERNAME', 'YOUR AK'), // 阿里云 ak
-            'sasl_plain_password' => env('KAFKA_SASL_PLAIN_PASSWORD', 'YOUR AC'),// 阿里云 ac后10位
-            'bootstrap_servers' => env('KAFKA_BROKER_LIST'), // broker
-            'ssl.ca.location' => storage_path('config/ca-cert'), // cr 证书 下载 https://help.aliyun.com/document_detail/52376.html
-            'message.send.max.retries' => 5,
-            'queue' => env('KAFKA_TOPIC', 'release-mini-program'),  // 这里填入你在阿里云控制台配置的topic
-            'consumer_id' => env('KAFKA_CONSUMER_ID', '1'), // 消费者ID，你在阿里云控制台配置的消费之ID
-            'log_level' => LOG_DEBUG, // 日志等级
-            'security.protocol' => 'plaintext',  //plaintext, ssl, sasl_plaintext, sasl_ssl
-            'max.tries' => '5', // 最大尝试次数
+
+            /*
+             * The name of default queue.
+             */
+            'queue' => env('KAFKA_QUEUE', 'alikafka_mini_program_publish'),
+
+            /*
+             * The group of where the consumer in resides.
+             */
+            'consumer_group_id' => env('KAFKA_CONSUMER_GROUP_ID', 'laravel_queue'),
+
+            /*
+             * Address of the Kafka broker
+             */
+            'brokers' => env('KAFKA_BROKERS', 'localhost'),
+
+            /*
+             * Determine the number of seconds to sleep if there's an error communicating with kafka
+             * If set to false, it'll throw an exception rather than doing the sleep for X seconds.
+             */
+            'sleep_on_error' => env('KAFKA_ERROR_SLEEP', 5),
+
+            /*
+             * Sleep when a deadlock is detected
+             */
+            'sleep_on_deadlock' => env('KAFKA_DEADLOCK_SLEEP', 2),
+
+            'sasl_plain_username' => env('KAFKA_SASL_PLAIN_USERNAME'),
+            'sasl_plain_password' => env('KAFKA_SASL_PLAIN_PASSWORD'),
+            'sasl_enable' => false,
         ],
 
     ],

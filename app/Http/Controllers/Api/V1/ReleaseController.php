@@ -252,6 +252,16 @@ class ReleaseController extends Controller
      *         required=true,
      *         type="string"
      *     ),
+     *     @SWG\Parameter(
+     *         name="data",
+     *         in="body",
+     *         description="表单数据",
+     *         required=true,
+     *         type="object",
+     *         @SWG\Schema(
+     *             @SWG\Property(property="config", type="object", description="重试配置.支持平台发版配置所有的配置项。格式一样"),
+     *         )
+     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="成功返回",
