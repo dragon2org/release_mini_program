@@ -42,6 +42,10 @@ class ReleaseItem extends Model
         'domain', 'web_view_domain', 'audit', 'code_commit', 'release', 'support_version', 'tester', 'visit_status'
     ];
 
+    const CACHED_CONFIG_KEY = [
+        'domain', 'web_view_domain', 'support_version', 'tester', 'visit_status'
+    ];
+
     const STATUS_PREPARE = 0;
 
     const STATUS_PROCESSING = 1;
@@ -82,9 +86,17 @@ class ReleaseItem extends Model
     public static function make(Release $release, MiniProgram $miniProgram, $config)
     {
         $result = [];
+
+        $lastRelease = Release::lastRelease($miniProgram, $release);
         foreach($config as $key => $value){
             if(!in_array($key, self::SUPPORT_CONFIG_KEY)){
                 continue;
+            }
+            if(in_array($key, self::CACHED_CONFIG_KEY) && isset($lastRelease)){
+
+                if($lastRelease->config_version === $release->config_version){
+                    continue;
+                }
             }
 
             $task =  self::create([

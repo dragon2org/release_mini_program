@@ -183,4 +183,15 @@ class Release extends Model
     {
         return '';
     }
+
+    public static function lastRelease(MiniProgram $miniProgram, Release $release)
+    {
+        $model  = (new self())
+            ->where('release_id', '<', $release->release_id)
+            ->where('mini_program_id', $miniProgram->mini_program_id)
+            ->orderBy('release_id', 'desc')
+            ->first();
+
+        return $model;
+    }
 }

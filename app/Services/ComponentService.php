@@ -131,6 +131,7 @@ class ComponentService
             $extend->component_id = app('dhb.component.core')->component->component_id;
         }
         $extend->config = json_encode($config, JSON_UNESCAPED_UNICODE);
+        $extend->config_version = sha1($extend->config);
         $extend->save();
 
         return $config;
