@@ -33,6 +33,8 @@ class CustomLogger
 
     const LOG_CODE_COMMIT = 'code-commit';
 
+    const LOG_MINI_PROGRAM_AUTHORIZATION_LOG = 'mini-program-authorization';
+
 
     private static $loggers = array();
 

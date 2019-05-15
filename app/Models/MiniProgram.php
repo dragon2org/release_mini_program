@@ -13,6 +13,9 @@ class MiniProgram extends Model
 
     const AUTHORIZATION_STATUS_UNAUTHORIZED = 20;
 
+    protected  $fillable = [
+        'app_id'
+    ];
     /**
      * The table associated with the model.
      *

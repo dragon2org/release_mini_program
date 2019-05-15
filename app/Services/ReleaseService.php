@@ -12,6 +12,7 @@ namespace App\Services;
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Exceptions\WechatGatewayException;
 use App\Helper\CustomLogger;
+use App\Logs\MiniProgramAuthCallbackLog;
 use App\Models\Component;
 use App\Models\ComponentTemplate;
 use App\Models\MiniProgram;
@@ -180,19 +181,19 @@ class ReleaseService
     public function bindCallback()
     {
         $authorization = $this->openPlatform->handleAuthorize();
+        MiniProgramAuthCallbackLog::info($this->component, $authorization);
 
         $miniProgramAppId = $authorization['authorization_info']['authorizer_appid'];
         $refreshToken = $authorization['authorization_info']['authorizer_refresh_token'];
 
         //TODO::判断function_info
-        $miniProgram = (new MiniProgram())->firstOrNew(['app_id' => $miniProgramAppId]);
+        $miniProgram = MiniProgram::firstOrNew(['app_id' => $miniProgramAppId]);
         $miniProgram->component_id = $this->component->component_id;
         $miniProgram->company_id = request()->query('company_id', 0);
         $miniProgram->inner_name = request()->query('inner_name', '');
         $miniProgram->inner_desc = request()->query('inner_desc', '');
         $miniProgram->authorizer_refresh_token = $refreshToken;
         $miniProgram->save();
-
         //拉取基础信息
         $miniProgramAuthorizer = $this->openPlatform->getAuthorizer($miniProgramAppId);
         $info = $miniProgramAuthorizer['authorizer_info'];
