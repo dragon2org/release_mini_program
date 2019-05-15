@@ -531,7 +531,7 @@ class CodeController extends Controller
      *         type="object",
      *         @SWG\Schema(
      *             @SWG\Property(
-     *                 property="action",
+     *                 property="visit_status",
      *                 type="string",
      *                 description="设置可访问状态，发布后默认可访问，close为不可见，open为可见"
      *             ),
@@ -553,7 +553,7 @@ class CodeController extends Controller
      */
     public function visitStatus(UpdateReleaseConfigVisitStatus $request)
     {
-        $response = app('dhb.component.core')->setVisitStatus(request()->input('action'));
+        $response = app('dhb.component.core')->setVisitStatus(request()->input('visit_status'));
 
         return $this->response->withArray(['data'=> $response]);
     }

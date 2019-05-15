@@ -26,10 +26,10 @@ class UpdateComponent extends FormRequest
         return [
             'name' => 'required|max:45',
             'desc' => 'required|max:45',
-            'app_id' => 'required|min:10|max:32',
-            'app_secret' => 'required|string|size:32',
-            'verify_token' => 'required|string|min:1|max:45',
-            'aes_key' => 'required|string|size:43',
+            'app_id' =>  ['required', 'min:10', 'max:32', 'regex:/^[A-Za-z0-9]+$/'],
+            'app_secret' => ['required', 'string', 'size:32', 'regex:/^[A-Za-z0-9]+$/'],
+            'verify_token' => ['required','string', 'min:1', 'max:45','regex:/^[A-Za-z0-9]+$/'],
+            'aes_key' => ['required','string', 'size:43', 'regex:/^[A-Za-z0-9]+$/'],
             'validate.filename' => 'required|max:45',
             'validate.content' => 'required|max:45',
         ];
