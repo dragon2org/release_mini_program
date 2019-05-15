@@ -24,7 +24,13 @@ class SetSupportVersion extends FormRequest
     public function rules()
     {
         return [
-            'support_version' => 'required|string',
+            'support_version' => ['required', 'string', function($attribute, $value, $closure){
+                $minVersion = '1.0.1';
+                $maxVersion = '2.6.6';
+                if($value > $maxVersion || $value<$minVersion){
+                    $closure($attribute . ' invalid');
+                }
+            }],
         ];
     }
 }

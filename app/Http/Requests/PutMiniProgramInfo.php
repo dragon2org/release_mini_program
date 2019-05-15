@@ -26,10 +26,6 @@ class PutMiniProgramInfo extends FormRequest
         return [
             'inner_name' => 'required|max:45',
             'inner_desc' => 'required|max:45',
-            'nick_name'  => 'required|max:45',
-            'head_img'   => 'required|max:255',
-            'principal_name' => 'required|max:45',
-            'qrcode_url' => 'required|max:255',
             'desc' => 'required|max:255'
         ];
     }

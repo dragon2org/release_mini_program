@@ -36,9 +36,6 @@ class ComponentController extends Controller
 
     public function debug()
     {
-        if('local' !==  env('APP_ENV')){
-            abort(404);
-        }
 
         TestJob::dispatch([111])->onConnection('kafka');
         echo 1;die;
