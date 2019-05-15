@@ -15,6 +15,7 @@ use App\Http\Requests\CodeCommit;
 use App\Http\Requests\GetTestQrcode;
 use App\Http\Requests\Release;
 use App\Http\Requests\SetSupportVersion;
+use App\Http\Requests\UpdateReleaseConfigVisitStatus;
 
 class CodeController extends Controller
 {
@@ -550,9 +551,9 @@ class CodeController extends Controller
      *     )
      * )
      */
-    public function visitStatus()
+    public function visitStatus(UpdateReleaseConfigVisitStatus $request)
     {
-        $response = app('dhb.component.core')->setVisitStatus(request()->input('action', 'close'));
+        $response = app('dhb.component.core')->setVisitStatus(request()->input('action'));
 
         return $this->response->withArray(['data'=> $response]);
     }

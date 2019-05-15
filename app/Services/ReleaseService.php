@@ -554,16 +554,17 @@ class ReleaseService
     public function setVisitStatus($status)
     {
         try {
-            $response = $this->parseResponse(
+            $this->parseResponse(
                 $this->miniProgramApp->code->changeVisitStatus($status)
             );
+            return [];
         } catch (WechatGatewayException $exception) {
             if($exception->getCode() !== 85021){
                 throw $exception;
             }
         }
 
-        return $response;
+        return [];
     }
 
     public function templateRelease($templateId)
