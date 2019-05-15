@@ -650,7 +650,7 @@ class CodeController extends Controller
     public function SetSupportVersion(SetSupportVersion $request)
     {
         $response = app('dhb.component.core')->setSupportVersion(
-            request()->input('version')
+            request()->input('support_version')
         );
 
         return $this->response->withArray(['data' => $response]);
@@ -658,9 +658,7 @@ class CodeController extends Controller
 
     public function supportVersion()
     {
-        $response = app('dhb.component.core')->getSupportVersion(
-            request()->input('version')
-        );
+        $response = app('dhb.component.core')->getSupportVersion();
 
         return $this->response->withArray(['data' => $response]);
     }
