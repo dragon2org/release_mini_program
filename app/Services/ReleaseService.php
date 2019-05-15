@@ -593,4 +593,9 @@ class ReleaseService
     {
         return Release::statistical($this->component->component_id, $templateId);
     }
+
+    public function configSync()
+    {
+        return true;
+    }
 }
