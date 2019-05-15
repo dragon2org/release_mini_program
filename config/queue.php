@@ -65,22 +65,25 @@ return [
         ],
 
         'kafka' => [
+            /*
+             * Driver name
+             */
             'driver' => 'kafka',
 
             /*
              * The name of default queue.
              */
-            'queue' => 'alikafka_mini_program_publish_test',
+            'queue' => env('KAFKA_QUEUE', 'default'),
 
             /*
              * The group of where the consumer in resides.
              */
-            'consumer_group_id' => 'CID_alikafka_mini_program_publish_common_test',
+            'consumer_group_id' => env('KAFKA_CONSUMER_GROUP_ID', 'laravel_queue'),
 
             /*
              * Address of the Kafka broker
              */
-            'brokers' => '172.19.0.198:9092,172.19.0.199:9092,172.19.0.200:9092',
+            'brokers' => env('KAFKA_BROKERS', 'localhost'),
 
             /*
              * Determine the number of seconds to sleep if there's an error communicating with kafka
@@ -93,10 +96,25 @@ return [
              */
             'sleep_on_deadlock' => env('KAFKA_DEADLOCK_SLEEP', 2),
 
+            /*
+             * sasl authorization
+             */
             'sasl_enable' => true,
-            'ssl.ca.location' => storage_path('kafka.client.truststore.jks'),
-            'sasl_plain_username' => 'LTAIvmHWk2C9YURr',
-            'sasl_plain_password' => '24tzhnjU3S',
+
+            /*
+             * File or directory path to CA certificate(s) for verifying the broker's key. example: storage_path('kafka.client.truststore.jks')
+             */
+            'ssl_ca_location' => storage_path('kafka.client.truststore.jks'),
+
+            /*
+             * SASL username for use with the PLAIN and SASL-SCRAM-.. mechanisms
+             */
+            'sasl_plain_username' => env('KAFKA_SASL_PLAIN_USERNAME'),
+
+            /*
+             * SASL password for use with the PLAIN and SASL-SCRAM-.. mechanism
+             */
+            'sasl_plain_password' => env('KAFKA_SASL_PLAIN_PASSWORD'),
         ],
 
     ],
