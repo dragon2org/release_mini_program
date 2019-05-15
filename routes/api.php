@@ -9,10 +9,9 @@ Route::group([
     'middleware' => ['force-json', 'component-injection']
 ], function(){
     Route::any('/component/{componentAppId}/mini_program/{miniProgramAppId}/serve', 'MiniProgramController@serve')->name('componentMiniProgramServe');
-    Route::post('/component/{componentAppId}/serve', 'ComponentController@serve')->name('componentServe');;
+    Route::post('/component/{componentAppId}/serve', 'ComponentController@serve')->name('componentServe');
 
 });
-
 
 Route::get('/debug', 'ComponentController@debug');
 

@@ -40,7 +40,7 @@ class ComponentController extends Controller
             abort(404);
         }
 
-        TestJob::dispatch([111]);
+        TestJob::dispatch([111])->onConnection('kafka');
         echo 1;die;
     }
 }

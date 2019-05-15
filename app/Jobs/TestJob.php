@@ -42,6 +42,7 @@ class TestJob extends BaseReleaseJobWithLog implements ShouldQueue
      */
     public function handle()
     {
+        echo 'this kafka out:';
         dd($this->task);
     }
 }
