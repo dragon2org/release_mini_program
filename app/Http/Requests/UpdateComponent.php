@@ -24,8 +24,6 @@ class UpdateComponent extends FormRequest
     public function rules()
     {
         return [
-            'inner_name' => 'required|max:45',
-            'inner_desc' => 'required|max:45',
             'name' => 'required|max:45',
             'desc' => 'required|max:45',
             'app_id' => 'required|min:19|max:32',
