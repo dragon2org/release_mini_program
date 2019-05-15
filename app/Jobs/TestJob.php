@@ -15,6 +15,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
+use Illuminate\Support\Facades\Log;
 
 
 class TestJob extends BaseReleaseJobWithLog implements ShouldQueue
@@ -42,7 +43,6 @@ class TestJob extends BaseReleaseJobWithLog implements ShouldQueue
      */
     public function handle()
     {
-        echo 'this kafka out:';
-        dd($this->task);
+        Log::info('this kafka queue out');
     }
 }
