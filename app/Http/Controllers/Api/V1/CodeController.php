@@ -147,7 +147,7 @@ class CodeController extends Controller
 
         return $this->response->withArray([
             'data' => [
-                'qrcode' => base64_encode($response)
+                'qrcode' => $response
             ]
         ]);
     }

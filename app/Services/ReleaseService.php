@@ -25,9 +25,10 @@ use App\ServeMessageHandlers\MiniProgramUnauthorizedEventMessageHandler;
 use EasyWeChat\Factory;
 use EasyWeChat\Kernel\Messages\Message;
 use EasyWeChat\OpenPlatform\Server\Guard;
-use http\Env\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Log;
+use RuntimeException;
 
 class ReleaseService
 {
@@ -402,9 +403,25 @@ class ReleaseService
     {
         $response = $this->miniProgramApp->code->getQrCode($path);
 
-        //TODO::二进制流转base64
-        return $response;
-        return base64_encode($response->getBodyContents());
+        if(!in_array('image/jpeg', $response->getHeader('Content-Type'))){
+            throw new UnprocessableEntityHttpException(trans('获取资源失败'));
+
+        }
+        $response->getBody()->rewind();
+        $contents = $response->getBody()->getContents();
+
+        if (empty($contents) || '{' === $contents[0]) {
+            throw new RuntimeException('Invalid media response content.');
+        }
+        $filename = Str::random(64) . '.jpeg';
+        $filePath = storage_path(). '/framework/cache/' . $filename;
+        file_put_contents($filePath, $contents);
+
+        $code = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($filePath));
+
+        unlink($filePath);
+
+        return $code;
     }
 
     public function getCategory()
