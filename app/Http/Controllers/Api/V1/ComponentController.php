@@ -515,7 +515,7 @@ class ComponentController extends Controller
     }
 
     /**
-     * @SWG\Put(
+     * @SWG\Post(
      *     path="/component/:componentAppId/config/sync",
      *     summary="批量推送平台配置到微信小程序",
      *     tags={"三方平台管理"},
@@ -555,7 +555,7 @@ class ComponentController extends Controller
      * )
      */
 
-    public function configSync(ComponetConfigSync $request)
+    public function configSync(ComponetConfigSync $request, $componentAppId)
     {
         app('dhb.component.core')->configSync();
 
