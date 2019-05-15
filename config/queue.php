@@ -70,17 +70,17 @@ return [
             /*
              * The name of default queue.
              */
-            'queue' => env('KAFKA_QUEUE', 'alikafka_mini_program_publish'),
+            'queue' => 'alikafka_mini_program_publish_test',
 
             /*
              * The group of where the consumer in resides.
              */
-            'consumer_group_id' => env('KAFKA_CONSUMER_GROUP_ID', 'laravel_queue'),
+            'consumer_group_id' => 'CID_alikafka-dhbpc',
 
             /*
              * Address of the Kafka broker
              */
-            'brokers' => env('KAFKA_BROKERS', 'localhost'),
+            'brokers' => '172.19.0.198:9092,172.19.0.199:9092,172.19.0.200:9092',
 
             /*
              * Determine the number of seconds to sleep if there's an error communicating with kafka
@@ -95,8 +95,8 @@ return [
 
             'sasl_enable' => true,
             'ssl.ca.location' => '',
-            'sasl_plain_username' => env('KAFKA_SASL_PLAIN_USERNAME'),
-            'sasl_plain_password' => env('KAFKA_SASL_PLAIN_PASSWORD'),
+            'sasl_plain_username' => 'LTAIvmHWk2C9YURr',
+            'sasl_plain_password' => '24tzhnjU3',
         ],
 
     ],
