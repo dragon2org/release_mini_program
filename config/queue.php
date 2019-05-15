@@ -75,7 +75,7 @@ return [
             /*
              * The group of where the consumer in resides.
              */
-            'consumer_group_id' => 'CID_dhbcrm_syncbbs_testing',
+            'consumer_group_id' => 'CID_alikafka_mini_program_publish_common_test',
 
             /*
              * Address of the Kafka broker
