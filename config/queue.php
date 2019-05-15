@@ -94,7 +94,7 @@ return [
             'sleep_on_deadlock' => env('KAFKA_DEADLOCK_SLEEP', 2),
 
             'sasl_enable' => true,
-            'ssl.ca.location' => '',
+            'ssl.ca.location' => storage_path('kafka.client.truststore.jks'),
             'sasl_plain_username' => 'LTAIvmHWk2C9YURr',
             'sasl_plain_password' => '24tzhnjU3',
         ],
