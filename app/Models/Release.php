@@ -124,17 +124,13 @@ class Release extends Model
      * @return bool
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      */
-    public function callback(Application $app)
+    public function callback(Application $app, ReleaseAudit $audit)
     {
         $response = $app->code->getAuditStatus($this->audit_id);
 
-        $audit = (new ReleaseAudit());
         $audit->component_id = $this->component_id;
-        $audit->mini_program_id = $this->mini_program_id;
         $audit->release_id = $this->release_id;
         $audit->status = $response['status'];
-        $audit->reason = Arr::get($response, 'reason', '');
-        $audit->screenshot = Arr::get($response, 'screenshot', '');
         $audit->save();
 
         $this->status = $this->getStatus($response['status']);

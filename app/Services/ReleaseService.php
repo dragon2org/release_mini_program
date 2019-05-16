@@ -137,7 +137,6 @@ class ReleaseService
     {
         $server = $this->miniProgramApp->server;
 
-
         $server->push(EventMessageHandler::class, Message::EVENT);
 
         return $server->serve();
