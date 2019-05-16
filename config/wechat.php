@@ -36,5 +36,8 @@ return [
             'file' =>  env('CUSTOM_LOGGER_DIR') . '/' . env('APP_NAME') .'-wechat.log',
             'driver' => 'daily'
         ],
+        'http' => [
+            'max_retries' => 2
+        ]
     ],
 ];
