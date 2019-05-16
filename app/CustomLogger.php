@@ -11,8 +11,7 @@ namespace App;
 use Illuminate\Contracts\Support\Arrayable;
 
 use Monolog\Handler\RotatingFileHandler;
-use Monolog\Logger as Monolog;
-use Illuminate\Log;
+use Monolog\Logger;
 
 /**
  * 自定义日志
@@ -53,12 +52,11 @@ class CustomLogger
      */
     public static function getLogger($type = self::LOG_ERROR, $day = 30)
     {
-        return app('log');
         if (empty(self::$loggers[$type])) {
-            self::$loggers[$type] = new \Illuminate\Log\Writer(new \Monolog\Logger($type));
             $file = env('CUSTOM_LOGGER_DIR') . '/mini-program-publish-' . $type . '.log';
-            $log = self::$loggers[$type];
-            $log->useDailyFiles($file, $day);
+            $log = new Logger($type);
+            $log->pushHandler(new RotatingFileHandler($file, $day));
+            self::$loggers[$type] = $log;
         }
         return self::$loggers[$type];
     }
@@ -123,6 +121,7 @@ class CustomLogger
             $data = static::parseData($data);
             (self::getLogger($type))->info($message, $data);
         } catch (\Exception $e) {
+
         }
     }
 
