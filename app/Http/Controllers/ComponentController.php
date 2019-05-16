@@ -8,7 +8,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\TestJob;
+use App\Jobs\SetMiniProgramCodeCommit;
+use App\Models\ReleaseItem;
 use App\Models\ValidateFile;
 
 class ComponentController extends Controller
@@ -36,8 +37,7 @@ class ComponentController extends Controller
 
     public function debug()
     {
-
-        TestJob::dispatch([111])->onConnection('kafka');
-        echo 1;die;
+        $item = ReleaseItem::find(196);
+        SetMiniProgramCodeCommit::dispatch($item)->onConnection('kafka');
     }
 }

@@ -23,15 +23,15 @@ use Symfony\Contracts\Cache\ItemInterface;
  *
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class LockRegistry
+final class LockRegistry
 {
-    private static $openedFiles = array();
-    private static $lockedFiles = array();
+    private static $openedFiles = [];
+    private static $lockedFiles = [];
 
     /**
      * The number of items in this list controls the max number of concurrent processes.
      */
-    private static $files = array(
+    private static $files = [
         __DIR__.\DIRECTORY_SEPARATOR.'Adapter'.\DIRECTORY_SEPARATOR.'AbstractAdapter.php',
         __DIR__.\DIRECTORY_SEPARATOR.'Adapter'.\DIRECTORY_SEPARATOR.'AdapterInterface.php',
         __DIR__.\DIRECTORY_SEPARATOR.'Adapter'.\DIRECTORY_SEPARATOR.'ApcuAdapter.php',
@@ -51,7 +51,7 @@ class LockRegistry
         __DIR__.\DIRECTORY_SEPARATOR.'Adapter'.\DIRECTORY_SEPARATOR.'TagAwareAdapterInterface.php',
         __DIR__.\DIRECTORY_SEPARATOR.'Adapter'.\DIRECTORY_SEPARATOR.'TraceableAdapter.php',
         __DIR__.\DIRECTORY_SEPARATOR.'Adapter'.\DIRECTORY_SEPARATOR.'TraceableTagAwareAdapter.php',
-    );
+    ];
 
     /**
      * Defines a set of existing files that will be used as keys to acquire locks.
@@ -69,12 +69,12 @@ class LockRegistry
                 fclose($file);
             }
         }
-        self::$openedFiles = self::$lockedFiles = array();
+        self::$openedFiles = self::$lockedFiles = [];
 
         return $previousFiles;
     }
 
-    public static function compute(callable $callback, ItemInterface $item, bool &$save, CacheInterface $pool)
+    public static function compute(callable $callback, ItemInterface $item, bool &$save, CacheInterface $pool, \Closure $setMetadata = null)
     {
         $key = self::$files ? crc32($item->getKey()) % \count(self::$files) : -1;
 
@@ -88,7 +88,18 @@ class LockRegistry
                 if (flock($lock, LOCK_EX | LOCK_NB)) {
                     self::$lockedFiles[$key] = true;
 
-                    return $callback($item, $save);
+                    $value = $callback($item, $save);
+
+                    if ($save) {
+                        if ($setMetadata) {
+                            $setMetadata($item);
+                        }
+
+                        $pool->save($item->set($value));
+                        $save = false;
+                    }
+
+                    return $value;
                 }
                 // if we failed the race, retry locking in blocking mode to wait for the winner
                 flock($lock, LOCK_SH);
@@ -125,6 +136,6 @@ class LockRegistry
             restore_error_handler();
         }
 
-        self::$openedFiles[$key] = $h ?: @fopen(self::$files[$key], 'r');
+        return self::$openedFiles[$key] = $h ?: @fopen(self::$files[$key], 'r');
     }
 }

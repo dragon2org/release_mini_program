@@ -54,11 +54,13 @@ class ExceptionListenerTest extends TestCase
         $this->iniSet('error_log', file_exists('/dev/null') ? '/dev/null' : 'nul');
 
         $l = new ExceptionListener('foo');
+        $l->logKernelException($event);
         $l->onKernelException($event);
 
         $this->assertEquals(new Response('foo'), $event->getResponse());
 
         try {
+            $l->logKernelException($event2);
             $l->onKernelException($event2);
             $this->fail('RuntimeException expected');
         } catch (\RuntimeException $e) {
@@ -75,11 +77,13 @@ class ExceptionListenerTest extends TestCase
         $logger = new TestLogger();
 
         $l = new ExceptionListener('foo', $logger);
+        $l->logKernelException($event);
         $l->onKernelException($event);
 
         $this->assertEquals(new Response('foo'), $event->getResponse());
 
         try {
+            $l->logKernelException($event2);
             $l->onKernelException($event2);
             $this->fail('RuntimeException expected');
         } catch (\RuntimeException $e) {
@@ -94,7 +98,7 @@ class ExceptionListenerTest extends TestCase
     public function provider()
     {
         if (!class_exists('Symfony\Component\HttpFoundation\Request')) {
-            return array(array(null, null));
+            return [[null, null]];
         }
 
         $request = new Request();
@@ -102,9 +106,9 @@ class ExceptionListenerTest extends TestCase
         $event = new GetResponseForExceptionEvent(new TestKernel(), $request, HttpKernelInterface::MASTER_REQUEST, $exception);
         $event2 = new GetResponseForExceptionEvent(new TestKernelThatThrowsException(), $request, HttpKernelInterface::MASTER_REQUEST, $exception);
 
-        return array(
-            array($event, $event2),
-        );
+        return [
+            [$event, $event2],
+        ];
     }
 
     public function testSubRequestFormat()
@@ -142,7 +146,7 @@ class ExceptionListenerTest extends TestCase
         $event = new GetResponseForExceptionEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST, new \Exception('foo'));
         $dispatcher->dispatch(KernelEvents::EXCEPTION, $event);
 
-        $response = new Response('', 200, array('content-security-policy' => "style-src 'self'"));
+        $response = new Response('', 200, ['content-security-policy' => "style-src 'self'"]);
         $this->assertTrue($response->headers->has('content-security-policy'));
 
         $event = new FilterResponseEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST, $response);
@@ -150,6 +154,25 @@ class ExceptionListenerTest extends TestCase
 
         $this->assertFalse($response->headers->has('content-security-policy'), 'CSP header has been removed');
         $this->assertFalse($dispatcher->hasListeners(KernelEvents::RESPONSE), 'CSP removal listener has been removed');
+    }
+
+    public function testNullController()
+    {
+        $listener = new ExceptionListener(null);
+        $kernel = $this->getMockBuilder(HttpKernelInterface::class)->getMock();
+        $kernel->expects($this->once())->method('handle')->will($this->returnCallback(function (Request $request) {
+            $controller = $request->attributes->get('_controller');
+
+            return $controller();
+        }));
+        $request = Request::create('/');
+        $event = new GetResponseForExceptionEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST, new \Exception('foo'));
+
+        $listener->onKernelException($event);
+        $this->assertNull($event->getResponse());
+
+        $listener->onKernelException($event);
+        $this->assertContains('Whoops, looks like something went wrong.', $event->getResponse()->getContent());
     }
 }
 

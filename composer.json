@@ -17,22 +17,23 @@
         "php": ">=7.0.0",
         "doctrine/dbal": "^2.9",
         "ellipsesynergie/api-response": "^0.14.2",
-        "fideloper/proxy": "~3.3",
-        "laravel/framework": "5.5.*",
+        "fideloper/proxy": "~4.0",
+        "laravel/framework": "5.8.*",
+        "laravel/horizon": "^3.1",
         "laravel/tinker": "~1.0",
         "overtrue/laravel-wechat": "~4.0",
         "predis/predis": "^1.1",
+        "rapide/laravel-queue-kafka": "dev-sasl-support",
         "sjje/swaggervel": "3.0.2",
         "symfony/stopwatch": "^4.2",
-        "zircote/swagger-php": "2.0.*",
-        "rapide/laravel-queue-kafka": "dev-sasl-support"
+        "zircote/swagger-php": "2.0.*"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "~1.0",
         "overtrue/phplint": "^1.1",
-        "phpunit/phpunit": "~6.0",
+        "phpunit/phpunit": "~7.0",
         "symfony/thanks": "^1.0"
     },
     "autoload": {

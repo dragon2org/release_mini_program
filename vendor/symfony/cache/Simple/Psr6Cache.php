@@ -29,6 +29,8 @@ class Psr6Cache implements CacheInterface, PruneableInterface, ResettableInterfa
 {
     use ProxyTrait;
 
+    private const METADATA_EXPIRY_OFFSET = 1527506807;
+
     private $createCacheItem;
     private $cacheItemPrototype;
 
@@ -58,7 +60,7 @@ class Psr6Cache implements CacheInterface, PruneableInterface, ResettableInterfa
             }
             $this->createCacheItem = $createCacheItem;
 
-            return $createCacheItem($key, $value, $allowInt);
+            return $createCacheItem($key, null, $allowInt)->set($value);
         };
     }
 
@@ -145,10 +147,31 @@ class Psr6Cache implements CacheInterface, PruneableInterface, ResettableInterfa
         } catch (Psr6CacheException $e) {
             throw new InvalidArgumentException($e->getMessage(), $e->getCode(), $e);
         }
-        $values = array();
+        $values = [];
+
+        if (!$this->pool instanceof AdapterInterface) {
+            foreach ($items as $key => $item) {
+                $values[$key] = $item->isHit() ? $item->get() : $default;
+            }
+
+            return $values;
+        }
 
         foreach ($items as $key => $item) {
-            $values[$key] = $item->isHit() ? $item->get() : $default;
+            if (!$item->isHit()) {
+                $values[$key] = $default;
+                continue;
+            }
+            $values[$key] = $item->get();
+
+            if (!$metadata = $item->getMetadata()) {
+                continue;
+            }
+            unset($metadata[CacheItem::METADATA_TAGS]);
+
+            if ($metadata) {
+                $values[$key] = ["\x9D".pack('VN', (int) $metadata[CacheItem::METADATA_EXPIRY] - self::METADATA_EXPIRY_OFFSET, $metadata[CacheItem::METADATA_CTIME])."\x5F" => $values[$key]];
+            }
         }
 
         return $values;
@@ -163,7 +186,7 @@ class Psr6Cache implements CacheInterface, PruneableInterface, ResettableInterfa
         if (!$valuesIsArray && !$values instanceof \Traversable) {
             throw new InvalidArgumentException(sprintf('Cache values must be array or Traversable, "%s" given', \is_object($values) ? \get_class($values) : \gettype($values)));
         }
-        $items = array();
+        $items = [];
 
         try {
             if (null !== $f = $this->createCacheItem) {
@@ -172,7 +195,7 @@ class Psr6Cache implements CacheInterface, PruneableInterface, ResettableInterfa
                     $items[$key] = $f($key, $value, true);
                 }
             } elseif ($valuesIsArray) {
-                $items = array();
+                $items = [];
                 foreach ($values as $key => $value) {
                     $items[] = (string) $key;
                 }

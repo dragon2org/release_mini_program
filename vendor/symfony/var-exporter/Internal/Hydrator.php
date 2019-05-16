@@ -20,7 +20,7 @@ use Symfony\Component\VarExporter\Exception\ClassNotFoundException;
  */
 class Hydrator
 {
-    public static $hydrators = array();
+    public static $hydrators = [];
 
     public $registry;
     public $values;
@@ -42,8 +42,12 @@ class Hydrator
         foreach ($properties as $class => $vars) {
             (self::$hydrators[$class] ?? self::getHydrator($class))($vars, $objects);
         }
-        foreach ($wakeups as $i) {
-            $objects[$i]->__wakeup();
+        foreach ($wakeups as $k => $v) {
+            if (\is_array($v)) {
+                $objects[-$k]->__unserialize($v);
+            } else {
+                $objects[$v]->__wakeup();
+            }
         }
 
         return $value;
@@ -77,7 +81,7 @@ class Hydrator
         switch ($class) {
             case 'ArrayIterator':
             case 'ArrayObject':
-                $constructor = \Closure::fromCallable(array($classReflector->getConstructor(), 'invokeArgs'));
+                $constructor = \Closure::fromCallable([$classReflector->getConstructor(), 'invokeArgs']);
 
                 return self::$hydrators[$class] = static function ($properties, $objects) use ($constructor) {
                     foreach ($properties as $name => $values) {
@@ -87,7 +91,7 @@ class Hydrator
                             }
                         }
                     }
-                    foreach ($properties["\0"] ?? array() as $i => $v) {
+                    foreach ($properties["\0"] ?? [] as $i => $v) {
                         $constructor($objects[$i], $v);
                     }
                 };
@@ -118,11 +122,11 @@ class Hydrator
                 };
         }
 
-        $propertySetters = array();
+        $propertySetters = [];
         foreach ($classReflector->getProperties() as $propertyReflector) {
             if (!$propertyReflector->isStatic()) {
                 $propertyReflector->setAccessible(true);
-                $propertySetters[$propertyReflector->name] = \Closure::fromCallable(array($propertyReflector, 'setValue'));
+                $propertySetters[$propertyReflector->name] = \Closure::fromCallable([$propertyReflector, 'setValue']);
             }
         }
 
