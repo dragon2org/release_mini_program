@@ -376,7 +376,7 @@ class ReleaseService
                 'template_id' => $templateId,
                 'mini_program_id' => $this->miniProgram->mini_program_id,
                 'company_id' => $this->miniProgram->company_id
-            ], ['config' => json_encode(['ext_json'=> $extJson])]);
+            ], ['config' => json_encode(['ext_json'=> json_decode($extJson, true)])]);
         }
 
         $extJson = $this->miniProgram->assign($extJson);
