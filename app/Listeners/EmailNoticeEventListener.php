@@ -30,7 +30,7 @@ class EmailNoticeEventListener
         $payload = $event->payload;
         Mail::raw(json_encode($payload, JSON_UNESCAPED_UNICODE), function($message) use($payload){
             $message->to('chengyuanlong@rsung.com', '成元龙');
-            $message->to('maofei@rsung.com', '毛飞');
+//            $message->to('maofei@rsung.com', '毛飞');
             $message->subject($payload['title'] ?? '小程序发版系统通知');
             return $message;
         });
