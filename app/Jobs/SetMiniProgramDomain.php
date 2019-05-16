@@ -54,7 +54,7 @@ class SetMiniProgramDomain extends BaseReleaseJobWithLog implements ShouldQueue
             $response = $app->domain->modify($domain);
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push domain response", $response);
 
-            $this->task->building($domain, $response, ReleaseItem::STATUS_SUCCESS, '');
+            $this->task->building($domain, $response, ReleaseItem::STATUS_SUCCESS, $setted);
 
             return $response;
         });
