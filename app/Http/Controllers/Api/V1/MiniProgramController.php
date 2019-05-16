@@ -324,8 +324,9 @@ class MiniProgramController extends Controller
             throw new UnprocessableEntityHttpException(trans('小程序不存在'));
         }
 
-        $miniProgram->inner_name = $request->inner_name;
-        $miniProgram->inner_desc = $request->inner_desc;
+        if($request->inner_name) $miniProgram->inner_name = $request->inner_name;
+        if($request->inner_desc) $miniProgram->inner_desc = $request->inner_desc;
+        if($request->desc) $miniProgram->desc = $request->desc;
         $miniProgram->save();
 
         return $this->response->withItem($miniProgram, new MiniProgramTransformer($miniProgram));
