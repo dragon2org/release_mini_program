@@ -42,6 +42,14 @@ class Release extends Model
 
     CONST RELEASE_STATUS_RELEASED = 20;
 
+    CONST RELEASE_CATEGORY_SETTING = 'setting';
+
+    CONST RELEASE_CATEGORY_COMMIT = 'commit';
+
+    CONST RELEASE_CATEGORY_AUDIT = 'audit';
+
+    CONST RELEASE_CATEGORY_RELEASE = 'release';
+
     public $buildItems = [];
 
     public function item()
@@ -67,6 +75,7 @@ class Release extends Model
             $model->config = json_encode($config, JSON_UNESCAPED_UNICODE);
             $model->config_version = sha1($model->config);
             $model->status = Release::RELEASE_STATUS_SETTING;
+            $model->category = Release::RELEASE_CATEGORY_RELEASE;
             $model->save();
 
             $collect = ReleaseItem::make($model, $miniProgram, $config);
@@ -97,8 +106,8 @@ class Release extends Model
         $model->template_id = $templateId;
         $model->trade_no = $tradeNo;
         $model->config = $config;
-        $model->release_on_audited = 0;
         $model->status = Release::RELEASE_STATUS_COMMITTED;
+        $model->category = Release::RELEASE_CATEGORY_COMMIT;
         $model->save();
 
         $task = (new ReleaseItem());
@@ -136,7 +145,7 @@ class Release extends Model
         $this->status = $this->getStatus($response['status']);
         $this->save();
 
-        if ($audit->isSuccess() && $this->release_on_audited) {
+        if ($audit->isSuccess() && $this->shouldRelease()) {
             ReleaseItem::createReleaseTask($this, $this->miniProgram, $this->config);
         }
 
@@ -218,5 +227,47 @@ class Release extends Model
             'app_id' => $this->miniProgram->app_id,
             'trade_no' => $this->trade_no
         ];
+    }
+
+    public function syncConfig($miniProgram, $config)
+    {
+        try {
+            $tradeNo = $this->genTradeNo($miniProgram->mini_program_id);
+            $model = (new self());
+            $model->component_id = $miniProgram->component_id;
+            $model->mini_program_id = $miniProgram->mini_program_id;
+            $model->template_id = 0;
+            $model->trade_no = $tradeNo;
+            $model->config = json_encode($config, JSON_UNESCAPED_UNICODE);
+            $model->config_version = sha1($model->config);
+            $model->status = Release::RELEASE_STATUS_SETTING;
+            $model->category = Release::RELEASE_CATEGORY_SETTING;
+            $model->save();
+
+            $collect = ReleaseItem::make($model, $miniProgram, $config, true);
+        } catch (\Exception $e) {
+            throw  $e;
+        }
+
+        return [
+            'task_num' => $collect->count(),
+            'app_id' => $miniProgram->app_id,
+            'trade_no' => $tradeNo
+        ];
+    }
+
+    public function shouldCommit()
+    {
+        return $this->category !== Release::RELEASE_CATEGORY_SETTING;
+    }
+
+    public function shouldAudit()
+    {
+        return  in_array($this->category,  [self::RELEASE_CATEGORY_AUDIT, self::RELEASE_CATEGORY_RELEASE]);
+    }
+
+    public function shouldRelease()
+    {
+        return  in_array($this->category,  [self::RELEASE_CATEGORY_RELEASE]);
     }
 }

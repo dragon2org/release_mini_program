@@ -621,6 +621,26 @@ class ReleaseService
 
     public function configSync()
     {
-        return true;
+        try {
+            //step 1. 获取授权小程序列表
+            $miniProgramList = (new MiniProgram())->getComponentMiniProgramList($this->component->component_id);
+            if (count($miniProgramList) == 0) {
+                throw new UnprocessableEntityHttpException(trans('暂无已绑定的小程序可发版'));
+            }
+
+            //step 2. 获取配置文件
+            if(!isset($this->component->extend)){
+                throw new UnprocessableEntityHttpException(trans('批量发版配置不存在'));
+            }
+            $config = $this->component->extend->getReleaseConfig();
+
+            $data = [];
+            foreach ($miniProgramList as $miniProgram) {
+                $data[] =  (new Release())->syncConfig($miniProgram, $config);
+            }
+            return $data;
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 }

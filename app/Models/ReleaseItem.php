@@ -112,7 +112,9 @@ class ReleaseItem extends Model
             $result[] = $task;
         }
 
-        $result[] = ReleaseItem::createCommitTask($release, $miniProgram, $config);
+        if($release->shouldCommit()){
+            $result[] = ReleaseItem::createCommitTask($release, $miniProgram, $config);
+        }
 
         return collect($result);
     }

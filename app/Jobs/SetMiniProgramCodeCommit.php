@@ -106,7 +106,9 @@ class SetMiniProgramCodeCommit extends BaseReleaseJobWithLog implements ShouldQu
     protected function isResponseOk($response)
     {
         if(parent::isResponseOk($response)){
-            ReleaseItem::createAuditTask($this->release, $this->miniProgram,  $this->config);
+            if($this->release->shouldAudit()){
+                ReleaseItem::createAuditTask($this->release, $this->miniProgram,  $this->config);
+            }
             return true;
         }
         return false;

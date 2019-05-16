@@ -39,6 +39,7 @@ class MiniProgram extends Model
     {
         return (new self())
             ->where('component_id', $componentId)
+            ->where('authorization_status', MiniProgram::AUTHORIZATION_STATUS_AUTHORIZED)
             ->get();
     }
 
