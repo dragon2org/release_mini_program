@@ -151,8 +151,8 @@ return [
 
         'local' => [
             'supervisor-1' => [
-                'connection' => 'redis',
-                'queue' => ['default'],
+                'connection' => 'kafka',
+                'queue' => ['kafka', 'redis'],
                 'balance' => 'simple',
                 'processes' => 3,
                 'tries' => 3,
