@@ -11,7 +11,17 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+use Illuminate\Support\Facades\Route;
+
+Route::pattern('validateFilename', '[A-Za-z0-9_]+\.txt$');
+Route::get('/{validateFilename}', 'ComponentController@hostValidate');
+
+Route::group([
+    'middleware' => ['force-json', 'component-injection']
+], function(){
+    Route::any('/component/{componentAppId}/mini_program/{miniProgramAppId}/serve', 'MiniProgramController@serve')->name('componentMiniProgramServe');
+    Route::post('/component/{componentAppId}/serve', 'ComponentController@serve')->name('componentServe');
+
 });
 
+Route::get('/debug', 'ComponentController@debug');

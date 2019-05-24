@@ -40,6 +40,8 @@ class CustomLogger
 
     const LOG_MINI_PROGRAM_AUTHORIZATION_LOG = 'mini-program-authorization';
 
+    const LOG_ILLEGAL_REQUEST = 'illegal-request';
+
 
     private static $loggers = array();
 
