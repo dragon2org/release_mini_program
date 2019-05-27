@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\V1;
 
 
 use App\Exceptions\UnprocessableEntityHttpException;
+use App\Facades\ReleaseFacade;
 use App\Http\Requests\BindMiniProgramTester;
 use App\Http\Requests\GetBindMiniProgramUri;
 use App\Http\Requests\GetMiniProgramSessionKey;
@@ -120,7 +121,7 @@ class MiniProgramController extends Controller
 
     public function bind()
     {
-        $uri = app('dhb.component.core')->getBindUri();
+        $uri = ReleaseFacade::service()->getBindUri();
 
 //        return response('', 302, [
 //            'Location' => $uri,
@@ -131,7 +132,7 @@ class MiniProgramController extends Controller
 
     public function bindCallback()
     {
-        return app('dhb.component.core')->bindCallback();
+        return ReleaseFacade::service()->bindCallback();
     }
 
     /**
@@ -204,7 +205,7 @@ class MiniProgramController extends Controller
      */
     public function index($componentId)
     {
-        $componentId = app('dhb.component.core')->component->component_id;
+        $componentId = ReleaseFacade::service()->component->component_id;
         $items = MiniProgram::where(['component_id'=> $componentId])->paginate();
 
         return $this->response->withCollection($items, new MiniProgramListTransformer($items));
@@ -316,7 +317,7 @@ class MiniProgramController extends Controller
      */
     public function update(PutMiniProgramInfo $request, $componentAppId, $miniProgramAppId)
     {
-        $miniProgram = MiniProgram::where('component_id', app('dhb.component.core')->component->component_id)
+        $miniProgram = MiniProgram::where('component_id', ReleaseFacade::service()->component->component_id)
             ->where('app_id', $miniProgramAppId)
             ->first();
 
@@ -369,7 +370,7 @@ class MiniProgramController extends Controller
      */
     public function delete($componentAppId, $miniProgramAppId)
     {
-        $miniProgram = MiniProgram::where('component_id', app('dhb.component.core')->component->component_id)
+        $miniProgram = MiniProgram::where('component_id', ReleaseFacade::service()->component->component_id)
             ->where('app_id', $miniProgramAppId)
             ->first();
 
@@ -466,7 +467,7 @@ class MiniProgramController extends Controller
      */
     public function tester()
     {
-        $response = app('dhb.component.core')->getTester();
+        $response = ReleaseFacade::service()->getTester();
 
         return $this->response->withArray(['data' => $response]);
     }
@@ -522,7 +523,7 @@ class MiniProgramController extends Controller
      */
     public function bindTester(BindMiniProgramTester $request)
     {
-        $response = app('dhb.component.core')->bindTester(request()->input('wechat_id'));
+        $response = ReleaseFacade::service()->bindTester(request()->input('wechat_id'));
 
         return $this->response->withArray(['data' => $response]);
     }
@@ -578,7 +579,7 @@ class MiniProgramController extends Controller
      */
     public function unbindTester(UnbindMiniProgramTester $request)
     {
-        $response = app('dhb.component.core')->unbindTester(request()->input('wechat_id'));
+        $response = ReleaseFacade::service()->unbindTester(request()->input('wechat_id'));
 
         return $this->response->withArray();
     }
@@ -643,7 +644,7 @@ class MiniProgramController extends Controller
      */
     public function sessionKey(GetMiniProgramSessionKey $request)
     {
-        $response = app('dhb.component.core')->sessionKey(request()->input('code'));
+        $response = ReleaseFacade::service()->sessionKey(request()->input('code'));
         return $this->response->withArray($response);
     }
 
@@ -713,7 +714,7 @@ class MiniProgramController extends Controller
      */
     public function decrypt(MiniProgramDecrypt $request)
     {
-        $response = app('dhb.component.core')->decryptData(request()->input('jscode'), request()->input('iv'), request()->input('encryptedData'));
+        $response = ReleaseFacade::service()->decryptData(request()->input('jscode'), request()->input('iv'), request()->input('encryptedData'));
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -761,6 +762,6 @@ class MiniProgramController extends Controller
      */
     public function accessToken()
     {
-        return $this->response->withArray(['data' => app('dhb.component.core')->getAccessToken()]);
+        return $this->response->withArray(['data' => ReleaseFacade::service()->getAccessToken()]);
     }
 }

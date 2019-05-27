@@ -174,7 +174,7 @@ class ReleaseItem extends Model
 
     public function building($pushConfig, $response, $status, $onlineConfig = [])
     {
-        if(isset($data['online_config'])) $this->online_config = json_encode($onlineConfig);
+        if(isset($onlineConfig)) $this->online_config = json_encode($onlineConfig);
         $this->push_config = json_encode($pushConfig);
         $this->response = json_encode($response);
         $this->status = $status;

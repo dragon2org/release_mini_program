@@ -9,6 +9,7 @@
 namespace App\Services;
 
 use App\Exceptions\UnprocessableEntityHttpException;
+use App\Facades\ReleaseFacade;
 use App\Models\ComponentExt;
 use App\Models\ValidateFile;
 use EasyWeChat\Factory;
@@ -125,10 +126,10 @@ class ComponentService
             }
         }
 
-        $extend = app('dhb.component.core')->component->extend;
+        $extend = ReleaseFacade::service()->component->extend;
         if(!isset($extend)){
             $extend = new ComponentExt();
-            $extend->component_id = app('dhb.component.core')->component->component_id;
+            $extend->component_id = ReleaseFacade::service()->component->component_id;
         }
         $extend->config = json_encode($config, JSON_UNESCAPED_UNICODE);
         $extend->config_version = sha1($extend->config);
@@ -139,7 +140,7 @@ class ComponentService
 
     public function getReleaseConfig()
     {
-        $extend = app('dhb.component.core')->component->extend;
+        $extend = ReleaseFacade::service()->component->extend;
         if(isset($extend)){
             $config = $extend->config;
             $config = json_decode($config, true);

@@ -8,23 +8,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\ReleaseFacade;
 use App\Jobs\SetMiniProgramCodeCommit;
 use App\Jobs\TestJob;
+use App\Models\Component;
 use App\Models\ReleaseItem;
 use App\Models\ValidateFile;
+use App\Services\ReleaseService;
+use Illuminate\Support\Facades\Log;
 
 class ComponentController extends Controller
 {
     public function serve()
     {
-        return app('dhb.component.core')->server();
+        return ReleaseFacade::service()->server();
     }
 
     public function hostValidate($validateFilename)
     {
         $file = ValidateFile::where('filename', $validateFilename)->first();
 
-        if(!isset($file->content)){
+        if (!isset($file->content)) {
             abort(404, 'not found pages');
         }
 
@@ -38,10 +42,10 @@ class ComponentController extends Controller
 
     public function debug()
     {
-        if(env('APP_ENV') !== 'local'){
-            abort(404);
-        }
-       TestJob::dispatch(['aaa'=> 123])->onConnection('kafka');
-       echo 'success';
+
+        Log::info('job dispatch success');
+        $c = Component::first();
+        TestJob::dispatch($c)->onConnection('kafka');
+        echo 'success';
     }
 }

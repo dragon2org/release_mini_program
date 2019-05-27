@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Exceptions\UnprocessableEntityHttpException;
+use App\Facades\ReleaseFacade;
 use App\Http\ApiResponse;
 use App\Http\Requests\ComponetConfigSync;
 use App\Http\Requests\RegisterComponent;
@@ -557,7 +558,7 @@ class ComponentController extends Controller
 
     public function configSync(ComponetConfigSync $request, $componentAppId)
     {
-        app('dhb.component.core')->configSync();
+        ReleaseFacade::service()->configSync();
 
         return $this->response->withArray();
     }
@@ -635,7 +636,7 @@ class ComponentController extends Controller
     {
         try {
             return $this->response->withArray(['data' => [
-                    'component_verify_ticket' => app('dhb.component.core')->component->verify_ticket
+                    'component_verify_ticket' => ReleaseFacade::service()->component->verify_ticket
                 ]]
             );
         } catch (UnprocessableEntityHttpException $e) {
@@ -686,7 +687,7 @@ class ComponentController extends Controller
     {
         try {
             return $this->response->withArray([
-                    'data' =>app('dhb.component.core')->openPlatform->access_token->getToken()
+                    'data' =>ReleaseFacade::service()->openPlatform->access_token->getToken()
                 ]
             );
         } catch (\EasyWeChat\Kernel\Exceptions\HttpException $e) {

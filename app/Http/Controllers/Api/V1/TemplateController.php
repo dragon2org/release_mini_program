@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 
 use App\Exceptions\UnprocessableEntityHttpException;
+use App\Facades\ReleaseFacade;
 use App\Http\ApiResponse;
 use App\Http\Requests\DeleteTemplate;
 use App\Http\Requests\DraftToTemplate;
@@ -50,7 +51,7 @@ class TemplateController extends Controller
     public function draft()
     {
 
-        $items = app('dhb.component.core')->getDrafts();
+        $items = ReleaseFacade::service()->getDrafts();
 
         if(isset($items)){
             foreach($items as &$item){
@@ -104,7 +105,7 @@ class TemplateController extends Controller
      */
     public function draftToTemplate(DraftToTemplate $request)
     {
-        $response = app('dhb.component.core')->draftToTemplate(request()->input('draft_id'));
+        $response = ReleaseFacade::service()->draftToTemplate(request()->input('draft_id'));
         return $this->response->withArray([
             'data' => $response
         ]);
@@ -141,7 +142,7 @@ class TemplateController extends Controller
      */
     public function sync()
     {
-        $remoteTemplateList = app('dhb.component.core')->templateList();
+        $remoteTemplateList = ReleaseFacade::service()->templateList();
         $remote = [];
         foreach($remoteTemplateList as $item){
             $remote[] = $item['template_id'];
@@ -162,7 +163,7 @@ class TemplateController extends Controller
             }
             //添加数据
             $model = new ComponentTemplate();
-            $model->component_id = app('dhb.component.core')->component->component_id;
+            $model->component_id = ReleaseFacade::service()->component->component_id;
             $model->template_id = $item['template_id'];
             $model->user_version = $item['user_version'];
             $model->user_desc = $item['user_desc'];
@@ -178,7 +179,7 @@ class TemplateController extends Controller
 
         //删除没有的模板
         $deleted = ComponentTemplate::whereNotIn('template_id', $remote)
-            ->where('component_id', app('dhb.component.core')->component->component_id)
+            ->where('component_id', ReleaseFacade::service()->component->component_id)
             ->delete();
 
 
@@ -235,7 +236,7 @@ class TemplateController extends Controller
             throw new UnprocessableEntityHttpException(trans('模板不存在'));
         }
 
-        $response = app('dhb.component.core')->deleteTemplate($templateId);
+        $response = ReleaseFacade::service()->deleteTemplate($templateId);
         $template->delete();
 
         return $this->response->withArray([
@@ -290,7 +291,7 @@ class TemplateController extends Controller
 
     public function index()
     {
-        $items = ComponentTemplate::where('component_id', app('dhb.component.core')->component->component_id)
+        $items = ComponentTemplate::where('component_id', ReleaseFacade::service()->component->component_id)
             ->orderBy('template_id', 'desc')
             ->paginate();
 
@@ -332,7 +333,7 @@ class TemplateController extends Controller
      */
     public function release($componentAppId, $templateId)
     {
-        $response = app('dhb.component.core')->templateRelease($templateId);
+        $response = ReleaseFacade::service()->templateRelease($templateId);
 
         return $this->response->withArray([
             'data' => $response
@@ -376,7 +377,7 @@ class TemplateController extends Controller
      */
     public function statistical($componentAppId, $templateId)
     {
-        $response = app('dhb.component.core')->templateStatistical($templateId);
+        $response = ReleaseFacade::service()->templateStatistical($templateId);
 
         return $this->response->withArray([
             'data' => $response

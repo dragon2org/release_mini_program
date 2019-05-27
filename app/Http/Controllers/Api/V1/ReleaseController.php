@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Exceptions\UnprocessableEntityHttpException;
+use App\Facades\ReleaseFacade;
 use App\Http\ApiResponse;
 use App\Http\Requests\RetryRelease;
 use App\Http\Transformer\ReleaseDetailItemsTransformer;
@@ -85,7 +86,7 @@ class ReleaseController extends Controller
      */
     public function index()
     {
-        $model = Release::where('component_id', app('dhb.component.core')->component->component_id)
+        $model = Release::where('component_id', ReleaseFacade::service()->component->component_id)
             ->orderBy('release_id', 'desc');
 
         if(request()->input('status')){

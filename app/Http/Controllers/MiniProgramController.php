@@ -9,6 +9,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Facades\ReleaseFacade;
 use App\Logs\ReleaseAuditLog;
 
 class MiniProgramController extends Controller
@@ -16,6 +17,6 @@ class MiniProgramController extends Controller
     public function serve()
     {
         ReleaseAuditLog::info('小程序消息与事件: '. request()->getContent(false), []);
-        return app('dhb.component.core')->miniProgramServe();
+        return ReleaseFacade::service()->miniProgramServe();
     }
 }

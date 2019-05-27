@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 
+use App\Facades\ReleaseFacade;
 use App\Http\ApiResponse;
 use App\Http\Requests\CodeAudit;
 use App\Http\Requests\CodeCommit;
@@ -85,7 +86,7 @@ class CodeController extends Controller
      */
     public function commit(CodeCommit $request)
     {
-        $release = app('dhb.component.core')->commit(
+        $release = ReleaseFacade::service()->commit(
             request()->input('template_id'),
             request()->input('ext_json'));
 
@@ -143,7 +144,7 @@ class CodeController extends Controller
      */
     public function qrcode(GetTestQrcode $request)
     {
-        $response = app('dhb.component.core')->getQrCode(request()->input('path'));
+        $response = ReleaseFacade::service()->getQrCode(request()->input('path'));
 
         return $this->response->withArray([
             'data' => [
@@ -193,7 +194,7 @@ class CodeController extends Controller
      */
     public function category()
     {
-        $response = app('dhb.component.core')->getCategory();
+        $response = ReleaseFacade::service()->getCategory();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -239,7 +240,7 @@ class CodeController extends Controller
      */
     public function page()
     {
-        $response = app('dhb.component.core')->getPage();
+        $response = ReleaseFacade::service()->getPage();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -303,7 +304,7 @@ class CodeController extends Controller
      */
     public function audit(CodeAudit $request)
     {
-        $response = app('dhb.component.core')->audit(request()->input('item_list'));
+        $response = ReleaseFacade::service()->audit(request()->input('item_list'));
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -358,7 +359,7 @@ class CodeController extends Controller
      */
     public function auditStatus($componentAppId, $miniProgramAppId, $audit)
     {
-        $response = app('dhb.component.core')->getAuditStatus($audit);
+        $response = ReleaseFacade::service()->getAuditStatus($audit);
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -414,7 +415,7 @@ class CodeController extends Controller
      */
     public function lastAuditStatus()
     {
-        $response = app('dhb.component.core')->getLatestAuditStatus();
+        $response = ReleaseFacade::service()->getLatestAuditStatus();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -456,7 +457,7 @@ class CodeController extends Controller
      */
     public function withdrawAudit()
     {
-        app('dhb.component.core')->withdrawAudit();
+        ReleaseFacade::service()->withdrawAudit();
 
         return $this->response->withArray();
     }
@@ -498,7 +499,7 @@ class CodeController extends Controller
      */
     public function release(Release $release)
     {
-        $response = app('dhb.component.core')->release();
+        $response = ReleaseFacade::service()->release();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -553,7 +554,7 @@ class CodeController extends Controller
      */
     public function visitStatus(UpdateReleaseConfigVisitStatus $request)
     {
-        $response = app('dhb.component.core')->setVisitStatus(request()->input('visit_status'));
+        $response = ReleaseFacade::service()->setVisitStatus(request()->input('visit_status'));
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -595,7 +596,7 @@ class CodeController extends Controller
      */
     public function revertCodeRelease()
     {
-        $response = app('dhb.component.core')->revertCodeRelease();
+        $response = ReleaseFacade::service()->revertCodeRelease();
 
         return $this->response->withArray(['data'=> $response]);
     }
@@ -650,7 +651,7 @@ class CodeController extends Controller
      */
     public function SetSupportVersion(SetSupportVersion $request)
     {
-        $response = app('dhb.component.core')->setSupportVersion(
+        $response = ReleaseFacade::service()->setSupportVersion(
             request()->input('support_version')
         );
 
@@ -659,7 +660,7 @@ class CodeController extends Controller
 
     public function supportVersion()
     {
-        $response = app('dhb.component.core')->getSupportVersion();
+        $response = ReleaseFacade::service()->getSupportVersion();
 
         return $this->response->withArray(['data' => $response]);
     }
