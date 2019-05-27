@@ -25,9 +25,9 @@ class UpdateReleaseConfigSupportVersion extends FormRequest
     {
         return [
             'support_version' => ['required', 'string', function($attribute, $value, $closure){
-                $minVersion = '1.0.1';
-                $maxVersion = '2.6.6';
-                if($value > $maxVersion || $value<$minVersion){
+                $minVersion = '1.0.0';
+                $maxVersion = '2.7.1';
+                if( $value < $minVersion){
                     $closure($attribute . ' invalid');
                 }
             }],

@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Models\Tester;
 use \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application;
+use Illuminate\Support\Arr;
 
 
 class SetMiniProgramTester extends BaseReleaseJobWithLog implements ShouldQueue
@@ -49,20 +50,31 @@ class SetMiniProgramTester extends BaseReleaseJobWithLog implements ShouldQueue
             $setted = $app->tester->list();
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "pull tester", $setted);
 
-
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push tester", $this->config);
             $pushConfig = [];
             $result = [];
 
+            $tempSetted = $setted['members'] ?? [];
+            $tempSetted = Arr::pluck($tempSetted, 'userstr');
+            $tempSetted = Tester::whereIn('userstr', $tempSetted)->pluck('wechat_id')->toArray();
             foreach($this->config as $tester){
-                $response = $app->tester->bind($tester);
-                ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push tester: {$tester} response", $response);
-                $pushConfig[] = $tester;
-                $result[] = [
-                    'response' => $response,
-                    'tester' => $tester
-                ];
-
+                if(!in_array($tester, $tempSetted)){
+                    $response = $app->tester->bind($tester);
+                    ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push tester: {$tester} response", $response);
+                    $pushConfig[] = $tester;
+                    $result[] = [
+                        'response' => $response,
+                        'tester' => $tester
+                    ];
+                }else{
+                    $pushConfig[] = '';
+                    $result[] = [
+                        'response' => [
+                            'un_modify' => 1
+                        ],
+                        'tester' => $tester
+                    ];
+                }
             }
             $this->task->building($pushConfig, $result, ReleaseItem::STATUS_SUCCESS, $setted);
 
@@ -79,9 +91,10 @@ class SetMiniProgramTester extends BaseReleaseJobWithLog implements ShouldQueue
                 continue;
             }
 
-            Tester::create([
-                'wechat_id' => $res['tester'],
+            Tester::firstOrCreate([
                 'userstr' => $res['response']['userstr'],
+            ], [
+                'wechat_id' => $res['tester'],
                 'mini_program_id' => $this->miniProgram->mini_program_id
             ]);
         }

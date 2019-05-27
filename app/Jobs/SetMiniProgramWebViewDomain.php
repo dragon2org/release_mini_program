@@ -50,12 +50,33 @@ class SetMiniProgramWebViewDomain extends BaseReleaseJobWithLog implements Shoul
             $domain = $this->config;
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push web_view domain", $domain);
 
-            $response = $app->domain->setWebviewDomain($domain['webviewdomain'], $domain['action']);
+            if($this->isModify($setted, $domain)){
+                $response = $app->domain->setWebviewDomain($domain['webviewdomain'], $domain['action']);
+            }else{
+                $response['un_modify'] = 1;
+            }
+
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push web_view_domain response", $response);
 
             $this->task->building($domain, $response, ReleaseItem::STATUS_SUCCESS, $setted);
 
             return $response;
         });
+    }
+
+    protected function isModify($old, $new)
+    {
+        unset($old['errcode']);
+        unset($old['errmsg']);
+        unset($new['action']);
+
+        foreach(['webviewdomain'] as $key){
+            $attribute1 = $new[$key];
+            $attribute2 = $old[$key];
+            if(count(array_diff($attribute1, $attribute2)) !== 0 || count(array_diff($attribute2, $attribute1)) !== 0){
+                return true;
+            }
+        }
+        return false;
     }
 }

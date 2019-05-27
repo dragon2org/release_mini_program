@@ -56,9 +56,12 @@ class BaseReleaseJobWithLog
 
     protected function isResponseOk($response)
     {
-        if(isset($response['errcode']) && $response['errcode'] === 0){
+        if( (isset($response['errcode']) && $response['errcode'] === 0) ||
+            (isset($response['un_modify']) && $response['un_modify'] === 1)
+        ){
             return true;
         }
         return false;
     }
+
 }

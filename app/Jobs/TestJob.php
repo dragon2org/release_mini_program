@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Logs\ReleaseCommonQueueLogQueueLog;
+use App\Models\Component;
 use App\Models\MiniProgram;
 use App\Models\Release;
 use App\Models\ReleaseItem;
@@ -23,7 +24,7 @@ class TestJob extends BaseReleaseJobWithLog implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 
-    protected $task;
+    protected $component;
 
 
     /**
@@ -31,9 +32,9 @@ class TestJob extends BaseReleaseJobWithLog implements ShouldQueue
      *
      * @return void
      */
-    public function __construct( $task)
+    public function __construct(Component $component)
     {
-        $this->task =$task;
+        $this->component = $component;
     }
 
     /**
@@ -43,6 +44,6 @@ class TestJob extends BaseReleaseJobWithLog implements ShouldQueue
      */
     public function handle()
     {
-        Log::info('this kafka queue out');
+        Log::info('this kafka queue job handle success');
     }
 }

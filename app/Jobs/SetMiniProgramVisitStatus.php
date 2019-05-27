@@ -45,7 +45,6 @@ class SetMiniProgramVisitStatus extends BaseReleaseJobWithLog implements ShouldQ
     public function handle()
     {
         $this->proccess($this, function(Application $app){
-
             $visitStatus = $this->config;
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "push visit_status", [$visitStatus]);
 
