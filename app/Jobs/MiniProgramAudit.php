@@ -49,7 +49,7 @@ class MiniProgramAudit extends BaseReleaseJobWithLog implements ShouldQueue
      */
     public function handle()
     {
-        $this->proccess($this, function(Application $app){
+        $this->proccess($this, function (Application $app) {
             $itemList = $app->code->getPage();
             ReleaseCommonQueueLogQueueLog::info($this->miniProgram, "pull audit page_list", $itemList);
 
@@ -60,13 +60,13 @@ class MiniProgramAudit extends BaseReleaseJobWithLog implements ShouldQueue
 
             $category = $category['category_list'] ?? [];
 
-            $i=0;
+            $i = 0;
             $auditItems = [];
-            foreach($category as $c){
+            foreach ($category as $c) {
                 $item = $c;
                 $item['address'] = $itemList[$i];
                 $item['tag'] = $c['first_class'] ?? '服务';
-                $item['title'] = $i ===0 ? '首页' : '页面'. ($i + 1);
+                $item['title'] = $i === 0 ? '首页' : '页面' . ($i + 1);
                 $auditItems[] = $item;
                 $i++;
             }
@@ -77,8 +77,12 @@ class MiniProgramAudit extends BaseReleaseJobWithLog implements ShouldQueue
 
             $this->task->building($auditItems, $response, ReleaseItem::STATUS_SUCCESS, '');
 
-            if(isset($response['auditid'])){
-                $this->release->audit_id =$response['auditid'];
+            if (isset($response['auditid'])) {
+                $this->release->audit_id = $response['auditid'];
+                $this->release->status = Release::RELEASE_STATUS_AUDITING;
+                $this->release->save();
+            } else {
+                $this->release->status = Release::RELEASE_STATUS_AUDIT_FAILED;
                 $this->release->save();
             }
             return $response;

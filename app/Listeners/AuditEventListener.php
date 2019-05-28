@@ -32,7 +32,6 @@ class AuditEventListener
     public function handle(AuditEvent $event)
     {
         $payload = $event->payload;
-
         $audit = (new ReleaseAudit());
         $audit->status = Arr::get($payload, 'Event') === 'weapp_audit_fail' ?  1 : 0;
         $audit->reason = Arr::get($payload, 'Reason', '');
@@ -51,7 +50,7 @@ class AuditEventListener
         $release = (new Release())
             ->where('mini_program_id', $miniProgram->mini_program_id)
             ->whereIn('status', [Release::RELEASE_STATUS_AUDITING, Release::RELEASE_STATUS_AUDIT_FAILED, Release::RELEASE_STATUS_AUDIT_REVERTED])
-            ->where('audit_id', '!=', '')
+            ->where('audit_id', '>', 0)
             ->orderBy('release_id', 'desc')
             ->get();
 

@@ -152,7 +152,7 @@ return [
         'local' => [
             'supervisor-1' => [
                 'connection' => 'kafka',
-                'queue' => ['kafka', 'redis'],
+                'queue' => ['alikafka_mini_program_publish_test'], //使用kafka这里会创建为topic
                 'balance' => 'simple',
                 'processes' => 3,
                 'tries' => 3,
