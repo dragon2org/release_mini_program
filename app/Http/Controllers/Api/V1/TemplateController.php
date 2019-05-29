@@ -24,7 +24,7 @@ class TemplateController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/draft",
+     *     path="/v1/component/{componentAppId}/draft",
      *     summary="获取草稿箱列表",
      *     tags={"三方平台管理-模板管理"},
      *     description="三方平台三方平台管理-模板管理",
@@ -65,18 +65,25 @@ class TemplateController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component/{componentAppId}/template",
+     *     path="/v1/component/{componentAppId}/template",
      *     summary="保存草稿箱到模板",
      *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
      *         in="body",
-     *         description="表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
+     *             required={"draft_id"},
      *             @SWG\Property(
      *                 property="draft_id",
      *                 type="string",
@@ -113,11 +120,18 @@ class TemplateController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component/{componentAppId}/template/sync",
+     *     path="/v1/component/{componentAppId}/template/sync",
      *     summary="同步微信三方平台模板到平台",
      *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="成功返回",
@@ -194,7 +208,7 @@ class TemplateController extends Controller
     }
     /**
      * @SWG\Delete(
-     *     path="/component/{componentAppId}/template/{templateId}",
+     *     path="/v1/component/{componentAppId}/template/{templateId}",
      *     summary="删除模板",
      *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",
@@ -246,7 +260,7 @@ class TemplateController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/template",
+     *     path="/v1/component/{componentAppId}/template",
      *     summary="获取模板列表",
      *     tags={"三方平台管理-模板管理"},
      *     description="三方平台三方平台管理-模板管理",
@@ -300,11 +314,18 @@ class TemplateController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component/:componentAppId/template/:templateId/release",
+     *     path="/v1/component/:componentAppId/template/:templateId/release",
      *     summary="批量发布",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
      *     @SWG\Parameter(
      *         name="componentAppId",
      *         in="path",
@@ -342,7 +363,7 @@ class TemplateController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/template/{templateId}/statistical",
+     *     path="/v1/component/{componentAppId}/template/{templateId}/statistical",
      *     summary="模板统计",
      *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",

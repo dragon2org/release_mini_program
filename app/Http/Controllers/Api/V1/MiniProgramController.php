@@ -35,53 +35,36 @@ class MiniProgramController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component/{componentAppId}/bind_url",
+     *     path="/v1/component/{componentAppId}/bind_url",
      *     summary="添加(绑定)小程序",
      *     tags={"小程序管理"},
      *     description="管理三方平台. 直接跳转这个地址",
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="redirect_uri",
-     *         type="string",
-     *         required=false,
-     *         in="query",
-     *         description="授权成功的跳转地址",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="inner_name",
-     *         type="string",
-     *         required=false,
-     *         in="query",
-     *         description="内部名称",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="inner_desc",
-     *         type="string",
-     *         required=false,
-     *         in="query",
-     *         description="内部描述",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="company_id",
-     *         type="integer",
+     *         name="Content-Type",
+     *         in="header",
      *         required=true,
-     *         in="query",
-     *         description="公司id",
+     *         type="string",
+     *         enum={"application/json"}
      *     ),
      *     @SWG\Parameter(
-     *         name="biz_appid",
-     *         type="string",
-     *         required=false,
-     *         in="query",
-     *         description="指定要绑定的app_id",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="type",
-     *         type="string",
+     *         name="body",
+     *         in="body",
      *         required=true,
-     *         default="pc",
-     *         in="query",
-     *         description="生成类型:移动微信端: mobile；电脑端:pc",
+     *         type="object",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 required={"redirect_uri", "inner_name", "inner_desc", "company_id", "type"},
+     *                 @SWG\Property(property="redirect_uri", type="string", description="授权成功的跳转地址"),
+     *                 @SWG\Property(property="inner_name", type="string", description="内部名称"),
+     *                 @SWG\Property(property="inner_desc", type="string", description="内部描述"),
+     *                 @SWG\Property(property="company_id", type="integer", description="公司id"),
+     *                 @SWG\Property(property="biz_appid", type="string", description="指定要绑定的app_id"),
+     *                 @SWG\Property(property="type", type="string", description="生成类型:移动微信端: mobile；电脑端:pc"),
+     *             ),
+     *         )
      *     ),
      *     @SWG\Response(
      *         response=200,
@@ -137,7 +120,7 @@ class MiniProgramController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/mini_program",
+     *     path="/v1/component/{componentAppId}/mini_program",
      *     summary="获取已经授权的小程序列表",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
@@ -214,7 +197,7 @@ class MiniProgramController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}",
      *     summary="获取小程序信息",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
@@ -265,11 +248,18 @@ class MiniProgramController extends Controller
 
     /**
      * @SWG\Put(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}",
      *     summary="更新小程序信息",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
      *     @SWG\Parameter(
      *         name="componentAppId",
      *         in="path",
@@ -285,12 +275,19 @@ class MiniProgramController extends Controller
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="body",
      *         in="body",
-     *         description="注册表单数据",
      *         required=true,
      *         type="object",
-     *         @SWG\Schema(ref="#/definitions/MiniProgram")
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 required={"inner_name", "inner_desc"},
+     *                 @SWG\Property(property="inner_name", type="string", description="内部名称"),
+     *                 @SWG\Property(property="inner_desc", type="string", description="内部描述"),
+     *             ),
+     *         )
      *     ),
      *     @SWG\Response(
      *         response=200,
@@ -327,7 +324,6 @@ class MiniProgramController extends Controller
 
         if($request->inner_name) $miniProgram->inner_name = $request->inner_name;
         if($request->inner_desc) $miniProgram->inner_desc = $request->inner_desc;
-        if($request->desc) $miniProgram->desc = $request->desc;
         $miniProgram->save();
 
         return $this->response->withItem($miniProgram, new MiniProgramTransformer($miniProgram));
@@ -335,7 +331,7 @@ class MiniProgramController extends Controller
 
     /**
      * @SWG\Delete(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}",
      *     summary="删除小程序",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
@@ -385,7 +381,7 @@ class MiniProgramController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/tester",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/tester",
      *     summary="获取体验者列表",
      *     tags={"小程序管理-成员管理"},
      *     description="获取已经设置了的体验者列表",
@@ -474,11 +470,18 @@ class MiniProgramController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component/{componentAppId}/mini_program/{miniProgram}/tester",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgram}/tester",
      *     summary="绑定体验者",
      *     tags={"小程序管理-成员管理"},
      *     description="绑定体验者",
      *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
      *     @SWG\Parameter(
      *         description="三方平台appId",
      *         in="path",
@@ -494,16 +497,16 @@ class MiniProgramController extends Controller
      *         type="string"
      *     ),
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="body",
      *         in="body",
-     *         description="表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
      *             @SWG\Property(
-     *                 property="wechat_id",
-     *                 type="string",
-     *                 description="wechat_id",
+     *                 property="body",
+     *                 type="object",
+     *                 required={"wechat_id"},
+     *                 @SWG\Property(property="wechat_id", type="string", description="微信id"),
      *             ),
      *         )
      *     ),
@@ -530,7 +533,7 @@ class MiniProgramController extends Controller
 
     /**
      * @SWG\Delete(
-     *     path="/component/{componentAppId}/mini_program/{miniProgram}/tester",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgram}/tester",
      *     summary="解绑体验者",
      *     tags={"小程序管理-成员管理"},
      *     description="绑定体验者",
@@ -550,16 +553,16 @@ class MiniProgramController extends Controller
      *         type="string"
      *     ),
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="body",
      *         in="body",
-     *         description="表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
      *             @SWG\Property(
-     *                 property="wechat_id",
-     *                 type="string",
-     *                 description="wechat_id/userstr",
+     *                 property="body",
+     *                 type="object",
+     *                 required={"wechat_id"},
+     *                 @SWG\Property(property="wechat_id", type="string", description="微信id/userstr"),
      *             ),
      *         )
      *     ),
@@ -586,11 +589,18 @@ class MiniProgramController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/session_key",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/session_key",
      *     summary="code换小程序session_key",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
      *     @SWG\Parameter(
      *         name="componentAppId",
      *         in="path",
@@ -606,12 +616,12 @@ class MiniProgramController extends Controller
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="body",
      *         in="body",
-     *         description="注册表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
+     *             required={"code"},
      *             @SWG\Property(
      *                 property="code",
      *                 type="string",
@@ -650,11 +660,18 @@ class MiniProgramController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/decrypt",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/decrypt",
      *     summary="小程序数据解密",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
      *     @SWG\Parameter(
      *         name="componentAppId",
      *         in="path",
@@ -670,12 +687,12 @@ class MiniProgramController extends Controller
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="body",
      *         in="body",
-     *         description="注册表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
+     *             required={"jscode", "encryptedData", "iv"},
      *             @SWG\Property(
      *                 property="jscode",
      *                 type="string",
@@ -720,7 +737,7 @@ class MiniProgramController extends Controller
     }
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/access_token",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/access_token",
      *     summary="获取小程序的access_token",
      *     tags={"小程序管理"},
      *     description="管理三方平台",

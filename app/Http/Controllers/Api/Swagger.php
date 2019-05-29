@@ -13,7 +13,7 @@ namespace App\Http\Controllers\Api;
  * @SWG\Swagger(
  *     schemes={"http", "https"},
  *     host="http://release.min-program.com",
- *     basePath="/v1",
+ *     basePath="/api",
  *     @SWG\Info(
  *         version="1.0.0",
  *         title="微信小程序发版系统API",
@@ -103,16 +103,40 @@ namespace App\Http\Controllers\Api;
  *      @SWG\Schema(
  *          ref="$/definitions/LayoutRespone",
  *          @SWG\Property(
- *              type="boolean",
- *              property="success"
- *          ),
- *          @SWG\Property(
- *              property="data"
+ *              property="data",
+ *              type="object",
  *          )
  *      )
  * )
  *
  */
+
+
+/**
+ * @SWG\Definition(
+ *   definition="ExceptionReponse",
+ *   type="object"
+ * )
+ */
+class ExceptionReponse
+{
+    /**
+     * @SWG\Property(type="string", description="状态, 值为F")
+     */
+    public $status;
+
+    /**
+     * @SWG\Property(
+     *     type="object",
+     *     @SWG\Property(
+     *         property="message",
+     *         type="string",
+     *         description="错误描述"
+     *     ),
+     * )
+     */
+    public $error;
+}
 
 /**
  * @SWG\Definition(definition="ApiResponse")

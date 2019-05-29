@@ -43,15 +43,21 @@ class ComponentController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component/create_before",
+     *     path="/v1/component/create_before",
      *     summary="设置平台验证文件，并获取白名单ip等",
      *     tags={"三方平台管理"},
      *     description="设置平台验证文件，并获取白名单ip. 测试使用接口",
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
      *         in="body",
-     *         description="注册表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(ref="#/definitions/ComponentCreateBefore")
@@ -105,11 +111,18 @@ class ComponentController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component",
+     *     path="/v1/component",
      *     summary="平台注册",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
      *     @SWG\Parameter(
      *         name="data",
      *         in="body",
@@ -153,7 +166,7 @@ class ComponentController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/component/:componentAppId",
+     *     path="/v1/component/:componentAppId",
      *     summary="获取平台信息",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
@@ -189,15 +202,21 @@ class ComponentController extends Controller
 
     /**
      * @SWG\Put(
-     *     path="/component/:componentAppId",
+     *     path="/v1/component/:componentAppId",
      *     summary="更新平台信息",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
      *         in="body",
-     *         description="表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(ref="#/definitions/Component")
@@ -235,23 +254,30 @@ class ComponentController extends Controller
 
     /**
      * @SWG\Put(
-     *     path="/component/:componentAppId/config/domain",
+     *     path="/v1/component/:componentAppId/config/domain",
      *     summary="更新平台发版配置-变更服务域名",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
      *         in="body",
-     *         description="表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
-     *             @SWG\Property(property="action", type="string", description="set覆盖,当前版本仅支持set模式"),
-     *             @SWG\Property(property="requestdomain", type="array", @SWG\Items(), description="request合法域名"),
-     *             @SWG\Property(property="wsrequestdomain", type="array", @SWG\Items(),  description="socke合法域名"),
-     *             @SWG\Property(property="uploaddomain", type="array", @SWG\Items(),  description="uploadFile合法域名"),
-     *             @SWG\Property(property="downloaddomain", type="array", @SWG\Items(),  description="downloadFile合法域名"),
+     *             required={"action", "requestdomain", "wsrequestdomain", "uploaddomain", "downloaddomain"},
+     *             @SWG\Property(property="action", type="string", enum={"set"}, description="操作"),
+     *             @SWG\Property(property="requestdomain", type="array", @SWG\Items(), maxItems=20, description="request合法域名"),
+     *             @SWG\Property(property="wsrequestdomain", type="array", @SWG\Items(), maxItems=20, description="socke合法域名"),
+     *             @SWG\Property(property="uploaddomain", type="array", @SWG\Items(), maxItems=20, description="uploadFile合法域名"),
+     *             @SWG\Property(property="downloaddomain", type="array", @SWG\Items(), maxItems=20,  description="downloadFile合法域名"),
      *         )
      *     ),
      *     @SWG\Response(
@@ -284,20 +310,27 @@ class ComponentController extends Controller
     }
     /**
      * @SWG\Put(
-     *     path="/component/:componentAppId/config/web_view_domain",
+     *     path="/v1/component/:componentAppId/config/web_view_domain",
      *     summary="更新平台发版配置-变更业务域名",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
      *         in="body",
-     *         description="表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
-     *             @SWG\Property(property="action", type="string", description="set覆盖,仅支持set"),
-     *             @SWG\Property(property="webviewdomain", type="array", @SWG\Items(), description="webviewdomain合法域名"),
+     *             required={"action", "webviewdomain"},
+     *             @SWG\Property(property="action", type="string", enum={"set"}, description="set覆盖,仅支持set"),
+     *             @SWG\Property(property="webviewdomain", type="array", @SWG\Items(), maxItems=20, description="webviewdomain合法域名"),
      *         )
      *     ),
      *     @SWG\Response(
@@ -328,21 +361,29 @@ class ComponentController extends Controller
     }
     /**
      * @SWG\Put(
-     *     path="/component/:componentAppId/config/tester",
+     *     path="/v1/component/:componentAppId/config/tester",
      *     summary="更新平台发版配置-体验者",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
      *         in="body",
-     *         description="表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
+     *             required={"tester"},
      *             @SWG\Property(
-     *                 property="wechatId",
+     *                 property="tester",
      *                 type="array",
+     *                 maxItems=50,
      *                 @SWG\Items()
      *             )
      *         )
@@ -375,18 +416,26 @@ class ComponentController extends Controller
     }
     /**
      * @SWG\Put(
-     *     path="/component/:componentAppId/config/visit_status",
+     *     path="/v1/component/:componentAppId/config/visit_status",
      *     summary="更新平台发版配置-设置代码可见状态",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
+     *     deprecated=true,
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
      *         in="body",
-     *         description="表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
+     *             required={"visit_status"},
      *             @SWG\Property(
      *                 property="visit_status",
      *                 type="string",
@@ -422,18 +471,25 @@ class ComponentController extends Controller
     }
     /**
      * @SWG\Put(
-     *     path="/component/:componentAppId/config/support_version",
+     *     path="/v1/component/:componentAppId/config/support_version",
      *     summary="更新平台发版配置-最低基础库版本",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
      *         in="body",
-     *         description="表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
+     *             required={"support_version"},
      *             @SWG\Property(
      *                 property="support_version",
      *                 type="string",
@@ -470,18 +526,25 @@ class ComponentController extends Controller
 
     /**
      * @SWG\Put(
-     *     path="/component/{componentAppId}/config/ext_json",
+     *     path="/v1/component/{componentAppId}/config/ext_json",
      *     summary="更新平台发版配置-ext_json",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
      *         in="body",
-     *         description="表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
+     *             required={"ext_json"},
      *             @SWG\Property(
      *                 property="ext_json",
      *                 type="string",
@@ -517,21 +580,29 @@ class ComponentController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component/:componentAppId/config/sync",
+     *     path="/v1/component/:componentAppId/config/sync",
      *     summary="批量推送平台配置到微信小程序",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
      *         in="body",
-     *         description="表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
+     *             required={"category"},
      *             @SWG\Property(
      *                 property="category",
      *                 type="string",
+     *                 enum={"domain", "web_view_domain", "tester", "support_version", "all"},
      *                 description="推送配置类型: domain, web_view_domain, tester, visit_status, support_version; all全部推送",
      *             )
      *         )
@@ -565,7 +636,7 @@ class ComponentController extends Controller
 
     /**
      * @SWG\get(
-     *     path="/component/{componentAppId}/config",
+     *     path="/v1/component/{componentAppId}/config",
      *     summary="获取平台发版配置",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
@@ -599,7 +670,7 @@ class ComponentController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/component_verify_ticket",
+     *     path="/v1/component/{componentAppId}/component_verify_ticket",
      *     summary="获取三方平台 component_verify_ticket",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",
@@ -650,7 +721,7 @@ class ComponentController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/component_access_token",
+     *     path="/v1/component/{componentAppId}/component_access_token",
      *     summary="获取三方平台 component_access_token",
      *     tags={"三方平台管理"},
      *     description="管理三方平台",

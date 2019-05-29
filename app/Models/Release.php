@@ -56,7 +56,7 @@ class Release extends Model
 
     public function item()
     {
-        return $this->hasMany(ReleaseItem::class, 'release_id', release_id);
+        return $this->hasMany(ReleaseItem::class, 'release_id', 'release_id');
     }
 
     public function miniProgram()

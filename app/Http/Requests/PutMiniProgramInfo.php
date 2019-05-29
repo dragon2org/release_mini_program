@@ -26,7 +26,6 @@ class PutMiniProgramInfo extends FormRequest
         return [
             'inner_name' => 'required|max:45',
             'inner_desc' => 'required|max:45',
-            'desc' => 'required|max:255'
         ];
     }
 }

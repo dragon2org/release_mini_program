@@ -22,7 +22,7 @@ class ReleaseController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/release_task",
+     *     path="/v1/component/{componentAppId}/release_task",
      *     summary="获取构建列表",
      *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",
@@ -99,7 +99,7 @@ class ReleaseController extends Controller
     }
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/release_task/{releaseId}",
+     *     path="/v1/component/{componentAppId}/release_task/{releaseId}",
      *     summary="获取构建详情任务列表",
      *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",
@@ -184,7 +184,7 @@ class ReleaseController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/release_task/{releaseId}/statistical",
+     *     path="/v1/component/{componentAppId}/release_task/{releaseId}/statistical",
      *     summary="模板任务统计",
      *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",
@@ -235,11 +235,18 @@ class ReleaseController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component/{componentAppId}/release_task/{releaseId}/retry",
+     *     path="/v1/component/{componentAppId}/release_task/{releaseId}/retry",
      *     summary="重试任务",
      *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
      *     @SWG\Parameter(
      *         name="componentAppId",
      *         in="path",
@@ -253,16 +260,6 @@ class ReleaseController extends Controller
      *         description="构建id",
      *         required=true,
      *         type="string"
-     *     ),
-     *     @SWG\Parameter(
-     *         name="data",
-     *         in="body",
-     *         description="表单数据",
-     *         required=true,
-     *         type="object",
-     *         @SWG\Schema(
-     *             @SWG\Property(property="config", type="object", description="重试配置.支持平台发版配置所有的配置项。格式一样"),
-     *         )
      *     ),
      *     @SWG\Response(
      *         response=200,
@@ -284,7 +281,7 @@ class ReleaseController extends Controller
         if(!isset($release)){
             throw new UnprocessableEntityHttpException(trans('任务不存在'));
         }
-
+        //TODO::这里有点问题
         $result  = $release->retry(request()->input('config'));
 
         return $this->response->withArray([

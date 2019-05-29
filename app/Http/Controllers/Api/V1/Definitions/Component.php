@@ -3,7 +3,11 @@
 namespace Http\Controllers\Api\V1\Definitions;
 
 /**
- * @SWG\Definition(definition="Component", type="object")
+ * @SWG\Definition(
+ *     definition="Component",
+ *     type="object",
+ *     required={"name", "desc", "app_id", "app_secret", "verify_token", "aes_key", "validate"}
+ * )
  */
 class Component
 {
@@ -53,6 +57,7 @@ class Component
      * @SWG\Property(
      *     type="object",
      *     description="域名验证信息",
+     *     required={"filename", "content"},
      *     @SWG\Property(property="filename", type="string", description="域名信息验证文件名"),
      *     @SWG\Property(property="content", type="string", description="域名信息验证文件内容"),
      * )

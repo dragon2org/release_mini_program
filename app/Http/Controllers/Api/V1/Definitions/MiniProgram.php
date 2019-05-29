@@ -9,7 +9,10 @@
 namespace App\Http\Controllers\Api\V1\Definitions;
 
 /**
- * @SWG\Definition(definition="MiniProgram", type="object")
+ * @SWG\Definition(
+ *     definition="MiniProgram",
+ *     type="object"
+ * )
  */
 class MiniProgram
 {

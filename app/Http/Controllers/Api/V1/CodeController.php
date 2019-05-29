@@ -27,11 +27,18 @@ class CodeController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/commit",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/commit",
      *     summary="上传代码",
      *     tags={"小程序管理"},
      *     description="上传代码到微信服务器",
      *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
      *     @SWG\Parameter(
      *         name="componentAppId",
      *         in="path",
@@ -47,15 +54,16 @@ class CodeController extends Controller
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="body",
      *         in="body",
-     *         description="表单数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
+     *             type="object",
+     *             required={"template_id"},
      *             @SWG\Property(
      *                 property="template_id",
-     *                 type="string",
+     *                 type="integer",
      *                 description="模板id",
      *             ),
      *             @SWG\Property(
@@ -69,6 +77,8 @@ class CodeController extends Controller
      *         response=200,
      *         description="成功返回",
      *         @SWG\Schema(
+     *             type="object",
+     *             required={"status"},
      *             @SWG\Property(
      *                 property="status",
      *                 type="string",
@@ -97,7 +107,7 @@ class CodeController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/qrcode",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/qrcode",
      *     summary="获取小程序体验二维码",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
@@ -154,7 +164,7 @@ class CodeController extends Controller
     }
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/category",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/category",
      *     summary="获取小程序可选类目",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
@@ -200,7 +210,7 @@ class CodeController extends Controller
     }
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/page",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/page",
      *     summary="获取小程序提交代码的页面配置",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
@@ -246,11 +256,18 @@ class CodeController extends Controller
     }
     /**
      * @SWG\Post(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/audit",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/audit",
      *     summary="提交审核",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
      *     @SWG\Parameter(
      *         name="componentAppId",
      *         in="path",
@@ -266,11 +283,13 @@ class CodeController extends Controller
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="body",
      *         in="body",
      *         type="object",
      *         required=true,
      *         @SWG\Schema(
+     *             type="object",
+     *             required={"item_list"},
      *             @SWG\Property(
      *                 property="item_list",
      *                 type="array",
@@ -310,7 +329,7 @@ class CodeController extends Controller
     }
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/audit/{audit}",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/audit/{audit}",
      *     summary="获取提交代码的审核结果",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
@@ -366,7 +385,7 @@ class CodeController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/last_audit",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/last_audit",
      *     summary="查询最新一次提交的审核状态",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
@@ -398,10 +417,16 @@ class CodeController extends Controller
      *             @SWG\Property(
      *                 property="data",
      *                 type="object",
+     *                 required={"status"},
      *                 @SWG\Property(
      *                     property="reason",
      *                     type="string",
      *                     description="当status=1，审核被拒绝时，返回的拒绝原因"
+     *                 ),
+     *                 @SWG\Property(
+     *                     property="screenshot",
+     *                     type="string",
+     *                     description="被拒截图。base64"
      *                 ),
      *                 @SWG\Property(
      *                     property="status",
@@ -422,7 +447,7 @@ class CodeController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/withdraw_audit",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/withdraw_audit",
      *     summary="小程序审核撤回",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
@@ -464,11 +489,18 @@ class CodeController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/release",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/release",
      *     summary="发布已通过审核的小程序",
      *     tags={"小程序管理-代码管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
      *     @SWG\Parameter(
      *         name="componentAppId",
      *         in="path",
@@ -505,7 +537,7 @@ class CodeController extends Controller
     }
     /**
      * @SWG\Post(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/visit_status",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/visit_status",
      *     summary="修改小程序线上代码的可见状态",
      *     tags={"小程序管理-代码管理"},
      *     description="管理三方平台",
@@ -525,12 +557,14 @@ class CodeController extends Controller
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="body",
      *         in="body",
      *         description="请求json数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
+     *             required={"visit_status"},
+     *             type="object",
      *             @SWG\Property(
      *                 property="visit_status",
      *                 type="string",
@@ -561,11 +595,18 @@ class CodeController extends Controller
 
     /**
      * @SWG\Post(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/revert_code_release",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/revert_code_release",
      *     summary="小程序版本回退",
      *     tags={"小程序管理-代码管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
      *     @SWG\Parameter(
      *         name="componentAppId",
      *         in="path",
@@ -602,11 +643,18 @@ class CodeController extends Controller
     }
     /**
      * @SWG\Post(
-     *     path="/component/{componentAppId}/mini_program/{miniProgramAppId}/support_version",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/support_version",
      *     summary="设置最低基础库版本",
      *     tags={"小程序管理-代码管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
      *     @SWG\Parameter(
      *         name="componentAppId",
      *         in="path",
@@ -622,12 +670,13 @@ class CodeController extends Controller
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="data",
+     *         name="body",
      *         in="body",
-     *         description="请求json数据",
      *         required=true,
      *         type="object",
      *         @SWG\Schema(
+     *             type="object",
+     *             required={"support_version"},
      *             @SWG\Property(
      *                 property="support_version",
      *                 type="string",
@@ -658,6 +707,41 @@ class CodeController extends Controller
         return $this->response->withArray(['data' => $response]);
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/support_version",
+     *     summary="获取基础库版本和用户占比",
+     *     tags={"小程序管理-代码管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         description="三方平台AppID",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="miniProgramAppId",
+     *         in="path",
+     *         description="小程序AppId",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function supportVersion()
     {
         $response = ReleaseFacade::service()->getSupportVersion();
