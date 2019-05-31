@@ -80,6 +80,7 @@ class ReleaseService
 
     /**
      * @param $appId
+     *
      * @return \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application
      * @throws UnprocessableEntityHttpException
      */
@@ -93,7 +94,7 @@ class ReleaseService
         if (!isset($miniProgram)) {
             throw new UnprocessableEntityHttpException(trans('小程序未绑定'));
         }
-        if($miniProgram->authorization_status !== MiniProgram::AUTHORIZATION_STATUS_AUTHORIZED){
+        if ($miniProgram->authorization_status !== MiniProgram::AUTHORIZATION_STATUS_AUTHORIZED) {
             throw new UnprocessableEntityHttpException(trans('小程序授权已取消'));
         }
 
@@ -213,19 +214,22 @@ class ReleaseService
     }
 
     /**
+     * 解析微信处理
      * @param array $data
      * @param bool $isRaw
+     * @param array $allowCode
+     *
      * @return array
      */
-    protected function parseResponse(array $data, $isRaw = false)
+    protected function parseResponse(array $data, $isRaw = false, $allowCode = [])
     {
-        if ($data['errcode'] === 0) {
-            if($isRaw) return $data;
+        if ($data['errcode'] === 0 || in_array($data['errcode'], $allowCode)) {
+            if ($isRaw) return $data;
             unset($data['errmsg']);
             unset($data['errcode']);
             return $data;
         }
-        if($data['errcode'] === -1) $data['errmsg'] = '微信网关繁忙';
+        if ($data['errcode'] === -1) $data['errmsg'] = '微信网关繁忙';
         throw new WechatGatewayException($data['errmsg'], $data['errcode']);
     }
 
@@ -240,9 +244,69 @@ class ReleaseService
 
     public function draftToTemplate($draftId)
     {
-        return $this->parseResponse(
-            $this->openPlatform->code_template->createFromDraft($draftId)
-        );
+        $draftList = $this->openPlatform->code_template->getDrafts($draftId);
+
+        $draftList = $draftList['draft_list'] ?? [];
+
+        $draftInfo = null;
+        foreach ($draftList as $item) {
+            if ($item['draft_id'] === $draftId) {
+                $draftInfo = $item;
+                break;
+            }
+        }
+        if (is_null($draftInfo)) {
+            throw new UnprocessableEntityHttpException(trans('草稿不存在'));
+        }
+
+        if (false === strpos($draftInfo['user_desc'], '|')) {
+            throw new UnprocessableEntityHttpException(trans('user_desc format \'内部版本号|内部版本描述\''));
+        }
+
+        list($version, $desc) = explode('|', $draftInfo['user_desc']);
+
+        if (is_null($version)) {
+            throw new UnprocessableEntityHttpException(trans('草稿未指定版本信息,无法添加到模板'));
+        }
+
+        $template = ComponentTemplate::where('component_id', $this->component->component_id)
+            ->where('branch', $version)->first();
+
+        if (isset($template)) {
+            throw new UnprocessableEntityHttpException(trans('内部版本已存在'));
+        }
+
+        $this->openPlatform->code_template->createFromDraft($draftId);
+
+        $this->syncTemplate();
+    }
+
+    public function syncTemplate()
+    {
+        $localTemplate = ComponentTemplate::withTrashed()
+            ->where('component_id', $this->component->component_id)
+            ->pluck('template_id');
+
+        collect($this->templateList())
+            ->whereNotIn('template_id', $localTemplate)
+            ->reject(function ($item, $key){
+                if(strpos($item['user_desc'], '|') === false) return true;
+            })->each(function ($item, $key){
+                list($version, $desc) = explode('|', $item['user_desc']);
+                $template = (new ComponentTemplate());
+                $template->component_id = $this->component->component_id;
+                $template->template_id = $item['template_id'];
+                $template->user_version = $item['user_version'];
+                $template->user_desc = $desc;
+                $template->create_time = date('Y-m-d H:i:s', $item['create_time']);
+                $template->branch = $version;
+                $template->source_miniprogram = $item['source_miniprogram'];
+                $template->source_miniprogram_appid = $item['source_miniprogram_appid'];
+                $template->developer = $item['developer'];
+                $template->save();
+            });
+
+
     }
 
     public function templateList()
@@ -256,13 +320,24 @@ class ReleaseService
 
     public function deleteTemplate($templateId)
     {
-        return $this->parseResponse(
+        $template = ComponentTemplate::where('template_id', $templateId)->first();
+
+        if (!isset($template)) {
+            throw new UnprocessableEntityHttpException(trans('模板不存在'));
+        }
+
+        $this->parseResponse(
             $this->openPlatform->code_template->delete($templateId)
-        );
+            , false, [85064]);
+
+        $template->delete();
+
+        return true;
     }
 
     /**
      * get binding tester
+     *
      * @return array
      * @throws UnprocessableEntityHttpException
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
@@ -292,7 +367,9 @@ class ReleaseService
 
     /**
      * bind tester
+     *
      * @param $wechatId
+     *
      * @return array
      * @throws UnprocessableEntityHttpException
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
@@ -317,7 +394,9 @@ class ReleaseService
 
     /**
      * unbind tester
+     *
      * @param $userStr
+     *
      * @return bool
      * @throws UnprocessableEntityHttpException
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
@@ -343,7 +422,7 @@ class ReleaseService
     {
         $response = $this->miniProgramApp->auth->session($code);
 
-        if(isset($response['errcode'])){
+        if (isset($response['errcode'])) {
             return $this->parseResponse($response);
         }
         return $response;
@@ -362,20 +441,20 @@ class ReleaseService
 
     public function commit($templateId, $extJson = null)
     {
-        if(is_null($extJson)){
-            if(!isset($this->component->extend)){
+        if (is_null($extJson)) {
+            if (!isset($this->component->extend)) {
                 throw new UnprocessableEntityHttpException(trans('平台为设置发版配置'));
             }
 
             $config = json_decode($this->component->extend->config, true);
             $extJson = $config['ext_json'] ? json_encode($config['ext_json']) : '{}';
-        }else{
+        } else {
             MiniProgramExt::updateOrCreate([
                 'component_id' => $this->miniProgram->component_id,
                 'template_id' => $templateId,
                 'mini_program_id' => $this->miniProgram->mini_program_id,
                 'company_id' => $this->miniProgram->company_id
-            ], ['config' => json_encode(['ext_json'=> json_decode($extJson, true)])]);
+            ], ['config' => json_encode(['ext_json' => json_decode($extJson, true)])]);
         }
 
         $extJson = $this->miniProgram->assign($extJson);
@@ -383,16 +462,16 @@ class ReleaseService
         $template = ComponentTemplate::where('template_id', $templateId)
             ->where('component_id', $this->component->component_id)
             ->orderBy('component_template_id', 'desc')->first();
-        if(!isset($template)){
+        if (!isset($template)) {
             throw new UnprocessableEntityHttpException(trans('模板未同步或已删除'));
         }
 
         $response = $this->parseResponse(
             $this->miniProgramApp->code->commit($templateId, $extJson, $template->user_version, $template->user_desc)
-        , true);
+            , true);
 
         $extJson = json_decode($extJson, true);
-        $config = json_encode(['ext_json'=> $extJson]);
+        $config = json_encode(['ext_json' => $extJson]);
         $release = (new Release())->syncMake($this->miniProgram, $templateId, $config, $response);
 
         return $release;
@@ -402,7 +481,7 @@ class ReleaseService
     {
         $response = $this->miniProgramApp->code->getQrCode($path);
 
-        if(!in_array('image/jpeg', $response->getHeader('Content-Type'))){
+        if (!in_array('image/jpeg', $response->getHeader('Content-Type'))) {
             throw new UnprocessableEntityHttpException(trans('获取资源失败'));
 
         }
@@ -413,7 +492,7 @@ class ReleaseService
             throw new RuntimeException('Invalid media response content.');
         }
         $filename = Str::random(64) . '.jpeg';
-        $filePath = storage_path(). '/framework/cache/' . $filename;
+        $filePath = storage_path() . '/framework/cache/' . $filename;
         file_put_contents($filePath, $contents);
 
         $code = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($filePath));
@@ -445,13 +524,13 @@ class ReleaseService
             ->where('status', Release::RELEASE_STATUS_COMMITTED)
             ->orderBy('release_id', 'desc')
             ->first();
-        if(!isset($release)){
+        if (!isset($release)) {
             throw new UnprocessableEntityHttpException(trans('构建单已失效'));
         }
 
         $response = $this->parseResponse(
             $response = $this->miniProgramApp->code->submitAudit($itemList)
-        , true);
+            , true);
 
         ReleaseItem::create([
             'release_id' => $release->release_id,
@@ -493,7 +572,7 @@ class ReleaseService
         $release = Release::where('mini_program_id', $this->miniProgram->mini_program_id)
             ->where('status', Release::RELEASE_STATUS_AUDITING)
             ->orderBy('release_id', 'desc')->first();
-        if(!isset($release)){
+        if (!isset($release)) {
             throw new UnprocessableEntityHttpException(trans('平台没有发版数据,无法操作'));
         }
 
@@ -521,13 +600,13 @@ class ReleaseService
         $release = Release::where('mini_program_id', $this->miniProgram->mini_program_id)
             ->where('status', Release::RELEASE_STATUS_AUDIT_SUCCESS)
             ->orderBy('release_id', 'desc')->first();
-        if(!isset($release)){
+        if (!isset($release)) {
             throw new UnprocessableEntityHttpException(trans('平台不存在发版数据'));
         }
 
         $response = $this->parseResponse(
             $this->miniProgramApp->code->release()
-        , true);
+            , true);
 
         $release->status = Release::RELEASE_STATUS_RELEASED;
         $release->save();
@@ -576,7 +655,7 @@ class ReleaseService
             );
             return [];
         } catch (WechatGatewayException $exception) {
-            if($exception->getCode() !== 85021){
+            if ($exception->getCode() !== 85021) {
                 throw $exception;
             }
         }
@@ -594,19 +673,19 @@ class ReleaseService
             }
 
             $templateList = Arr::pluck($this->templateList(), 'template_id');
-            if(!in_array($templateId, $templateList)){
+            if (!in_array($templateId, $templateList)) {
                 throw new UnprocessableEntityHttpException(trans('模板不存在'));
             }
 
             //step 2. 获取配置文件
-            if(!isset($this->component->extend)){
+            if (!isset($this->component->extend)) {
                 throw new UnprocessableEntityHttpException(trans('批量发版配置不存在'));
             }
             $config = $this->component->extend->getReleaseConfig();
 
             $data = [];
             foreach ($miniProgramList as $miniProgram) {
-               $data[] =  (new Release())->make($miniProgram, $templateId, $config);
+                $data[] = (new Release())->make($miniProgram, $templateId, $config);
             }
             return $data;
         } catch (\Exception $e) {
@@ -629,14 +708,14 @@ class ReleaseService
             }
 
             //step 2. 获取配置文件
-            if(!isset($this->component->extend)){
+            if (!isset($this->component->extend)) {
                 throw new UnprocessableEntityHttpException(trans('批量发版配置不存在'));
             }
             $config = $this->component->extend->getReleaseConfig();
 
             $data = [];
             foreach ($miniProgramList as $miniProgram) {
-                $data[] =  (new Release())->syncConfig($miniProgram, $config);
+                $data[] = (new Release())->syncConfig($miniProgram, $config);
             }
             return $data;
         } catch (\Exception $e) {

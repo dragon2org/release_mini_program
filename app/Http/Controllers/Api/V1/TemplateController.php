@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 
-use App\Exceptions\UnprocessableEntityHttpException;
 use App\Facades\ReleaseFacade;
 use App\Http\ApiResponse;
 use App\Http\Requests\DeleteTemplate;
 use App\Http\Requests\DraftToTemplate;
 use App\Http\Transformer\TemplateListTransformer;
 use App\Models\ComponentTemplate;
-use App\Models\Release;
 use App\Models\Template;
 
 class TemplateController extends Controller
@@ -101,11 +99,6 @@ class TemplateController extends Controller
      *                 default="T",
      *                 description="接口返回状态['T'->成功; 'F'->失败]"
      *             ),
-     *             @SWG\Property(
-     *                 property="data",
-     *                 type="Object",
-     *                 ref="#/definitions/Component"
-     *             )
      *         )
      *     )
      * )
@@ -113,99 +106,9 @@ class TemplateController extends Controller
     public function draftToTemplate(DraftToTemplate $request)
     {
         $response = ReleaseFacade::service()->draftToTemplate(request()->input('draft_id'));
-        return $this->response->withArray([
-            'data' => $response
-        ]);
+        return $this->response->withArray([]);
     }
 
-    /**
-     * @SWG\Post(
-     *     path="/v1/component/{componentAppId}/template/sync",
-     *     summary="同步微信三方平台模板到平台",
-     *     tags={"三方平台管理-模板管理"},
-     *     description="管理三方平台",
-     *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         name="Content-Type",
-     *         in="header",
-     *         required=true,
-     *         type="string",
-     *         enum={"application/json"}
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="成功返回",
-     *         @SWG\Schema(
-     *             @SWG\Property(
-     *                 property="status",
-     *                 type="string",
-     *                 default="T",
-     *                 description="接口返回状态['T'->成功; 'F'->失败]"
-     *             ),
-     *             @SWG\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 @SWG\Property(property="count", type="integer", description="模板总数"),
-     *                 @SWG\Property(property="synced", type="integer", description="已同步"),
-     *                 @SWG\Property(property="not_change", type="integer", description="未变化"),
-     *                 @SWG\Property(property="deleted", type="integer", description="已经删除的"),
-     *             )
-     *         )
-     *     )
-     * )
-     */
-    public function sync()
-    {
-        $remoteTemplateList = ReleaseFacade::service()->templateList();
-        $remote = [];
-        foreach($remoteTemplateList as $item){
-            $remote[] = $item['template_id'];
-        }
-
-        $noItems = ComponentTemplate::whereIn('template_id', $remote)
-            ->select('template_id')
-            ->get();
-        $no = [];
-        foreach($noItems as $item){
-            $no[] = $item->template_id;
-        }
-
-        $handleNum = 0;
-        foreach($remoteTemplateList as $item){
-            if(in_array($item['template_id'],  $no)){
-                continue;
-            }
-            //添加数据
-            $model = new ComponentTemplate();
-            $model->component_id = ReleaseFacade::service()->component->component_id;
-            $model->template_id = $item['template_id'];
-            $model->user_version = $item['user_version'];
-            $model->user_desc = $item['user_desc'];
-            $model->create_time = date('Y-m-d H:i:s', $item['create_time']);
-            $model->branch = $item['user_desc'];
-            $model->source_miniprogram = $item['source_miniprogram'];
-            $model->source_miniprogram_appid = $item['source_miniprogram_appid'];
-            $model->developer = $item['developer'];
-            $model->save();
-
-            $handleNum++;
-        }
-
-        //删除没有的模板
-        $deleted = ComponentTemplate::whereNotIn('template_id', $remote)
-            ->where('component_id', ReleaseFacade::service()->component->component_id)
-            ->delete();
-
-
-        return $this->response->withArray([
-            'data' => [
-                'count' => count($remoteTemplateList),
-                'synced' => $handleNum,
-                'not_change' => count($no),
-                'deleted' => $deleted,
-            ]
-        ]);
-    }
     /**
      * @SWG\Delete(
      *     path="/v1/component/{componentAppId}/template/{templateId}",
@@ -244,14 +147,7 @@ class TemplateController extends Controller
 
     public function delete($componentAppId, $templateId)
     {
-        $template = ComponentTemplate::where('template_id', $templateId)->first();
-
-        if(!isset($template)){
-            throw new UnprocessableEntityHttpException(trans('模板不存在'));
-        }
-
         $response = ReleaseFacade::service()->deleteTemplate($templateId);
-        $template->delete();
 
         return $this->response->withArray([
             'data' => $response
@@ -306,7 +202,7 @@ class TemplateController extends Controller
     public function index()
     {
         $items = ComponentTemplate::where('component_id', ReleaseFacade::service()->component->component_id)
-            ->orderBy('template_id', 'desc')
+            ->orderBy('component_template_id', 'desc')
             ->paginate();
 
         return $this->response->withCollection($items, new TemplateListTransformer($items));
