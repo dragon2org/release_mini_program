@@ -21,3 +21,4 @@ create table `failed_jobs` (
 
 ALTER TABLE `component_template` DROP COLUMN `branch`,ADD COLUMN `tag` varchar(45) NOT NULL DEfAULT '' COMMENT '模板内部版本';
 ALTER TABLE `mini_program` ADD COLUMN `tag` varchar(45) NOT NULL DEfAULT '' COMMENT '模板内部版本';
+ALTER TABLE `release_audit` MODIFY COLUMN `screenshot` varchar(255) NOT NULL DEFAULT '' COMMENT '审核失败截图的mediaID';

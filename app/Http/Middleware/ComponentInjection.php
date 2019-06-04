@@ -32,7 +32,7 @@ class ComponentInjection
         $this->injection($params['componentAppId']);
         
         if(isset($params['miniProgramAppId'])){
-            app('dhb.component.core')->setMiniProgram($params['miniProgramAppId']);
+            app('dhb.component.core')->setMiniProgramByAppId($params['miniProgramAppId']);
         }
         return $next($request);
     }

@@ -23,9 +23,11 @@ use App\Models\Tester;
 use App\ServeMessageHandlers\EventMessageHandler;
 use App\ServeMessageHandlers\MiniProgramUnauthorizedEventMessageHandler;
 use EasyWeChat\Factory;
+use EasyWeChat\Kernel\Http\StreamResponse;
 use EasyWeChat\Kernel\Messages\Message;
 use EasyWeChat\OpenPlatform\Server\Guard;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Log;
 use RuntimeException;
@@ -78,22 +80,34 @@ class ReleaseService
         return $this->openPlatform = $openPlatform;
     }
 
+    public function setMiniProgramById(int $id)
+    {
+        return $this->setMiniProgram(
+            $miniProgram = (new MiniProgram())
+                ->where('mini_program_id', $id)
+                ->where('component_id', $this->component->component_id)
+                ->firstOrFail()
+        );
+    }
+
+    public function setMiniProgramByAppId(string $appId)
+    {
+        return $this->setMiniProgram(
+            $miniProgram = (new MiniProgram())
+                ->where('app_id', $appId)
+                ->where('component_id', $this->component->component_id)
+                ->firstOrFail()
+        );
+    }
+
     /**
      * @param $appId
      *
      * @return \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application
      * @throws UnprocessableEntityHttpException
      */
-    public function setMiniProgram($appId)
+    protected function setMiniProgram(MiniProgram $miniProgram)
     {
-        $miniProgram = (new MiniProgram())
-            ->where('app_id', $appId)
-            ->where('component_id', $this->component->component_id)
-            ->first();
-
-        if (!isset($miniProgram)) {
-            throw new UnprocessableEntityHttpException(trans('小程序未绑定'));
-        }
         if ($miniProgram->authorization_status !== MiniProgram::AUTHORIZATION_STATUS_AUTHORIZED) {
             throw new UnprocessableEntityHttpException(trans('小程序授权已取消'));
         }
@@ -481,10 +495,20 @@ class ReleaseService
     {
         $response = $this->miniProgramApp->code->getQrCode($path);
 
-        if (!in_array('image/jpeg', $response->getHeader('Content-Type'))) {
-            throw new UnprocessableEntityHttpException(trans('获取资源失败'));
+        return $this->stream2base64($response);
+    }
 
+    /**
+     * @param $response StreamResponse
+     *
+     * @return array|string
+     */
+    protected function stream2base64($response)
+    {
+        if(false !== stripos($response->getHeaderLine('Content-disposition'), 'attachment')){
+            return $this->parseResponse($response);
         }
+
         $response->getBody()->rewind();
         $contents = $response->getBody()->getContents();
 
@@ -495,11 +519,11 @@ class ReleaseService
         $filePath = storage_path() . '/framework/cache/' . $filename;
         file_put_contents($filePath, $contents);
 
-        $code = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($filePath));
+        $base64 = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($filePath));
 
         unlink($filePath);
 
-        return $code;
+        return $base64;
     }
 
     public function getCategory()
@@ -555,6 +579,10 @@ class ReleaseService
         $response = $this->parseResponse(
             $this->miniProgramApp->code->getAuditStatus($audit)
         );
+
+        if(isset($response['screenshot'])){
+            $response['screenshot'] = $this->getMaterial($response['screenshot']);
+        }
 
         return $response;
     }
@@ -723,10 +751,22 @@ class ReleaseService
         }
     }
 
+    public function componentGetMaterial($miniProgramId, $mediaId)
+    {
+        $this->setMiniProgramById($miniProgramId);
+        return $this->getMaterial($mediaId);
+    }
+
     public function getMaterial($mediaId)
     {
-        return 'https://www.baidu.com';
-        $res = $this->miniProgramApp->material->get($mediaId);
+        if(strpos($mediaId, '|')) $mediaId = explode('|', $mediaId);
 
+        $collect = Collection::wrap($mediaId)->map(function($mediaId){
+            return $this->stream2base64(
+                $this->miniProgramApp->material->get($mediaId)
+            );
+        });
+
+        return $collect;
     }
 }

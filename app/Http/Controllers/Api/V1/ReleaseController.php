@@ -13,6 +13,7 @@ use App\Http\Transformer\ReleaseItemsTransformer;
 use App\Models\Release;
 use App\Models\ReleaseAudit;
 use App\Models\ReleaseItem;
+use Illuminate\Support\Collection;
 
 class ReleaseController extends Controller
 {
@@ -228,8 +229,8 @@ class ReleaseController extends Controller
     {
         $items = ReleaseAudit::where('release_id',  $releaseId)->orderBy('release_audit_id', 'desc')->get();
 
-        $items->map(function($item, $key){
-            if($item->screenshot) $item->screenshot = ReleaseFacade::service()->getMaterial($item->screenshot);
+        $items->map(function($item){
+            if($item->screenshot) $item->screenshot = ReleaseFacade::service()->componentGetMaterial($item->mini_program_id, $item->screenshot);
         });
 
         return $this->response->withCollection($items, new AuditListTransformer());
