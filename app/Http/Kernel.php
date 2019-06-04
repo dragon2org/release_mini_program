@@ -2,10 +2,18 @@
 
 namespace App\Http;
 
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Routing\Router;
 
 class Kernel extends HttpKernel
 {
+    public function __construct(Application $app, Router $router)
+    {
+        env('APP_ENV') === 'prod' && define('ACCEPT_SERVICE_API', false);
+        parent::__construct($app, $router);
+    }
+
     /**
      * The application's global HTTP middleware stack.
      *
@@ -61,6 +69,5 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'force-json' => \App\Http\Middleware\ForceJson::class,
         'component-injection' => \App\Http\Middleware\ComponentInjection::class,
-        'client-auth' => \App\Http\Middleware\ClientAuth::class
     ];
 }

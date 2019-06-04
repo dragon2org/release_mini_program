@@ -3,10 +3,18 @@
 namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+    public function __construct(Application $app, Dispatcher $events)
+    {
+        define('ACCEPT_SERVICE_API', true);
+        parent::__construct($app, $events);
+    }
+
     /**
      * The Artisan commands provided by your application.
      *

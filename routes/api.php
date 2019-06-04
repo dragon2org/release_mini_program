@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'middleware' => ['client-auth', 'force-json'],
+    'middleware' => ['force-json'],
     'prefix' => 'api',
     'namespace' => 'Api\V1',
 ], function () {
@@ -19,7 +19,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['client-auth', 'force-json', 'component-injection'],
+    'middleware' => ['force-json', 'component-injection'],
     'prefix' => 'api',
     'namespace' => 'Api\V1',
 ], function () {
