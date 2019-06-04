@@ -7,9 +7,11 @@ use App\Exceptions\UnprocessableEntityHttpException;
 use App\Facades\ReleaseFacade;
 use App\Http\ApiResponse;
 use App\Http\Requests\RetryRelease;
+use App\Http\Transformer\AuditListTransformer;
 use App\Http\Transformer\ReleaseDetailItemsTransformer;
 use App\Http\Transformer\ReleaseItemsTransformer;
 use App\Models\Release;
+use App\Models\ReleaseAudit;
 use App\Models\ReleaseItem;
 
 class ReleaseController extends Controller
@@ -95,7 +97,7 @@ class ReleaseController extends Controller
 
         $items = $model->paginate();
 
-        return $this->response->withCollection($items, new ReleaseItemsTransformer($items));
+        return $this->response->withCollection($items, new ReleaseItemsTransformer());
     }
     /**
      * @SWG\Get(
@@ -179,9 +181,59 @@ class ReleaseController extends Controller
 
         $items = $model->paginate();
 
-        return $this->response->withCollection($items, new ReleaseDetailItemsTransformer($items));
+        return $this->response->withCollection($items, new ReleaseDetailItemsTransformer());
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/v1/component/{componentAppId}/release/{releaseId}/audit",
+     *     summary="获取审核列表",
+     *     tags={"三方平台管理-模板管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         description="三方平台AppID",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="releaseId",
+     *         in="path",
+     *         description="构建id",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @SWG\Items(ref="#/definitions/ReleaseAuditList")
+     *             ),
+     *         )
+     *     )
+     * )
+     */
+    public function auditList($componentAppId, $releaseId)
+    {
+        $items = ReleaseAudit::where('release_id',  $releaseId)->orderBy('release_audit_id', 'desc')->get();
+
+        $items->map(function($item, $key){
+            if($item->screenshot) $item->screenshot = ReleaseFacade::service()->getMaterial($item->screenshot);
+        });
+
+        return $this->response->withCollection($items, new AuditListTransformer());
+    }
     /**
      * @SWG\Get(
      *     path="/v1/component/{componentAppId}/release_task/{releaseId}/statistical",
@@ -233,9 +285,23 @@ class ReleaseController extends Controller
         return $this->response->withArray(['data' => $data]);
     }
 
+    public function retry($componentAppId, $releaseId, RetryRelease $request)
+    {
+        $release = (new Release())->where('release_id', $releaseId)->first();
+        if(!isset($release)){
+            throw new UnprocessableEntityHttpException(trans('任务不存在'));
+        }
+
+        $result  = $release->retry(request()->input('config'));
+
+        return $this->response->withArray([
+            'data' => $result
+        ]);
+    }
+
     /**
      * @SWG\Post(
-     *     path="/v1/component/{componentAppId}/release_task/{releaseId}/retry",
+     *     path="/v1/component/{componentAppId}/release_task/{release_item_id}/retry",
      *     summary="重试任务",
      *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",
@@ -275,13 +341,13 @@ class ReleaseController extends Controller
      *     )
      * )
      */
-    public function retry($componentAppId, $releaseId, RetryRelease $request)
+    public function retryItem($componentAppId, $releaseItemId, RetryRelease $request)
     {
-        $release = (new Release())->where('release_id', $releaseId)->first();
+        $release = (new ReleaseItem())->where('release_item_id', $releaseItemId)->first();
         if(!isset($release)){
             throw new UnprocessableEntityHttpException(trans('任务不存在'));
         }
-        //TODO::这里有点问题
+
         $result  = $release->retry(request()->input('config'));
 
         return $this->response->withArray([

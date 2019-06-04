@@ -40,6 +40,11 @@ class Component extends Model
         'aes_key',
     ];
 
+    public function template()
+    {
+        return $this->hasMany(ComponentTemplate::class, 'component_id', 'component_id');
+    }
+
     public function validateFile()
     {
         return $this->hasOne(ValidateFile::class, 'component_id', 'component_id');

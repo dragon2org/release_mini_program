@@ -265,12 +265,12 @@ class ReleaseService
 
         list($version, $desc) = explode('|', $draftInfo['user_desc']);
 
-        if (is_null($version)) {
-            throw new UnprocessableEntityHttpException(trans('草稿未指定版本信息,无法添加到模板'));
+        if (preg_match('/^[a-zA-Z]+[a-zA-Z0-9\-\_]{1,45}/', $version) === 0) {
+            throw new UnprocessableEntityHttpException(trans('内部版本格式错误, 只运行字母开头，1-45位字符串(英文字母_-); $version: '. $version));
         }
 
         $template = ComponentTemplate::where('component_id', $this->component->component_id)
-            ->where('branch', $version)->first();
+            ->where('tag', $version)->first();
 
         if (isset($template)) {
             throw new UnprocessableEntityHttpException(trans('内部版本已存在'));
@@ -299,7 +299,7 @@ class ReleaseService
                 $template->user_version = $item['user_version'];
                 $template->user_desc = $desc;
                 $template->create_time = date('Y-m-d H:i:s', $item['create_time']);
-                $template->branch = $version;
+                $template->tag = $version;
                 $template->source_miniprogram = $item['source_miniprogram'];
                 $template->source_miniprogram_appid = $item['source_miniprogram_appid'];
                 $template->developer = $item['developer'];
@@ -721,5 +721,12 @@ class ReleaseService
         } catch (\Exception $e) {
             throw $e;
         }
+    }
+
+    public function getMaterial($mediaId)
+    {
+        return 'https://www.baidu.com';
+        $res = $this->miniProgramApp->material->get($mediaId);
+
     }
 }

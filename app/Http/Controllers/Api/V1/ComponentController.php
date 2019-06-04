@@ -160,7 +160,7 @@ class ComponentController extends Controller
         $component = $this->service->register(request()->all());
 
         return $this->response->withArray(
-            ['data' => $this->response->transformatItem($component, new ComponentTransformer($component))]
+            ['data' => $this->response->transformatItem($component, new ComponentTransformer())]
         );
     }
 
@@ -197,7 +197,7 @@ class ComponentController extends Controller
             throw new UnprocessableEntityHttpException(trans('平台不存在'));
         }
 
-        return $this->response->withArray(['data' => $this->response->transformatItem($component, new ComponentDetailTransformer($component))]);
+        return $this->response->withArray(['data' => $this->response->transformatItem($component, new ComponentDetailTransformer())]);
     }
 
     /**
@@ -248,7 +248,7 @@ class ComponentController extends Controller
         $component = $this->service->updateComponent($input);
 
         return $this->response->withArray(
-            ['data' => $this->response->transformatItem($component, new ComponentDetailTransformer($component))]
+            ['data' => $this->response->transformatItem($component, new ComponentDetailTransformer())]
         );
     }
 

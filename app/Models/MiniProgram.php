@@ -74,4 +74,36 @@ class MiniProgram extends Model
         CodeCommitLog::info($this, 'assign mini_program ext_json result ', ['ext_json' => $extJson]);
         return $extJson;
     }
+
+    public function onlineVersion()
+    {
+        return $this
+            ->hasOne(Release::class, 'mini_program_id', 'mini_program_id')
+            ->where('status', Release::RELEASE_STATUS_RELEASED)
+            ->orderBy('release_id', 'desc');
+    }
+
+    public function buildVersion()
+    {
+        return $this
+            ->hasOne(Release::class, 'mini_program_id', 'mini_program_id')
+            ->where('category', Release::RELEASE_CATEGORY_RELEASE)
+            ->whereNotIn('status', [Release::RELEASE_STATUS_RELEASED])
+            ->orderBy('release_id', 'desc');
+    }
+
+    public function getBuildVersion()
+    {
+        if(!isset($this->buildVersion)){
+            return '';
+        }
+
+        if($this->onlineVersion){
+            if($this->onlineVersion->release_id > $this->buildVersion->release_id){
+                return '';
+            }
+        }
+
+        return $this->buildVersion->user_version;
+    }
 }

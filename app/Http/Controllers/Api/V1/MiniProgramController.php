@@ -17,6 +17,7 @@ use App\Http\Requests\GetMiniProgramSessionKey;
 use App\Http\Requests\MiniProgramDecrypt;
 use App\Http\Requests\PutMiniProgramInfo;
 use App\Http\Requests\UnbindMiniProgramTester;
+use App\Http\Requests\UpdateMiniProgramTag;
 use App\Http\Transformer\MiniProgramListTransformer;
 use App\Services\MiniProgramService;
 use App\Http\ApiResponse;
@@ -180,7 +181,7 @@ class MiniProgramController extends Controller
      *             @SWG\Property(
      *                 property="data",
      *                 type="array",
-     *                 @SWG\Items(ref="#/definitions/MiniProgram")
+     *                 @SWG\Items(ref="#/definitions/MiniProgramList")
      *             ),
      *         )
      *     )
@@ -191,7 +192,7 @@ class MiniProgramController extends Controller
         $componentId = ReleaseFacade::service()->component->component_id;
         $items = MiniProgram::where(['component_id'=> $componentId])->paginate();
 
-        return $this->response->withCollection($items, new MiniProgramListTransformer($items));
+        return $this->response->withCollection($items, new MiniProgramListTransformer());
     }
 
 
@@ -242,7 +243,7 @@ class MiniProgramController extends Controller
     public function show($componentAppId, $miniProgramAppId)
     {
         $item = MiniProgram::where('app_id', $miniProgramAppId)->first();
-        return $this->response->withItem($item, new MiniProgramTransformer($item));
+        return $this->response->withItem($item, new MiniProgramTransformer());
     }
 
 
@@ -326,7 +327,7 @@ class MiniProgramController extends Controller
         if($request->inner_desc) $miniProgram->inner_desc = $request->inner_desc;
         $miniProgram->save();
 
-        return $this->response->withItem($miniProgram, new MiniProgramTransformer($miniProgram));
+        return $this->response->withItem($miniProgram, new MiniProgramTransformer());
     }
 
     /**
@@ -780,5 +781,78 @@ class MiniProgramController extends Controller
     public function accessToken()
     {
         return $this->response->withArray(['data' => ReleaseFacade::service()->getAccessToken()]);
+    }
+
+    /**
+     * @SWG\Put(
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/tag",
+     *     summary="更新小程序使用的内部版本",
+     *     tags={"小程序管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         description="三方平台AppID",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="miniProgramAppId",
+     *         in="path",
+     *         description="小程序AppId",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
+     *         in="body",
+     *         required=true,
+     *         type="object",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="body",
+     *                 type="object",
+     *                 required={"tag"},
+     *                 @SWG\Property(property="tag", type="string", description="模板内部版本; 英文字母开头", minLength=1, maxLength=45, pattern="^[a-zA-Z]+[a-zA-Z0-9\-\_]{1,45}$"),
+     *             ),
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="处理成功返回",
+     *         ref="$/responses/200",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 description="返回数据包",
+     *                 @SWG\Property(property="tag", type="string", description="模板内部版本"),
+     *             ),
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=422,
+     *         description="处理失败的返回",
+     *         ref="$/responses/422",
+     *     ),
+     * )
+     */
+    public function tag($componentAppId, $miniProgramAppId, UpdateMiniProgramTag $request)
+    {
+        $miniProgram = ReleaseFacade::service()->miniProgram;
+        $miniProgram->tag = $request->tag;
+        $miniProgram->save();
+
+        return $this->response->withArray([
+            'data' => $miniProgram->tag
+        ]);
     }
 }

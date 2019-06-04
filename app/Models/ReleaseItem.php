@@ -265,10 +265,9 @@ class ReleaseItem extends Model
         }
 
         $class = $map[$releaseItem->name];
-        $class::dispatch($releaseItem)->onConnection('sync');
+        $class::dispatch($releaseItem);
         RetryReleaseInQueueLog::info($releaseItem->release->trade_no, $releaseItem->miniProgram, json_decode($releaseItem->original_config, true), $releaseItem->release->release_id, $class);
 
         return true;
     }
-
 }

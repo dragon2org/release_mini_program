@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Api\V1;
 
 
+use App\Exceptions\UnprocessableEntityHttpException;
 use App\Facades\ReleaseFacade;
 use App\Http\ApiResponse;
 use App\Http\Requests\DeleteTemplate;
 use App\Http\Requests\DraftToTemplate;
 use App\Http\Transformer\TemplateListTransformer;
+use App\Http\Transformer\TemplateMiniProgramListTransformer;
+use App\Models\Component;
 use App\Models\ComponentTemplate;
+use App\Models\MiniProgram;
 use App\Models\Template;
 
 class TemplateController extends Controller
@@ -205,7 +209,7 @@ class TemplateController extends Controller
             ->orderBy('component_template_id', 'desc')
             ->paginate();
 
-        return $this->response->withCollection($items, new TemplateListTransformer($items));
+        return $this->response->withCollection($items, new TemplateListTransformer());
     }
 
     /**
@@ -299,5 +303,24 @@ class TemplateController extends Controller
         return $this->response->withArray([
             'data' => $response
         ]);
+    }
+
+    public function miniProgramList($componentAppId, $templateId)
+    {
+        $component =  Component::where('app_id', $componentAppId)->first();
+
+        $template = $component->template()->where('template_id', $templateId)->first();
+
+        if(!isset($template->tag)){
+            throw new UnprocessableEntityHttpException(trans('模板不存在'));
+        }
+
+        if(empty($template->tag)){
+            throw new UnprocessableEntityHttpException(trans('内部版本错误'));
+        }
+
+        $items = MiniProgram::with('onlineVersion')->where('tag', $template->tag)->select(['nick_name', 'mini_program_id', 'inner_name', 'tag'])->get();
+
+        return $this->response->withCollection($items, new TemplateMiniProgramListTransformer());
     }
 }

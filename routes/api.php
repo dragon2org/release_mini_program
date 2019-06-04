@@ -66,6 +66,7 @@ Route::group([
     Route::get('/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/support_version', 'CodeController@supportVersion');
     Route::post('/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/support_version', 'CodeController@SetSupportVersion');
     Route::post('/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/visit_status', 'CodeController@visitStatus');
+    Route::put('/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/tag', 'MiniProgramController@tag');
     /**
      * 模板管理
      */
@@ -76,13 +77,15 @@ Route::group([
     Route::post('/v1/component/{componentAppId}/template/sync', 'TemplateController@sync');
     Route::post('/v1/component/{componentAppId}/template/{templateId}/release', 'TemplateController@release');
     Route::get('/v1/component/{componentAppId}/template/{templateId}/statistical', 'TemplateController@statistical');
+    Route::get('/v1/component/{componentAppId}/template/{templateId}/mini_program', 'TemplateController@miniProgramList');
 
     /*
      * 构建管理
      */
+    Route::get('/v1/component/{componentAppId}/release/{releaseId}/audit', 'ReleaseController@auditList');
     Route::get('/v1/component/{componentAppId}/release_task', 'ReleaseController@index');
     Route::get('/v1/component/{componentAppId}/release_task/{releaseId}', 'ReleaseController@detail');
-    Route::post('/v1/component/{componentAppId}/release_task/{releaseId}/retry', 'ReleaseController@retry');
+    Route::post('/v1/component/{componentAppId}/release_task/{releaseItemId}/retry', 'ReleaseController@retryItem');
     Route::get('/v1/component/{componentAppId}/release_task/{releaseId}/statistical', 'ReleaseController@statistical');
 });
 

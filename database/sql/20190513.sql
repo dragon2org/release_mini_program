@@ -19,3 +19,5 @@ create table `failed_jobs` (
 `failed_at` timestamp default CURRENT_TIMESTAMP not null COMMENT '失败时间'
 ) ENGINE = InnoDB CHARACTER SET = utf8  COMMENT = '失败任务表';
 
+ALTER TABLE `component_template` DROP COLUMN `branch`,ADD COLUMN `tag` varchar(45) NOT NULL DEfAULT '' COMMENT '模板内部版本';
+ALTER TABLE `mini_program` ADD COLUMN `tag` varchar(45) NOT NULL DEfAULT '' COMMENT '模板内部版本';

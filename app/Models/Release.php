@@ -272,4 +272,9 @@ class Release extends Model
     {
         return  in_array($this->category,  [self::RELEASE_CATEGORY_RELEASE]);
     }
+
+    public function audit()
+    {
+        return $this->hasMany(ReleaseAudit::class, 'release_id', 'release_id');
+    }
 }
