@@ -131,7 +131,7 @@ trait Observable
                 foreach ($handlers as $handler) {
                     if ($clause = $this->clauses[spl_object_hash((object) $handler)] ?? null) {
                         if ($clause->intercepted($payload)) {
-                            continue;
+                            continue 2;
                         }
                     }
                     $response = $this->callHandler($handler, $payload);

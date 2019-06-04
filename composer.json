@@ -11,6 +11,10 @@
         {
             "type": "git",
             "url": "https://github.com/sjje/laravel-queue-kafka"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/sjje/wechat"
         }
     ],
     "require": {
@@ -21,7 +25,7 @@
         "laravel/framework": "5.8.*",
         "laravel/horizon": "^3.1",
         "laravel/tinker": "~1.0",
-        "overtrue/laravel-wechat": "~4.0",
+        "overtrue/wechat": "dev-basic-service-material",
         "predis/predis": "^1.1",
         "rapide/laravel-queue-kafka": "dev-sasl-support",
         "sjje/swaggervel": "3.0.2",

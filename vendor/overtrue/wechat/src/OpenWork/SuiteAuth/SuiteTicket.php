@@ -49,9 +49,9 @@ class SuiteTicket
      */
     public function setTicket(string $ticket)
     {
-        $this->getCache()->set($this->getCacheKey(), $ticket, 1800);
+        $ok = $this->getCache()->set($this->getCacheKey(), $ticket, 1800);
 
-        if (!$this->getCache()->has($this->getCacheKey())) {
+        if (!$ok) {
             throw new RuntimeException('Failed to cache suite ticket.');
         }
 
