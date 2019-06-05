@@ -573,6 +573,8 @@ return array(
     'EasyWeChat\\BasicService\\ContentSecurity\\ServiceProvider' => $vendorDir . '/overtrue/wechat/src/BasicService/ContentSecurity/ServiceProvider.php',
     'EasyWeChat\\BasicService\\Jssdk\\Client' => $vendorDir . '/overtrue/wechat/src/BasicService/Jssdk/Client.php',
     'EasyWeChat\\BasicService\\Jssdk\\ServiceProvider' => $vendorDir . '/overtrue/wechat/src/BasicService/Jssdk/ServiceProvider.php',
+    'EasyWeChat\\BasicService\\Material\\Client' => $vendorDir . '/overtrue/wechat/src/BasicService/Material/Client.php',
+    'EasyWeChat\\BasicService\\Material\\ServiceProvider' => $vendorDir . '/overtrue/wechat/src/BasicService/Material/ServiceProvider.php',
     'EasyWeChat\\BasicService\\Media\\Client' => $vendorDir . '/overtrue/wechat/src/BasicService/Media/Client.php',
     'EasyWeChat\\BasicService\\Media\\ServiceProvider' => $vendorDir . '/overtrue/wechat/src/BasicService/Media/ServiceProvider.php',
     'EasyWeChat\\BasicService\\QrCode\\Client' => $vendorDir . '/overtrue/wechat/src/BasicService/QrCode/Client.php',

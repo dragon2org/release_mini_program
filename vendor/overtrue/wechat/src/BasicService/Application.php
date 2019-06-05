@@ -35,5 +35,6 @@ class Application extends ServiceContainer
         Media\ServiceProvider::class,
         Url\ServiceProvider::class,
         ContentSecurity\ServiceProvider::class,
+        Material\ServiceProvider::class,
     ];
 }

@@ -1073,6 +1073,8 @@ class ComposerStaticInit57c3ca7400b4875d3c65b4e72a8fe30b
         'EasyWeChat\\BasicService\\ContentSecurity\\ServiceProvider' => __DIR__ . '/..' . '/overtrue/wechat/src/BasicService/ContentSecurity/ServiceProvider.php',
         'EasyWeChat\\BasicService\\Jssdk\\Client' => __DIR__ . '/..' . '/overtrue/wechat/src/BasicService/Jssdk/Client.php',
         'EasyWeChat\\BasicService\\Jssdk\\ServiceProvider' => __DIR__ . '/..' . '/overtrue/wechat/src/BasicService/Jssdk/ServiceProvider.php',
+        'EasyWeChat\\BasicService\\Material\\Client' => __DIR__ . '/..' . '/overtrue/wechat/src/BasicService/Material/Client.php',
+        'EasyWeChat\\BasicService\\Material\\ServiceProvider' => __DIR__ . '/..' . '/overtrue/wechat/src/BasicService/Material/ServiceProvider.php',
         'EasyWeChat\\BasicService\\Media\\Client' => __DIR__ . '/..' . '/overtrue/wechat/src/BasicService/Media/Client.php',
         'EasyWeChat\\BasicService\\Media\\ServiceProvider' => __DIR__ . '/..' . '/overtrue/wechat/src/BasicService/Media/ServiceProvider.php',
         'EasyWeChat\\BasicService\\QrCode\\Client' => __DIR__ . '/..' . '/overtrue/wechat/src/BasicService/QrCode/Client.php',

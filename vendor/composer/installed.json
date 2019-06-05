@@ -2499,7 +2499,7 @@
         "source": {
             "type": "git",
             "url": "https://github.com/sjje/wechat",
-            "reference": "828d17d405e4e91d718afc73b5cb43b89a122498"
+            "reference": "79406f289c6b6a7e22aa75c22a48961d8e9728f4"
         },
         "require": {
             "easywechat-composer/easywechat-composer": "^1.1",
@@ -2521,7 +2521,7 @@
             "overtrue/phplint": "dev-master",
             "phpunit/phpunit": "~6.0"
         },
-        "time": "2018-12-13T10:42:50+00:00",
+        "time": "2019-06-04T10:41:46+00:00",
         "type": "library",
         "installation-source": "source",
         "autoload": {
