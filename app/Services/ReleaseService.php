@@ -199,19 +199,20 @@ class ReleaseService
         MiniProgramAuthCallbackLog::info($this->component, $authorization);
 
         $miniProgramAppId = $authorization['authorization_info']['authorizer_appid'];
+        $authorizer = $this->openPlatform->getAuthorizer($miniProgramAppId);
+        $info = $authorizer['authorizer_info'];
+        if(!isset($info['MiniProgramInfo'])){
+            return view('authorize_success',  ['message' => '暂不支持非小程序授权.']);
+        }
+
         $refreshToken = $authorization['authorization_info']['authorizer_refresh_token'];
 
-        //TODO::判断function_info
         $miniProgram = MiniProgram::firstOrNew(['app_id' => $miniProgramAppId]);
         $miniProgram->component_id = $this->component->component_id;
         $miniProgram->company_id = request()->query('company_id', 0);
         $miniProgram->inner_name = request()->query('inner_name', '');
         $miniProgram->inner_desc = request()->query('inner_desc', '');
         $miniProgram->authorizer_refresh_token = $refreshToken;
-        $miniProgram->save();
-        //拉取基础信息
-        $miniProgramAuthorizer = $this->openPlatform->getAuthorizer($miniProgramAppId);
-        $info = $miniProgramAuthorizer['authorizer_info'];
 
         $miniProgram->nick_name = $info['nick_name'];
         $miniProgram->head_img = $info['head_img'];
@@ -224,7 +225,7 @@ class ReleaseService
         if ($redirectUri = request()->query('redirect_uri')) {
             return response()->redirectTo($redirectUri);
         }
-        return view('authorize_success');
+        return view('authorize_success',  ['message' => '授权成功.']);
     }
 
     /**
