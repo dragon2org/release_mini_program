@@ -307,9 +307,9 @@ class TemplateController extends Controller
 
     public function miniProgramList($componentAppId, $templateId)
     {
-        $component =  Component::where('app_id', $componentAppId)->first();
+        $component =  Component::where('app_id', $componentAppId)->firstOrFail();
 
-        $template = $component->template()->where('template_id', $templateId)->first();
+        $template = $component->template()->where('template_id', $templateId)->firstOrFail();
 
         if(!isset($template->tag)){
             throw new UnprocessableEntityHttpException(trans('模板不存在'));

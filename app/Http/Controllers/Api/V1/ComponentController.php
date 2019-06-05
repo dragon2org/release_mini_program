@@ -192,10 +192,7 @@ class ComponentController extends Controller
      */
     public function show($componentAppId)
     {
-        $component = (new Component())->where('app_id', $componentAppId)->first();
-        if(!isset($component)){
-            throw new UnprocessableEntityHttpException(trans('平台不存在'));
-        }
+        $component = (new Component())->where('app_id', $componentAppId)->firstOrFail();
 
         return $this->response->withArray(['data' => $this->response->transformatItem($component, new ComponentDetailTransformer())]);
     }

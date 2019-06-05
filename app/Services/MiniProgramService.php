@@ -75,7 +75,7 @@ class MiniProgramService
             'component_id' => $componentId,
             'app_id' => $miniProgramAppId,
             'deleted' => 0
-        ])->first();
+        ])->firstOrFail();
         return $item;
     }
 

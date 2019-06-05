@@ -17,7 +17,7 @@ class MiniProgramUnauthorizedEventMessageHandler implements EventHandlerInterfac
                 $query->withTrashed()->where('app_id', $payload['AppId']);
             })
             ->where('app_id', $payload['AuthorizerAppid'])
-            ->first();
+            ->firstOrFail();
 
         $miniProgram->authorization_status = MiniProgram::AUTHORIZATION_STATUS_UNAUTHORIZED;
         $miniProgram->save();

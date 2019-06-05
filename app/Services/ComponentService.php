@@ -28,14 +28,7 @@ class ComponentService
      */
     public function register(array $input)
     {
-        $component =  (new Component())->where('app_id', $input['app_id'])->first();
-        if(isset($component)){
-            throw new UnprocessableEntityHttpException(trans('平台已存在'));
-        }
-
-        if(!isset($component)){
-            $component = new Component();
-        }
+        $component =  (new Component())->where('app_id', $input['app_id'])->firstOrNew();
         $component->fill($input);
         $component->save();
         $file = Arr::get($input, 'validate');
@@ -49,10 +42,7 @@ class ComponentService
 
     public function updateComponent($input)
     {
-        $component = (new Component())->where('app_id', $input['app_id'])->first();
-        if(!isset($component)){
-            throw new UnprocessableEntityHttpException(trans('App 不存在'));
-        }
+        $component = (new Component())->where('app_id', $input['app_id'])->firstOrFail();
         $component->fill($input);
         $component->save();
         $file = Arr::get($input, 'validate');

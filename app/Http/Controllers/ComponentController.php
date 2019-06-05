@@ -43,9 +43,5 @@ class ComponentController extends Controller
     public function debug()
     {
 
-        Log::info('job dispatch success');
-        $c = Component::first();
-        TestJob::dispatch($c)->onConnection('kafka');
-        echo 'success';
     }
 }

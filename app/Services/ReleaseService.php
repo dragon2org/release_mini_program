@@ -106,7 +106,7 @@ class ReleaseService
      * @return \EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application
      * @throws UnprocessableEntityHttpException
      */
-    protected function setMiniProgram(MiniProgram $miniProgram)
+    public function setMiniProgram(MiniProgram $miniProgram)
     {
         if ($miniProgram->authorization_status !== MiniProgram::AUTHORIZATION_STATUS_AUTHORIZED) {
             throw new UnprocessableEntityHttpException(trans('小程序授权已取消'));
@@ -335,11 +335,7 @@ class ReleaseService
 
     public function deleteTemplate($templateId)
     {
-        $template = ComponentTemplate::where('template_id', $templateId)->first();
-
-        if (!isset($template)) {
-            throw new UnprocessableEntityHttpException(trans('模板不存在'));
-        }
+        $template = ComponentTemplate::where('template_id', $templateId)->firstOrFail();
 
         $this->parseResponse(
             $this->openPlatform->code_template->delete($templateId)
@@ -476,10 +472,7 @@ class ReleaseService
 
         $template = ComponentTemplate::where('template_id', $templateId)
             ->where('component_id', $this->component->component_id)
-            ->orderBy('component_template_id', 'desc')->first();
-        if (!isset($template)) {
-            throw new UnprocessableEntityHttpException(trans('模板未同步或已删除'));
-        }
+            ->orderBy('component_template_id', 'desc')->firstOrFail();
 
         $response = $this->parseResponse(
             $this->miniProgramApp->code->commit($templateId, $extJson, $template->user_version, $template->user_desc)
@@ -548,10 +541,7 @@ class ReleaseService
         $release = Release::where('mini_program_id', $this->miniProgram->mini_program_id)
             ->where('status', Release::RELEASE_STATUS_COMMITTED)
             ->orderBy('release_id', 'desc')
-            ->first();
-        if (!isset($release)) {
-            throw new UnprocessableEntityHttpException(trans('构建单已失效'));
-        }
+            ->firstOrFail();
 
         $response = $this->parseResponse(
             $response = $this->miniProgramApp->code->submitAudit($itemList)
@@ -600,10 +590,7 @@ class ReleaseService
     {
         $release = Release::where('mini_program_id', $this->miniProgram->mini_program_id)
             ->where('status', Release::RELEASE_STATUS_AUDITING)
-            ->orderBy('release_id', 'desc')->first();
-        if (!isset($release)) {
-            throw new UnprocessableEntityHttpException(trans('平台没有发版数据,无法操作'));
-        }
+            ->orderBy('release_id', 'desc')->firstOrFail();
 
         $response = $this->parseResponse(
             $this->miniProgramApp->code->withdrawAudit()
@@ -628,10 +615,7 @@ class ReleaseService
     {
         $release = Release::where('mini_program_id', $this->miniProgram->mini_program_id)
             ->where('status', Release::RELEASE_STATUS_AUDIT_SUCCESS)
-            ->orderBy('release_id', 'desc')->first();
-        if (!isset($release)) {
-            throw new UnprocessableEntityHttpException(trans('平台不存在发版数据'));
-        }
+            ->orderBy('release_id', 'desc')->firstOrFail();
 
         $response = $this->parseResponse(
             $this->miniProgramApp->code->release()

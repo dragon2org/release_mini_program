@@ -242,7 +242,7 @@ class MiniProgramController extends Controller
      */
     public function show($componentAppId, $miniProgramAppId)
     {
-        $item = MiniProgram::where('app_id', $miniProgramAppId)->first();
+        $item = MiniProgram::where('app_id', $miniProgramAppId)->firstOrFail();
         return $this->response->withItem($item, new MiniProgramTransformer());
     }
 
@@ -317,11 +317,7 @@ class MiniProgramController extends Controller
     {
         $miniProgram = MiniProgram::where('component_id', ReleaseFacade::service()->component->component_id)
             ->where('app_id', $miniProgramAppId)
-            ->first();
-
-        if(!isset($miniProgram)){
-            throw new UnprocessableEntityHttpException(trans('小程序不存在'));
-        }
+            ->firstOrFail();
 
         if($request->inner_name) $miniProgram->inner_name = $request->inner_name;
         if($request->inner_desc) $miniProgram->inner_desc = $request->inner_desc;
@@ -369,11 +365,7 @@ class MiniProgramController extends Controller
     {
         $miniProgram = MiniProgram::where('component_id', ReleaseFacade::service()->component->component_id)
             ->where('app_id', $miniProgramAppId)
-            ->first();
-
-        if(!isset($miniProgram)){
-            throw new UnprocessableEntityHttpException(trans('小程序不存在'));
-        }
+            ->firstOrFail();
 
         $miniProgram->delete();
 

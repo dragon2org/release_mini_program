@@ -288,10 +288,7 @@ class ReleaseController extends Controller
 
     public function retry($componentAppId, $releaseId, RetryRelease $request)
     {
-        $release = (new Release())->where('release_id', $releaseId)->first();
-        if(!isset($release)){
-            throw new UnprocessableEntityHttpException(trans('任务不存在'));
-        }
+        $release = (new Release())->where('release_id', $releaseId)->firstOrFail();
 
         $result  = $release->retry(request()->input('config'));
 
@@ -344,10 +341,7 @@ class ReleaseController extends Controller
      */
     public function retryItem($componentAppId, $releaseItemId, RetryRelease $request)
     {
-        $release = (new ReleaseItem())->where('release_item_id', $releaseItemId)->first();
-        if(!isset($release)){
-            throw new UnprocessableEntityHttpException(trans('任务不存在'));
-        }
+        $release = (new ReleaseItem())->where('release_item_id', $releaseItemId)->firstOrFail();
 
         $result  = $release->retry(request()->input('config'));
 

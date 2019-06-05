@@ -99,11 +99,7 @@ class Component extends Model
     {
         $componentApp = (new self())
             ->where('app_id', $componentAppId)
-            ->first();
-
-        if(!isset($componentApp)){
-            throw new UnprocessableEntityHttpException(trans('微信三方平台未注册: '. $componentAppId));
-        }
+            ->firstOrFail();
 
         return $componentApp;
     }

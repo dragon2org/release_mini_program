@@ -425,8 +425,9 @@ class CodeController extends Controller
      *                 ),
      *                 @SWG\Property(
      *                     property="screenshot",
-     *                     type="string",
-     *                     description="被拒截图。base64"
+     *                     type="array",
+     *                     description="被拒截图。base64",
+     *                     @SWG\Items()
      *                 ),
      *                 @SWG\Property(
      *                     property="status",
