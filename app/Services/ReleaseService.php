@@ -505,7 +505,7 @@ class ReleaseService
      */
     protected function stream2base64($response)
     {
-        if(false !== stripos($response->getHeaderLine('Content-disposition'), 'attachment')){
+        if(false === stripos($response->getHeaderLine('Content-disposition'), 'attachment')){
             return $this->parseResponse($response);
         }
 
