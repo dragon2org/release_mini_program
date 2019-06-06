@@ -85,7 +85,7 @@ Route::group([
     Route::get('/v1/component/{componentAppId}/release/{releaseId}/audit', 'ReleaseController@auditList');
     Route::get('/v1/component/{componentAppId}/release_task', 'ReleaseController@index');
     Route::get('/v1/component/{componentAppId}/release_task/{releaseId}', 'ReleaseController@detail');
-    Route::post('/v1/component/{componentAppId}/release_task/{releaseItemId}/retry', 'ReleaseController@retryItem');
+    Route::post('/v1/component/{componentAppId}/release_task/item/{releaseItemId}/retry', 'ReleaseController@retryItem');
     Route::get('/v1/component/{componentAppId}/release_task/{releaseId}/statistical', 'ReleaseController@statistical');
 });
 

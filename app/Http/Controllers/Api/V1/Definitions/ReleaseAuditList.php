@@ -27,7 +27,7 @@ class ReleaseAuditList
     public $reason;
 
     /**
-     * @SWG\Property(type="string", description="当status=1，审核被拒绝时，会返回审核失败的小程序截图示例。")
+     * @SWG\Property(type="array", description="当status=1，审核被拒绝时，会返回审核失败的小程序截图示例。", @SWG\Items())
      */
     public $screenshot;
 

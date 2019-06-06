@@ -28,7 +28,7 @@ class ComponentService
      */
     public function register(array $input)
     {
-        $component =  (new Component())->where('app_id', $input['app_id'])->firstOrNew();
+        $component =  new Component();
         $component->fill($input);
         $component->save();
         $file = Arr::get($input, 'validate');

@@ -230,7 +230,9 @@ class ReleaseController extends Controller
         $items = ReleaseAudit::where('release_id',  $releaseId)->orderBy('release_audit_id', 'desc')->get();
 
         $items->map(function($item){
-            if($item->screenshot) $item->screenshot = ReleaseFacade::service()->componentGetMaterial($item->mini_program_id, $item->screenshot);
+            if($item->screenshot){
+                $item->screenshot = ReleaseFacade::service()->componentGetMaterial($item->mini_program_id, $item->screenshot);
+            }
         });
 
         return $this->response->withCollection($items, new AuditListTransformer());

@@ -237,17 +237,11 @@ class ReleaseItem extends Model
         return $return;
     }
 
-    public function retry($releaseItemId, $config = null)
+    public function retry($config = null)
     {
-        $releaseItem = ReleaseItem::find($releaseItemId);
-
-        if(!isset($releaseItem)){
-            throw new UnprocessableEntityHttpException(trans('任务不存在'));
-        }
-
         if($config){
-            $releaseItem->original_config = json_encode($config);
-            $releaseItem->save();
+            $this->original_config = json_encode($config);
+            $this->save();
         }
 
         $map = [
@@ -260,13 +254,13 @@ class ReleaseItem extends Model
             ReleaseItem::CONFIG_KEY_AUDIT => MiniProgramAudit::class,
             ReleaseItem::CONFIG_KEY_RELEASE => MiniProgramRelease::class,
         ];
-        if(!isset($map[$releaseItem->name])){
+        if(!isset($map[$this->name])){
             throw new UnprocessableEntityHttpException(trans('不支持的操作类型'));
         }
 
-        $class = $map[$releaseItem->name];
-        $class::dispatch($releaseItem);
-        RetryReleaseInQueueLog::info($releaseItem->release->trade_no, $releaseItem->miniProgram, json_decode($releaseItem->original_config, true), $releaseItem->release->release_id, $class);
+        $class = $map[$this->name];
+        $class::dispatch($this);
+        RetryReleaseInQueueLog::info($this->release->trade_no, $this->miniProgram, json_decode($this->original_config, true), $this->release->release_id, $class);
 
         return true;
     }

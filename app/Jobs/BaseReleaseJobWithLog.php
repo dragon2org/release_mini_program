@@ -31,7 +31,7 @@ class BaseReleaseJobWithLog
         try {
             ReleaseCommonQueueLogQueueLog::info( $this->miniProgram, "release queue job begin", ['class' => $class]);
             $service = Releaser::build($this->miniProgram()->component->app_id);
-            $miniProgramApp = $service->setMiniProgram($this->miniProgram()->app_id);
+            $miniProgramApp = $service->setMiniProgramByAppId($this->miniProgram()->app_id);
             $this->task->applyBuilding();
             $response = call_user_func($callback, $miniProgramApp, $service->openPlatform);
             ReleaseCommonQueueLogQueueLog::info( $this->miniProgram, "release queue job end", ['class' => $class]);

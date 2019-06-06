@@ -90,13 +90,14 @@ class SetMiniProgramTester extends BaseReleaseJobWithLog implements ShouldQueue
                 $status =  false;
                 continue;
             }
-
-            Tester::firstOrCreate([
-                'userstr' => $res['response']['userstr'],
-            ], [
-                'wechat_id' => $res['tester'],
-                'mini_program_id' => $this->miniProgram->mini_program_id
-            ]);
+            if(isset($res['response']['userstr'])){
+                Tester::firstOrCreate([
+                    'userstr' => $res['response']['userstr'],
+                ], [
+                    'wechat_id' => $res['tester'],
+                    'mini_program_id' => $this->miniProgram->mini_program_id
+                ]);
+            }
         }
 
         return $status;

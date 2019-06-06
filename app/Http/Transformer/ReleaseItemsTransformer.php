@@ -24,8 +24,6 @@ class ReleaseItemsTransformer extends TransformerAbstract
             "trade_no" => $item->trade_no,
             'created_at' => (string) $item->created_at,
             'updated_at' => (string) $item->updated_at,
-            'reason' => $item->audit ? $item->audit->reason : '',
-            'screenshot' => $item->audit ? $item->audit->screenshot: '',
         ];
     }
 }
