@@ -17,6 +17,7 @@ use App\Http\Requests\UpdateReleaseConfigDomain;
 use App\Http\Requests\UpdateReleaseConfigWebDomain;
 use App\Http\Requests\UploadValidateFile;
 use App\Http\Transformer\ComponentDetailTransformer;
+use App\Http\Transformer\ComponentListTransformer;
 use App\Http\Transformer\ComponentTransformer;
 use App\Models\Component;
 use App\Models\ValidateFile;
@@ -772,5 +773,78 @@ class ComponentController extends Controller
 
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/v1/component",
+     *     summary="获取平台列表",
+     *     tags={"三方平台管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         description="第几页，默认第一页",
+     *         in="query",
+     *         name="page",
+     *         required=false,
+     *         type="integer",
+     *         format="int64",
+     *         default="1"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="每页数量，默认为15",
+     *         in="query",
+     *         name="pageSize",
+     *         required=false,
+     *         type="integer",
+     *         format="int64",
+     *         default="5"
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="pagination",
+     *                 type="object",
+     *                 @SWG\Property(
+     *                     property="total",
+     *                     type="integer",
+     *                     description="总的数据条数 "
+     *                 ),
+     *                 @SWG\Property(
+     *                     property="per_page",
+     *                     type="integer",
+     *                     description="每页的数据条数"
+     *                 ),
+     *                 @SWG\Property(
+     *                     property="current_page",
+     *                     type="integer",
+     *                     description="当前是第几页"
+     *                 ),
+     *                 @SWG\Property(
+     *                     property="last_page",
+     *                     type="integer",
+     *                     description="最大页数"
+     *                 ),
+     *             ),
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @SWG\Items(ref="#/definitions/ComponentList")
+     *             ),
+     *         )
+     *     )
+     * )
+     */
+    public function index()
+    {
+        $component = Component::orderBy('component_id', 'desc')->paginate();
 
+        return $this->response->withCollection($component, new ComponentListTransformer());
+    }
 }

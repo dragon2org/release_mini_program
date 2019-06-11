@@ -12,7 +12,7 @@ Route::group([
      */
     Route::post('/v1/component/create_before', 'ComponentController@createBefore');
     Route::post('/v1/component', 'ComponentController@create');
-    Route::get('/v1/component', 'ComponentController@list');
+    Route::get('/v1/component', 'ComponentController@index');
     Route::get('/v1/component/{componentAppId}', 'ComponentController@show');
     Route::put('/v1/component/{componentAppId}', 'ComponentController@update');
     Route::delete('/v1/component/{componentAppId}');
