@@ -12,12 +12,12 @@ namespace Http\Controllers\Api\V1\Definitions;
 class Component
 {
     /**
-     * @SWG\Property(type="string", description="业务方内部名称")
+     * @SWG\Property(type="string", description="别名")
      */
     public $inner_name;
 
     /**
-     * @SWG\Property(type="string", description="业务方内部描述")
+     * @SWG\Property(type="string", description="备注")
      */
     public $inner_desc;
     

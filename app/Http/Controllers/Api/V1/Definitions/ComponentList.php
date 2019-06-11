@@ -16,9 +16,9 @@ class ComponentList
     public $name;
 
     /**
-     * @SWG\Property(type="string", description="三方平台描述")
+     * @SWG\Property(type="string", description="备注")
      */
-    public $desc;
+    public $inner_desc;
 
     /**
      * @SWG\Property(type="string", description="三方平台AppID")
