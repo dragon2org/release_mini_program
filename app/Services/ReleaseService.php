@@ -300,11 +300,12 @@ class ReleaseService
 
         $this->openPlatform->code_template->createFromDraft($draftId);
 
-        $this->syncTemplate();
+        $this->syncTemplate($draftId);
     }
 
-    public function syncTemplate()
+    public function syncTemplate($draftId = 0)
     {
+        //这里有个问题。平台上存在多个未同步的模板，多个模板会设置成同一个草稿id
         $localTemplate = ComponentTemplate::withTrashed()
             ->where('component_id', $this->component->component_id)
             ->pluck('template_id');
@@ -313,7 +314,7 @@ class ReleaseService
             ->whereNotIn('template_id', $localTemplate)
             ->reject(function ($item, $key){
                 if(strpos($item['user_desc'], '|') === false) return true;
-            })->each(function ($item, $key){
+            })->each(function ($item, $key) use($draftId) {
                 list($version, $desc) = explode('|', $item['user_desc']);
                 $template = (new ComponentTemplate());
                 $template->component_id = $this->component->component_id;
@@ -325,7 +326,7 @@ class ReleaseService
                 $template->source_miniprogram = $item['source_miniprogram'];
                 $template->source_miniprogram_appid = $item['source_miniprogram_appid'];
                 $template->developer = $item['developer'];
-                $template->draft_id = $item['draft_id'];
+                $template->draft_id = $draftId;
                 $template->save();
             });
 
