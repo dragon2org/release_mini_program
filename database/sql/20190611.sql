@@ -1,0 +1,1 @@
+ALTER TABLE `component_template` ADD COLUMN `draft_id` INT(11) NOT NULl DEFAULT 0 COMMENT '对应模板id';

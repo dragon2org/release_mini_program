@@ -254,7 +254,14 @@ class ReleaseService
             $this->openPlatform->code_template->getDrafts()
         );
 
-        return $data['draft_list'] ?? [];
+        $local = ComponentTemplate::withTrashed()
+            ->where('component_id', $this->component->component_id)
+            ->pluck('draft_id');
+
+        return Collection::wrap($data['draft_list'] ?? [])
+            ->whereNotIn('draft_id', $local)
+            ->sortByDesc('create_time')
+            ->values();
     }
 
     public function draftToTemplate($draftId)
@@ -318,6 +325,7 @@ class ReleaseService
                 $template->source_miniprogram = $item['source_miniprogram'];
                 $template->source_miniprogram_appid = $item['source_miniprogram_appid'];
                 $template->developer = $item['developer'];
+                $template->draft_id = $item['draft_id'];
                 $template->save();
             });
 
