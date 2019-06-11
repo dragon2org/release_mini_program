@@ -41,4 +41,39 @@ class Template
      * @SWG\Property(type="string", description="开发者")
      */
     public $developer;
+
+    /**
+     * @SWG\Property(type="string", description="分支")
+     */
+    public $tag;
+
+    /**
+     * @SWG\Property(type="string", description="提交时间")
+     */
+    public $commit_time;
+
+    /**
+     * @SWG\Property(type="integer", description="待提交")
+     */
+    public $uncommitted;
+
+    /**
+     * @SWG\Property(type="integer", description="待审核")
+     */
+    public $committed;
+
+    /**
+     * @SWG\Property(type="integer", description="审核中")
+     */
+    public $auditing;
+
+    /**
+     * @SWG\Property(type="integer", description="审核失败")
+     */
+    public $audit_failed;
+
+    /**
+     * @SWG\Property(type="integer", description="已发布")
+     */
+    public $released;
 }
