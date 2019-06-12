@@ -20,8 +20,8 @@ class ComponentListTransformer extends TransformerAbstract
             "name" => $component->name,
             "desc" => $component->desc,
             "app_id" => $component->app_id,
-            "mini_program_number" => 0,
-            'template_number' => 0,
+            "mini_program_count" => $component->mini_program_count,
+            'template_count' => $component->template_count,
             "created_at" => (string) $component->created_at,
         ];
     }

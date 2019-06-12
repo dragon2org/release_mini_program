@@ -28,12 +28,12 @@ class ComponentList
     /**
      * @SWG\Property(type="integer", description="小程序数量")
      */
-    public $mini_program_number;
+    public $mini_program_count;
 
     /**
      * @SWG\Property(type="integer", description="模板数量")
      */
-    public $template_number;
+    public $template_count;
 
     /**
      * @SWG\Property(type="string", description="添加时间")

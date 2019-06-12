@@ -45,6 +45,11 @@ class Component extends Model
         return $this->hasMany(ComponentTemplate::class, 'component_id', 'component_id');
     }
 
+    public function miniProgram()
+    {
+        return $this->hasMany(MiniProgram::class,  'component_id', 'component_id');
+    }
+
     public function validateFile()
     {
         return $this->hasOne(ValidateFile::class, 'component_id', 'component_id');

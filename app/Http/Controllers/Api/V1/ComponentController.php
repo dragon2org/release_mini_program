@@ -843,7 +843,7 @@ class ComponentController extends Controller
      */
     public function index()
     {
-        $component = Component::orderBy('component_id', 'desc')->paginate();
+        $component = Component::withCount(['template', 'miniProgram'])->orderBy('component_id', 'desc')->paginate();
 
         return $this->response->withCollection($component, new ComponentListTransformer());
     }

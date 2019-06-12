@@ -23,4 +23,37 @@ class ComponentTemplate extends Model
      * @var string
      */
     protected $primaryKey = 'component_template_id';
+
+    public function uncommitted()
+    {
+        return $this->hasMany(Release::class, 'template_id', 'template_id')
+            ->whereIn('status', [
+                Release::RELEASE_STATUS_UNCOMMITTED,
+                Release::RELEASE_STATUS_COMMIT_FAILED,
+            ]);
+    }
+
+    public function committed()
+    {
+        return $this->hasMany(Release::class, 'template_id', 'template_id')
+            ->where('status', Release::RELEASE_STATUS_COMMITTED);
+    }
+
+    public function auditing()
+    {
+        return $this->hasMany(Release::class, 'template_id', 'template_id')
+            ->where('status', Release::RELEASE_STATUS_AUDITING);
+    }
+
+    public function auditFailed()
+    {
+        return $this->hasMany(Release::class, 'template_id', 'template_id')
+            ->where('status', Release::RELEASE_STATUS_AUDIT_FAILED);
+    }
+
+    public function released()
+    {
+        return $this->hasMany(Release::class, 'template_id', 'template_id')
+            ->where('status', Release::RELEASE_STATUS_RELEASED);
+    }
 }

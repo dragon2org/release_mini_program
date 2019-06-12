@@ -22,12 +22,11 @@ class TemplateListTransformer extends TransformerAbstract
             'developer' => $item->developer,
             'source_miniprogram' => $item->source_miniprogram,
             'source_miniprogram_appid' => $item->source_miniprogram_appid,
-            'commit_time' => date('Y-m-d H:i:s'),
-            'uncommitted' => 0,
-            'committed' => 0,
-            'auditing' => 0,
-            'audit_failed' => 0,
-            'released' => 0,
+            'uncommitted_count' => $item->uncommitted_count,
+            'committed_count' => $item->committed_count,
+            'auditing_count' => $item->auditing_count,
+            'audit_failed_count' => $item->audit_failed_count,
+            'released_count' => $item->released_count,
         ];
     }
 }

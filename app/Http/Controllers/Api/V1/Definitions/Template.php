@@ -8,7 +8,7 @@ namespace Http\Controllers\Api\V1\Definitions;
 class Template
 {
     /**
-     * @SWG\Property(type="integer", description="创建时间")
+     * @SWG\Property(type="integer", description="提交时间")
      */
     public $create_time;
 
@@ -48,32 +48,27 @@ class Template
     public $tag;
 
     /**
-     * @SWG\Property(type="string", description="提交时间")
-     */
-    public $commit_time;
-
-    /**
      * @SWG\Property(type="integer", description="待提交")
      */
-    public $uncommitted;
+    public $uncommitted_count;
 
     /**
      * @SWG\Property(type="integer", description="待审核")
      */
-    public $committed;
+    public $committed_count;
 
     /**
      * @SWG\Property(type="integer", description="审核中")
      */
-    public $auditing;
+    public $auditing_count;
 
     /**
      * @SWG\Property(type="integer", description="审核失败")
      */
-    public $audit_failed;
+    public $audit_failed_count;
 
     /**
      * @SWG\Property(type="integer", description="已发布")
      */
-    public $released;
+    public $released_count;
 }
