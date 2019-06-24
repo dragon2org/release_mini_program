@@ -24,6 +24,11 @@ class ComponentTemplate extends Model
      */
     protected $primaryKey = 'component_template_id';
 
+    public function miniProgram()
+    {
+        return $this->hasMany(Release::class, 'template_id', 'template_id');
+    }
+
     public function uncommitted()
     {
         return $this->hasMany(Release::class, 'template_id', 'template_id')

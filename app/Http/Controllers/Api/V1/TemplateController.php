@@ -207,7 +207,7 @@ class TemplateController extends Controller
     {
         $items = ComponentTemplate::where('component_id', ReleaseFacade::service()->component->component_id)
             ->orderBy('component_template_id', 'desc')
-            ->withCount(['uncommitted', 'committed', 'auditing', 'auditFailed', 'released'])
+            ->withCount(['miniProgram','uncommitted', 'committed', 'auditing', 'auditFailed', 'released'])
             ->paginate();
 
         return $this->response->withCollection($items, new TemplateListTransformer());

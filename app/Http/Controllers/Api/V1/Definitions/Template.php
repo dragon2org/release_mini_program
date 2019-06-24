@@ -48,6 +48,11 @@ class Template
     public $tag;
 
     /**
+     * @SWG\Property(type="integer", description="小程序数")
+     */
+    public $mini_program_count;
+
+    /**
      * @SWG\Property(type="integer", description="待提交")
      */
     public $uncommitted_count;

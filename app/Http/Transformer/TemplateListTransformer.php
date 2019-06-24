@@ -22,6 +22,7 @@ class TemplateListTransformer extends TransformerAbstract
             'developer' => $item->developer,
             'source_miniprogram' => $item->source_miniprogram,
             'source_miniprogram_appid' => $item->source_miniprogram_appid,
+            'mini_program_count' => $item->mini_program_count,
             'uncommitted_count' => $item->uncommitted_count,
             'committed_count' => $item->committed_count,
             'auditing_count' => $item->auditing_count,
