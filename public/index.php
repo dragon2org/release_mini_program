@@ -1,4 +1,19 @@
 <?php
+
+$origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+if(!$origin){
+    $origin = 'https://release.min-program.com';
+}
+
+header('Access-Control-Allow-Origin: ' . $origin);
+header('Access-Control-Allow-Headers: Origin,X-Requested-With,Content-Type,Accept,Authorization,X-PINGOTHER');
+header('Access-Control-Allow-Methods: POST, DELETE, GET, PUT, OPTIONS');
+header('access-control-allow-credentials: true');
+
+
+/** 定义API_HOST用于API文档生成 */
+define('API_HOST', $_SERVER['HTTP_HOST']);
+
 /**
  * Laravel - A PHP Framework For Web Artisans
  *
