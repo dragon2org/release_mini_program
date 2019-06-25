@@ -90,6 +90,12 @@ class Handler extends ExceptionHandler
             'trace' => collect($e->getTrace())->map(function ($trace) {
                 return Arr::except($trace, ['args']);
             })->all(),
+            'request_params' => [
+                'header' => request()->header(),
+                'uri' => request()->getUri(),
+                'queryParams' => request()->query(),
+                'body' => request()->getContent(),
+            ]
         ] : [
             'message' => $this->isHttpException($e) ? $e->getMessage() : 'Server Error',
             'status' => 'F',

@@ -17,6 +17,10 @@ class ApiResponse extends Response
         $status['status'] = ($this->statusCode == '200') ? 'T' : 'F';
         $array = array_merge($status, $array);
 
+        if(config('app.debug')){
+            $this->withDebug($array);
+        }
+
         return response()->json($array, $this->statusCode, $headers);
     }
 
@@ -161,5 +165,15 @@ class ApiResponse extends Response
         }
 
         return parent::withItem($data, $transformer, $resourceKey, $meta, $headers);
+    }
+
+    protected function withDebug(&$data)
+    {
+        $debug['header'] = request()->header();
+        $debug['url'] = request()->getUri();
+        $debug['queryParams'] = request()->query();
+        $debug['body'] = request()->getContent();
+
+        $data['request_params'] = $debug;
     }
 }
