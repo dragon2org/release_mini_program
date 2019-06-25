@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Facades\ReleaseFacade;
+use App\Helpers\Utils;
 use App\Http\ApiResponse;
 use App\Http\Requests\ComponetConfigSync;
 use App\Http\Requests\RegisterComponent;
@@ -843,7 +844,7 @@ class ComponentController extends Controller
      */
     public function index()
     {
-        $component = Component::withCount(['template', 'miniProgram'])->orderBy('component_id', 'desc')->paginate();
+        $component = Component::withCount(['template', 'miniProgram'])->orderBy('component_id', 'desc')->paginate(Utils::pageSize());
 
         return $this->response->withCollection($component, new ComponentListTransformer());
     }

@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Facades\ReleaseFacade;
+use App\Helpers\Utils;
 use App\Http\Requests\BindMiniProgramTester;
 use App\Http\Requests\GetBindMiniProgramUri;
 use App\Http\Requests\GetMiniProgramSessionKey;
@@ -190,7 +191,7 @@ class MiniProgramController extends Controller
     public function index($componentId)
     {
         $componentId = ReleaseFacade::service()->component->component_id;
-        $items = MiniProgram::where(['component_id'=> $componentId])->paginate();
+        $items = MiniProgram::where(['component_id'=> $componentId])->paginate(Utils::pageSize());
 
         return $this->response->withCollection($items, new MiniProgramListTransformer());
     }

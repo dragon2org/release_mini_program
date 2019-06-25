@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Facades\ReleaseFacade;
+use App\Helpers\Utils;
 use App\Http\ApiResponse;
 use App\Http\Requests\DeleteTemplate;
 use App\Http\Requests\DraftToTemplate;
@@ -208,7 +209,7 @@ class TemplateController extends Controller
         $items = ComponentTemplate::where('component_id', ReleaseFacade::service()->component->component_id)
             ->orderBy('component_template_id', 'desc')
             ->withCount(['miniProgram','uncommitted', 'committed', 'auditing', 'auditFailed', 'released'])
-            ->paginate();
+            ->paginate(Utils::pageSize());
 
         return $this->response->withCollection($items, new TemplateListTransformer());
     }

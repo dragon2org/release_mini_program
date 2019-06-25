@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Exceptions\UnprocessableEntityHttpException;
 use App\Facades\ReleaseFacade;
+use App\Helpers\Utils;
 use App\Http\ApiResponse;
 use App\Http\Requests\RetryRelease;
 use App\Http\Transformer\AuditListTransformer;
@@ -96,7 +97,7 @@ class ReleaseController extends Controller
             $model->where('status', request()->input('status'));
         }
 
-        $items = $model->paginate();
+        $items = $model->paginate(Utils::pageSize());
 
         return $this->response->withCollection($items, new ReleaseItemsTransformer());
     }
@@ -180,7 +181,7 @@ class ReleaseController extends Controller
             $model->where('status', request()->input('status'));
         }
 
-        $items = $model->paginate();
+        $items = $model->paginate(Utils::pageSize());
 
         return $this->response->withCollection($items, new ReleaseDetailItemsTransformer());
     }
