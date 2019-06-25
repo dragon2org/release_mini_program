@@ -306,6 +306,38 @@ class TemplateController extends Controller
         ]);
     }
 
+    /**
+     * @SWG\Get(
+     *     path="/v1/component/{componentAppId}/template/{templateId}/mini_program",
+     *     summary="获取模板(tag)绑定小程序",
+     *     tags={"三方平台管理-模板管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @SWG\Items(
+     *                     @SWG\Property(property="mini_program_id",type="integer",description="小程序id"),
+     *                     @SWG\Property(property="inner_name",type="string",description="小程序备注"),
+     *                     @SWG\Property(property="nick_name",type="string",description="小程序名称"),
+     *                     @SWG\Property(property="tag",type="string",description="tag名称"),
+     *                     @SWG\Property(property="online_version",type="string",description="当前线上版本"),
+     *                 )
+     *             ),
+     *         )
+     *     )
+     * )
+     */
     public function miniProgramList($componentAppId, $templateId)
     {
         $component =  Component::where('app_id', $componentAppId)->firstOrFail();
