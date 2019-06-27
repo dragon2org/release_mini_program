@@ -71,7 +71,7 @@ class Handler extends ExceptionHandler
      */
     protected function invalidJson($request, ValidationException $e)
     {
-        $message = $e->errors();
+        $message = $e->errors() ? $e->errors() : $e->getMessage();
         $data = config('app.debug') ? [
             'message' => $message,
             'status' => 'F',
