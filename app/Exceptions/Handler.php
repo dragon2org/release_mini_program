@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 
@@ -55,22 +56,43 @@ class Handler extends ExceptionHandler
             throw new UnprocessableEntityHttpException($exception->getMessage(), $exception->getPrevious(), $exception->getCode());
         }
         return parent::render($request, $exception);
+        if($exception instanceof ValidationException){
+            return $this->exceptionToArray($exception, $exception->errors());
+        }
+        return parent::render($request, $exception);
     }
 
     /**
      * Convert a validation exception into a JSON response.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Validation\ValidationException  $exception
+     * @param  \Illuminate\Validation\ValidationException  $e
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function invalidJson($request, ValidationException $exception)
+    protected function invalidJson($request, ValidationException $e)
     {
-        return response()->json([
-            'message' => $exception->getMessage(),
-            'errors' => $exception->errors(),
-            'status' => 'F'
-        ], $exception->status);
+        $message = $e->errors();
+        $data = config('app.debug') ? [
+            'message' => $message,
+            'status' => 'F',
+            'exception' => get_class($e),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => collect($e->getTrace())->map(function ($trace) {
+                return Arr::except($trace, ['args']);
+            })->all(),
+            'request_params' => [
+                'header' => request()->header(),
+                'uri' => request()->getUri(),
+                'queryParams' => request()->query(),
+                'body' => request()->getContent(),
+            ]
+        ] : [
+            'message' => $message,
+            'status' => 'F',
+        ];
+
+        return response()->json($data, $e->status);
     }
 
     /**
