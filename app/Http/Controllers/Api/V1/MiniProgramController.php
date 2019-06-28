@@ -60,7 +60,7 @@ class MiniProgramController extends Controller
      *             @SWG\Property(
      *                 property="body",
      *                 type="object",
-     *                 required={"redirect_uri", "inner_name", "inner_desc", "company_id", "type"},
+     *                 required={"redirect_uri", "inner_desc", "company_id", "type"},
      *                 @SWG\Property(property="redirect_uri", type="string", description="授权成功的跳转地址"),
      *                 @SWG\Property(property="inner_name", type="string", description="内部名称"),
      *                 @SWG\Property(property="inner_desc", type="string", description="内部描述"),

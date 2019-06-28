@@ -81,4 +81,9 @@ class MiniProgramList
      * @SWG\Property(type="string", description="模板内部版本")
      */
     public $tag;
+
+    /**
+     * @SWG\Property(type="integer", description="授权状态; 10正常；20授权时效")
+     */
+    public $authorization_status;
 }
