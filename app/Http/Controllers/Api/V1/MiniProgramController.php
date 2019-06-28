@@ -21,6 +21,7 @@ use App\Http\Requests\PutMiniProgramInfo;
 use App\Http\Requests\UnbindMiniProgramTester;
 use App\Http\Requests\UpdateMiniProgramTag;
 use App\Http\Transformer\MiniProgramListTransformer;
+use App\Http\Transformer\TesterListTransformer;
 use App\Services\MiniProgramService;
 use App\Http\ApiResponse;
 use App\Http\Transformer\MiniProgramTransformer;
@@ -418,30 +419,6 @@ class MiniProgramController extends Controller
      *         description="成功返回",
      *         @SWG\Schema(
      *             @SWG\Property(
-     *                 property="pagination",
-     *                 type="object",
-     *                 @SWG\Property(
-     *                     property="total",
-     *                     type="integer",
-     *                     description="总的数据条数 "
-     *                 ),
-     *                 @SWG\Property(
-     *                     property="per_page",
-     *                     type="integer",
-     *                     description="每页的数据条数"
-     *                 ),
-     *                 @SWG\Property(
-     *                     property="current_page",
-     *                     type="integer",
-     *                     description="当前是第几页"
-     *                 ),
-     *                 @SWG\Property(
-     *                     property="last_page",
-     *                     type="integer",
-     *                     description="最大页数"
-     *                 ),
-     *             ),
-     *             @SWG\Property(
      *                 property="status",
      *                 type="string",
      *                 default="T",
@@ -460,7 +437,7 @@ class MiniProgramController extends Controller
     {
         $response = ReleaseFacade::service()->getTester();
 
-        return $this->response->withArray(['data' => $response]);
+        return $this->response->withCollection($response, new TesterListTransformer());
     }
 
     /**

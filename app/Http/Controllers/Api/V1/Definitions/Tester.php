@@ -14,7 +14,17 @@ namespace App\Http\Controllers\Api\V1\Definitions;
 class Tester
 {
     /**
-     * @SWG\Property(type="string", description="人员对应的唯一字符串, **不是wechatID**,业务方可能需要自己保存体验者的wechatID")
+     * @SWG\Property(type="string", description="人员对应的唯一字符串")
      */
     public $userstr;
+
+    /**
+     * @SWG\Property(type="string", description="微信id")
+     */
+    public $wechat_id;
+
+    /**
+     * @SWG\Property(type="string", description="添加时间")
+     */
+    public $created_at;
 }

@@ -367,7 +367,7 @@ class ReleaseService
         $remoteData = $this->miniProgramApp->tester->list();
         $remote = $this->parseResponse($remoteData)['members'] ?? [];
 
-        $items = $this->miniProgram->tester()->select(['wechat_id', 'userstr'])->get()->toArray();
+        $items = $this->miniProgram->tester()->select(['wechat_id', 'userstr', 'created_at'])->get()->toArray();
 
         $localUserStr = Arr::pluck($items, 'userstr');
         $remoteUserStr = Arr::pluck($remote, 'userstr');
@@ -379,6 +379,7 @@ class ReleaseService
             $items[] = [
                 'userstr' => $item,
                 'wechat_id' => '',
+                'created_at' => '-',
             ];
         }
 
