@@ -55,10 +55,7 @@ class Handler extends ExceptionHandler
         if($exception instanceof ModelNotFoundException){
             throw new UnprocessableEntityHttpException($exception->getMessage(), $exception->getPrevious(), $exception->getCode());
         }
-        return parent::render($request, $exception);
-        if($exception instanceof ValidationException){
-            return $this->exceptionToArray($exception, $exception->errors());
-        }
+
         return parent::render($request, $exception);
     }
 
