@@ -396,24 +396,6 @@ class MiniProgramController extends Controller
      *         required=true,
      *         type="string"
      *     ),
-     *     @SWG\Parameter(
-     *         description="第几页，默认第一页",
-     *         in="query",
-     *         name="page",
-     *         required=false,
-     *         type="integer",
-     *         format="int64",
-     *         default="1"
-     *     ),
-     *     @SWG\Parameter(
-     *         description="每页数量，默认为15",
-     *         in="query",
-     *         name="pageSize",
-     *         required=false,
-     *         type="integer",
-     *         format="int64",
-     *         default="5"
-     *     ),
      *     @SWG\Response(
      *         response=200,
      *         description="成功返回",
