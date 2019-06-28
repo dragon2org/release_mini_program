@@ -29,6 +29,8 @@ class MiniProgramTransformer extends TransformerAbstract
             "qrcode_url" => $item->qrcode_url,
             "desc" => $item->desc,
             "authorization_status" => $item->authorization_status === 10 ? 'authorized' : 'unauthorized',
+            //TODO::补充发布状态
+            "release_status" => 21,
         ];
     }
 }

@@ -86,4 +86,9 @@ class MiniProgramList
      * @SWG\Property(type="integer", description="授权状态; 10正常；20授权时效")
      */
     public $authorization_status;
+
+    /**
+     * @SWG\Property(type="integer", description="发布状态;待审核:11; 审核中:20;审核失败:22;审核成功:21;已发布:30; //可发布状态: 21")
+     */
+    public $release_status;
 }
