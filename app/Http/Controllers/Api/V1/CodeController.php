@@ -66,11 +66,6 @@ class CodeController extends Controller
      *                 type="integer",
      *                 description="模板id",
      *             ),
-     *             @SWG\Property(
-     *                 property="ext_json",
-     *                 type="string",
-     *                 description="自定义ext_json; json字符串",
-     *             ),
      *         )
      *     ),
      *     @SWG\Response(
@@ -96,9 +91,7 @@ class CodeController extends Controller
      */
     public function commit(CodeCommit $request)
     {
-        $release = ReleaseFacade::service()->commit(
-            request()->input('template_id'),
-            request()->input('ext_json'));
+        $release = ReleaseFacade::service()->commit(request()->input('template_id'));
 
         return $this->response->withArray(['data' => [
             'trade_no' => $release->trade_no

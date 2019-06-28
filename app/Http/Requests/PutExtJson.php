@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CodeCommit extends FormRequest
+class PutExtJson extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class CodeCommit extends FormRequest
     public function rules()
     {
         return [
-            'template_id' => 'required|integer',
+            'ext_json' => 'required|json',
         ];
     }
 }

@@ -106,4 +106,29 @@ class MiniProgram extends Model
 
         return $this->buildVersion->user_version;
     }
+
+    public function getExtConfig()
+    {
+        return $this->ext->config;
+    }
+
+    public function getExtJson()
+    {
+        if($config = $this->getExtConfig()){
+            return json_decode($config, true)['ext_json'];
+        }
+        return '';
+    }
+
+    public function updateExtJson($extJson)
+    {
+        $config = json_decode($this->getExtConfig(), true);
+
+        $config['ext_json'] = json_decode($extJson, true);
+
+        $this->ext->config = json_encode($config);
+        $this->ext->save();
+
+        return $extJson;
+    }
 }

@@ -21,6 +21,7 @@ use App\Http\Transformer\ComponentDetailTransformer;
 use App\Http\Transformer\ComponentListTransformer;
 use App\Http\Transformer\ComponentTransformer;
 use App\Models\Component;
+use App\Models\MiniProgram;
 use App\Models\ValidateFile;
 use App\Services\ComponentService;
 use Illuminate\Support\Str;
@@ -245,6 +246,47 @@ class ComponentController extends Controller
         $input['app_id'] = $componentAppId;
 
         $component = $this->service->updateComponent($input);
+
+        return $this->response->withArray(
+            ['data' => $this->response->transformatItem($component, new ComponentDetailTransformer())]
+        );
+    }
+
+    /**
+     * @SWG\Delete(
+     *     path="/v1/component/:componentAppId",
+     *     summary="删除平台",
+     *     tags={"三方平台管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         ref="$/responses/200",
+     *     ),
+     *     @SWG\Response(
+     *         response=422,
+     *         description="处理失败的返回",
+     *         ref="$/responses/422",
+     *     ),
+     * )
+     */
+    public function delete($componentAppId)
+    {
+        $component = Component::where('app_id', $componentAppId)->first();
+
+        if($component->template || $component->miniProgram){
+            throw new UnprocessableEntityHttpException(trans('平台下存在小程序/模板,不能删除'));
+        }
+
+        $component->delete();
 
         return $this->response->withArray(
             ['data' => $this->response->transformatItem($component, new ComponentDetailTransformer())]

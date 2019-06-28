@@ -16,6 +16,7 @@ use App\Http\Requests\BindMiniProgramTester;
 use App\Http\Requests\GetBindMiniProgramUri;
 use App\Http\Requests\GetMiniProgramSessionKey;
 use App\Http\Requests\MiniProgramDecrypt;
+use App\Http\Requests\PutExtJson;
 use App\Http\Requests\PutMiniProgramInfo;
 use App\Http\Requests\UnbindMiniProgramTester;
 use App\Http\Requests\UpdateMiniProgramTag;
@@ -779,7 +780,7 @@ class MiniProgramController extends Controller
     /**
      * @SWG\Put(
      *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/tag",
-     *     summary="更新小程序使用的内部版本",
+     *     summary="更新小程序绑定的模板的tag(绑定到指定模板的内部二级版本)",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
@@ -848,4 +849,134 @@ class MiniProgramController extends Controller
             'data' => $miniProgram->tag
         ]);
     }
+    /**
+     * @SWG\Get(
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/config/ext_json",
+     *     summary="更新小程序最高优先级的-ext_json",
+     *     tags={"三方平台管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         required=true,
+     *         type="string",
+     *         description="微信三方平台appId",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="miniProgramAppId",
+     *         in="path",
+     *         required=true,
+     *         type="string",
+     *         description="小程序appiD",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
+     *         in="body",
+     *         required=true,
+     *         type="object",
+     *         @SWG\Schema(
+     *             required={"ext_json"},
+     *             @SWG\Property(
+     *                 property="ext_json",
+     *                 type="string",
+     *                 description="json字符串",
+     *             )
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         ref="$/responses/200",
+     *         @SWG\Schema(
+     *             required={"ext_json"},
+     *             @SWG\Property(
+     *                 property="ext_json",
+     *                 type="string",
+     *             )
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=422,
+     *         description="处理失败的返回",
+     *         ref="$/responses/422",
+     *     ),
+     * )
+     */
+    public function getExtJson()
+    {
+        return $this->response->withArray([
+            'data' => [
+                'ext_json' => json_encode(ReleaseFacade::service()->miniProgram->getExtJson())
+            ]
+        ]);
+
+    }
+    /**
+     * @SWG\Put(
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/config/ext_json",
+     *     summary="更新小程序最高优先级的-ext_json",
+     *     tags={"三方平台管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         required=true,
+     *         type="string",
+     *         description="微信三方平台appId",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="miniProgramAppId",
+     *         in="path",
+     *         required=true,
+     *         type="string",
+     *         description="小程序appiD",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
+     *         in="body",
+     *         required=true,
+     *         type="object",
+     *         @SWG\Schema(
+     *             required={"ext_json"},
+     *             @SWG\Property(
+     *                 property="ext_json",
+     *                 type="string",
+     *             )
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         ref="$/responses/200",
+     *     ),
+     *     @SWG\Response(
+     *         response=422,
+     *         description="处理失败的返回",
+     *         ref="$/responses/422",
+     *     ),
+     * )
+     */
+    public function putExtJson(PutExtJson $request)
+    {
+        return $this->response->withArray([
+            'data' => [
+                'ext_json' => ReleaseFacade::service()->miniProgram->updateExtJson(request()->input('ext_json'))
+            ]
+        ]);
+    }
+
 }

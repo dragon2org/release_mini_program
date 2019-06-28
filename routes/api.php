@@ -67,6 +67,8 @@ Route::group([
     Route::post('/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/support_version', 'CodeController@SetSupportVersion');
     Route::post('/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/visit_status', 'CodeController@visitStatus');
     Route::put('/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/tag', 'MiniProgramController@tag');
+    Route::get('/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/config/ext_json', 'MiniProgramController@getExtJson');
+    Route::put('/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/config/ext_json', 'MiniProgramController@putExtJson');
     /**
      * 模板管理
      */

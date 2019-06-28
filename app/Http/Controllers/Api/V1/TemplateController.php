@@ -310,7 +310,7 @@ class TemplateController extends Controller
     /**
      * @SWG\Get(
      *     path="/v1/component/{componentAppId}/template/{templateId}/mini_program",
-     *     summary="获取模板(tag)绑定小程序",
+     *     summary="获取模板的tag绑定的小程序列表",
      *     tags={"三方平台管理-模板管理"},
      *     description="管理三方平台",
      *     produces={"application/json"},
