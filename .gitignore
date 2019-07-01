@@ -16,3 +16,4 @@ yarn-error.log
 /.phplint-cache
 wechat_request*
 *.DS_Store
+.scannerwork
