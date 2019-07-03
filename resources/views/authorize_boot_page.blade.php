@@ -8,12 +8,12 @@
     <title>跳转中...</title>
 </head>
 <body>
-<a href="{{$uri}}">授权</a>
-<button onclick="window.location.href='{{$uri}}'">授权跳转测试,js直接跳转有问题。</button>
+<a href="{{$uri}}" id="btn-auth" style="display:none">授权</a>
 </body>
 </html>
 <script>
     setTimeout(function(){
-        window.location.href='{{$uri}}';
-    }, 5000)
+        document.getElementById('btn-auth').click();
+        {{--window.location.href='{{$uri}}';--}}
+    }, 500)
 </script>
