@@ -60,10 +60,9 @@ class MiniProgramController extends Controller
      *             @SWG\Property(
      *                 property="body",
      *                 type="object",
-     *                 required={"redirect_uri", "inner_desc", "company_id", "type"},
+     *                 required={"redirect_uri", "inner_name", "company_id", "type"},
      *                 @SWG\Property(property="redirect_uri", type="string", description="授权成功的跳转地址"),
-     *                 @SWG\Property(property="inner_name", type="string", description="内部名称"),
-     *                 @SWG\Property(property="inner_desc", type="string", description="内部描述"),
+     *                 @SWG\Property(property="inner_name", type="string", description="别名"),
      *                 @SWG\Property(property="company_id", type="integer", description="公司id"),
      *                 @SWG\Property(property="biz_appid", type="string", description="指定要绑定的app_id"),
      *                 @SWG\Property(property="type", type="string", description="生成类型:移动微信端: mobile；电脑端:pc"),
@@ -72,7 +71,7 @@ class MiniProgramController extends Controller
      *     ),
      *     @SWG\Response(
      *         response=200,
-     *         description="成功返回。type为qrcode直接返回图片",
+     *         description="",
      *         @SWG\Schema(
      *             @SWG\Property(
      *                 property="status",
@@ -82,8 +81,8 @@ class MiniProgramController extends Controller
      *             ),
      *             @SWG\Property(
      *                 property="data",
-     *                 type="Object",
-     *                 @SWG\Property(property="uri", description="授权链接")
+     *                 type="object",
+     *                 @SWG\Property(property="uri", type="string", description="授权链接")
      *             )
      *         )
      *     )

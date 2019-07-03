@@ -24,8 +24,10 @@ class UpdateComponent extends FormRequest
     public function rules()
     {
         return [
+            'inner_name' => 'required|max:45',
+            'inner_desc' => 'max:45',
             'name' => 'required|max:45',
-            'desc' => 'required|max:45',
+            'desc' => 'max:45',
             'app_id' =>  ['required', 'min:10', 'max:32', 'regex:/^[A-Za-z0-9]+$/'],
             'app_secret' => ['required', 'string', 'size:32', 'regex:/^[A-Za-z0-9]+$/'],
             'verify_token' => ['required','string', 'min:1', 'max:45'],

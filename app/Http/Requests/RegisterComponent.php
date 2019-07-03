@@ -24,8 +24,10 @@ class RegisterComponent extends FormRequest
     public function rules()
     {
         return [
+            'inner_name' => 'required|max:45',
+            'inner_desc' => 'max:45',
             'name' => 'required|max:45',
-            'desc' => 'required|max:45',
+            'desc' => 'max:45',
             'app_id' =>  ['required', 'min:10', 'max:32', 'regex:/^[A-Za-z0-9]+$/','unique:component'],
             'app_secret' => ['required', 'string', 'size:32', 'regex:/^[A-Za-z0-9]+$/'],
             'verify_token' => ['required','string', 'min:1', 'max:45'],
@@ -33,10 +35,5 @@ class RegisterComponent extends FormRequest
             'validate.filename' => 'required|max:45',
             'validate.content' => 'required|max:45',
         ];
-    }
-
-    public function a()
-    {
-
     }
 }
