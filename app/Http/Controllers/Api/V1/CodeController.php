@@ -322,7 +322,7 @@ class CodeController extends Controller
     }
     /**
      * @SWG\Get(
-     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/audit/{audit}",
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/audit/{auditId}",
      *     summary="获取提交代码的审核结果",
      *     tags={"小程序管理"},
      *     description="管理三方平台",
@@ -338,6 +338,13 @@ class CodeController extends Controller
      *         name="miniProgramAppId",
      *         in="path",
      *         description="小程序AppId",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="auditId",
+     *         in="path",
+     *         description="提审id",
      *         required=true,
      *         type="string",
      *     ),
