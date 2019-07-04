@@ -363,7 +363,8 @@ class CodeController extends Controller
      *                     property="status",
      *                     type="integer",
      *                     description="审核状态，其中0为审核成功，1为审核失败，2为审核中"
-     *                 )
+     *                 ),
+     *                 @SWG\Property(property="screenshot", type="array", description="失败原因截图。数组下不一定有值", @SWG\Items())
      *             )
      *         )
      *     )
