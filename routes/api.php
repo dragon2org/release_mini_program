@@ -15,7 +15,7 @@ Route::group([
     Route::get('/v1/component', 'ComponentController@index');
     Route::get('/v1/component/{componentAppId}', 'ComponentController@show');
     Route::put('/v1/component/{componentAppId}', 'ComponentController@update');
-    Route::delete('/v1/component/{componentAppId}');
+    Route::delete('/v1/component/{componentAppId}', 'ComponentController@delete');
 });
 
 Route::group([
