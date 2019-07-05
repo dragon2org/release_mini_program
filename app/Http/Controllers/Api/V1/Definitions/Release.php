@@ -14,6 +14,11 @@ class Release
     public $release_id;
 
     /**
+     * @SWG\Property(type="string", description="小程序appId")
+     */
+    public $app_id;
+
+    /**
      * @SWG\Property(type="integer", description="模板id")
      */
     public $template_id;

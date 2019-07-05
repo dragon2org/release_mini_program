@@ -24,6 +24,7 @@ class ReleaseItemsTransformer extends TransformerAbstract
             "trade_no" => $item->trade_no,
             'created_at' => (string) $item->created_at,
             'updated_at' => (string) $item->updated_at,
+            'app_id' => $item->miniProgram->app_id,
         ];
     }
 }
