@@ -15,6 +15,7 @@ class ReleaseDetailItemsTransformer extends TransformerAbstract
             "release_item_id" => $item->release_item_id,
             "release_id" => $item->release_id,
             'name' => $item->name,
+            'name_trans' => $item->getNameTrans(),
             "original_config" => $item->original_config ? json_decode($item->original_config, true) : (object) [],
             "online_config" => $item->online_config? json_decode($item->online_config, true) : (object) [],
             "push_config" => $item->push_config ? json_decode($item->push_config, true) : (object) [],

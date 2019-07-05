@@ -36,6 +36,7 @@ Route::group([
     Route::put('/v1/component/{componentAppId}/config/support_version', 'ComponentController@supportVersion');
     Route::put('/v1/component/{componentAppId}/config/visit_status', 'ComponentController@visitStatus');
     Route::post('/v1/component/{componentAppId}/config/sync', 'ComponentController@configSync');
+    Route::get('/v1/component/{componentAppId}/tag', 'ComponentController@tag');
 
     /**
      * 小程序管理

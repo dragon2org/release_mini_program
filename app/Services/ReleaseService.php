@@ -495,6 +495,12 @@ class ReleaseService
         return $release;
     }
 
+    public function make($templateId, $extJson = null)
+    {
+
+        return [];
+    }
+
     public function getQrCode($path = null)
     {
         $response = $this->miniProgramApp->code->getQrCode($path);
@@ -521,6 +527,7 @@ class ReleaseService
         }
         $filename = Str::random(64) . '.jpeg';
         $filePath = storage_path() . '/framework/cache/' . $filename;
+
         file_put_contents($filePath, $contents);
 
         $base64 = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($filePath));

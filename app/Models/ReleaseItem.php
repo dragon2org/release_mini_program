@@ -264,4 +264,27 @@ class ReleaseItem extends Model
 
         return true;
     }
+
+    public function getNameTrans()
+    {
+        switch ($this->name) {
+            case self::CONFIG_KEY_CODE_COMMIT:
+                return '上传代码';
+            case self::CONFIG_KEY_AUDIT:
+                return '提审';
+            case self::CONFIG_KEY_RELEASE:
+                return '上线';
+            case self::CONFIG_KEY_SUPPORT_VERSION:
+                return '基础库';
+            case self::CONFIG_KEY_VISIT_STATUS:
+                return '应用可见状态';
+            case self::CONFIG_KEY_TESTER:
+                return '体验者';
+            case self::CONFIG_KEY_WEB_VIEW_DOMAIN:
+                return '业务域名';
+            case self::CONFIG_KEY_DOMAIN:
+                return '服务域名';
+        }
+        return '未知';
+    }
 }

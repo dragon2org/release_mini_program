@@ -21,6 +21,7 @@ use App\Http\Transformer\ComponentDetailTransformer;
 use App\Http\Transformer\ComponentListTransformer;
 use App\Http\Transformer\ComponentTransformer;
 use App\Models\Component;
+use App\Models\ComponentTemplate;
 use App\Models\MiniProgram;
 use App\Models\ValidateFile;
 use App\Services\ComponentService;
@@ -936,8 +937,12 @@ class ComponentController extends Controller
      *     ),
      * )
      */
-    public function tag()
+    public function tag($componentAppId)
     {
+        $items = ComponentTemplate::where('component_id', ReleaseFacade::service()->component->component_id)->distinct()->select('tag')->get();
 
+        return $this->response->withArray([
+            'data' => $items
+        ]);
     }
 }

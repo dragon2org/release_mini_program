@@ -163,6 +163,15 @@ class CodeController extends Controller
      * )
      */
 
+    public function make(CodeCommit $request)
+    {
+        $release = ReleaseFacade::service()->make(request()->input('template_id'));
+
+        return $this->response->withArray(['data' => [
+            'trade_no' => $release->trade_no
+        ]]);
+    }
+
     /**
      * @SWG\Get(
      *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/qrcode",
