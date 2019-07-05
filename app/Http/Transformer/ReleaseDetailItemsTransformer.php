@@ -23,6 +23,7 @@ class ReleaseDetailItemsTransformer extends TransformerAbstract
             "status_trans" => $item->getStatusTrans(),
             'created_at' => (string) $item->created_at,
             'updated_at' => (string) $item->updated_at,
+            'app_id' => $item->miniProgram->app_id,
         ];
     }
 }

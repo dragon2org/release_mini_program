@@ -61,4 +61,9 @@ class ReleaseItem
      * @SWG\Property(type="string", description="更新时间")
      */
     public $updated_at;
+
+    /**
+     * @SWG\Property(type="string", description="小程序app_id")
+     */
+    public $app_id;
 }
