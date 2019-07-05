@@ -76,6 +76,7 @@ Route::group([
      */
     Route::get('/v1/component/{componentAppId}/draft', 'TemplateController@draft');
     Route::get('/v1/component/{componentAppId}/template', 'TemplateController@index');
+    Route::get('/v1/component/{componentAppId}/release/template', 'TemplateController@indexWithoutPaginate');
     Route::delete('/v1/component/{componentAppId}/template/{templateId}', 'TemplateController@delete');
     Route::post('/v1/component/{componentAppId}/template', 'TemplateController@draftToTemplate');
     Route::post('/v1/component/{componentAppId}/template/sync', 'TemplateController@sync');

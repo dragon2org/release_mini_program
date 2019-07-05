@@ -9,6 +9,7 @@ use App\Helpers\Utils;
 use App\Http\ApiResponse;
 use App\Http\Requests\DeleteTemplate;
 use App\Http\Requests\DraftToTemplate;
+use App\Http\Transformer\ReleaseTemplateListTransformer;
 use App\Http\Transformer\TemplateListTransformer;
 use App\Http\Transformer\TemplateMiniProgramListTransformer;
 use App\Models\Component;
@@ -212,6 +213,42 @@ class TemplateController extends Controller
             ->paginate(Utils::pageSize());
 
         return $this->response->withCollection($items, new TemplateListTransformer());
+    }
+
+    /**
+     * @SWG\Get(
+     *     path="/v1/component/{componentAppId}/release/template",
+     *     summary="获取模板列表-不带分页、统计",
+     *     tags={"小程序单独发版使用"},
+     *     description="三方平台三方平台管理-模板管理",
+     *     produces={"application/json"},
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @SWG\Items(ref="#/definitions/ReleaseTemplate")
+     *             ),
+     *         )
+     *     )
+     * )
+     */
+
+    public function indexWithoutPaginate()
+    {
+        $items = ComponentTemplate::where('component_id', ReleaseFacade::service()->component->component_id)
+            ->orderBy('component_template_id', 'desc')
+            ->get();
+
+        return $this->response->withCollection($items, new ReleaseTemplateListTransformer());
     }
 
     /**
