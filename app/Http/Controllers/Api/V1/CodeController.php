@@ -99,6 +99,71 @@ class CodeController extends Controller
     }
 
     /**
+     * @SWG\Post(
+     *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/make",
+     *     summary="发布小程序",
+     *     tags={"小程序管理"},
+     *     description="发布小程序",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         description="三方平台AppID",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="miniProgramAppId",
+     *         in="path",
+     *         description="小程序AppId",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
+     *         in="body",
+     *         required=true,
+     *         type="object",
+     *         @SWG\Schema(
+     *             type="object",
+     *             required={"template_id"},
+     *             @SWG\Property(
+     *                 property="template_id",
+     *                 type="integer",
+     *                 description="模板id",
+     *             ),
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             type="object",
+     *             required={"status"},
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @SWG\Property(property="trade_no", type="string", description="发版编号"),
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
+    /**
      * @SWG\Get(
      *     path="/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/qrcode",
      *     summary="获取小程序体验二维码",
