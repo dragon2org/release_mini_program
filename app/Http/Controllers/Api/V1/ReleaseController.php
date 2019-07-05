@@ -90,7 +90,7 @@ class ReleaseController extends Controller
      */
     public function index()
     {
-        $model = Release::where('component_id', ReleaseFacade::service()->component->component_id)
+        $model = Release::with('miniProgram')->where('component_id', ReleaseFacade::service()->component->component_id)
             ->orderBy('release_id', 'desc');
 
         if(request()->input('status')){
@@ -174,7 +174,7 @@ class ReleaseController extends Controller
      */
     public function detail($componentAppId, $releaseId)
     {
-        $model = ReleaseItem::where('release_id', $releaseId)
+        $model = ReleaseItem::with('miniProgram')->where('release_id', $releaseId)
             ->orderBy('release_item_id', 'desc');
 
         if(request()->input('status')){

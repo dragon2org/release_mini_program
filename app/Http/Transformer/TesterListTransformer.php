@@ -18,8 +18,8 @@ class TesterListTransformer extends TransformerAbstract
     {
         return [
             'userstr' => $item['userstr'],
-            'wechat_id' => $item['wechat_id'],
-            'created_at' => (string) $item['created_at'],
+            'wechat_id' => $item['wechat_id'] ?? '-',
+            'created_at' => (string) $item['created_at'] ?? '-',
         ];
     }
 }
