@@ -70,6 +70,7 @@ Route::group([
     Route::put('/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/tag', 'MiniProgramController@tag');
     Route::get('/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/config/ext_json', 'MiniProgramController@getExtJson');
     Route::put('/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/config/ext_json', 'MiniProgramController@putExtJson');
+    Route::post('/v1/component/{componentAppId}/mini_program/{miniProgramAppId}/make', 'CodeController@make');
     /**
      * 模板管理
      */
