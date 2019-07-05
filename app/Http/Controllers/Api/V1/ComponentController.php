@@ -890,4 +890,54 @@ class ComponentController extends Controller
 
         return $this->response->withCollection($component, new ComponentListTransformer());
     }
+
+    /**
+     * @SWG\Get(
+     *     path="/v1/component/{componentAppId}/tag",
+     *     summary="获取平台所有模板tag",
+     *     tags={"小程序管理"},
+     *     description="管理三方平台",
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="Content-Type",
+     *         in="header",
+     *         required=true,
+     *         type="string",
+     *         enum={"application/json"}
+     *     ),
+     *     @SWG\Parameter(
+     *         name="componentAppId",
+     *         in="path",
+     *         description="三方平台AppID",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="成功返回",
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="status",
+     *                 type="string",
+     *                 default="T",
+     *                 description="接口返回状态['T'->成功; 'F'->失败]"
+     *             ),
+     *             @SWG\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @SWG\Items(ref="#/definitions/TemplateTag")
+     *             ),
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response=422,
+     *         description="处理失败的返回",
+     *         ref="$/responses/422",
+     *     ),
+     * )
+     */
+    public function tag()
+    {
+
+    }
 }
