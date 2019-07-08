@@ -164,11 +164,9 @@ class CodeController extends Controller
      */
     public function make(CodeCommit $request)
     {
-        //$release = ReleaseFacade::service()->make(request()->input('template_id'));
+        $release = ReleaseFacade::service()->make(request()->input('template_id'));
 
-        return $this->response->withArray(['data' => [
-            'trade_no' => '1233'
-        ]]);
+        return $this->response->withArray(['data' => $release[0]]);
     }
 
     /**

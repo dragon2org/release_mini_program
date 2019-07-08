@@ -497,8 +497,7 @@ class ReleaseService
 
     public function make($templateId, $extJson = null)
     {
-
-        return [];
+        return $this->templateRelease($templateId, $this->miniProgram->app_id);
     }
 
     public function getQrCode($path = null)
@@ -693,15 +692,18 @@ class ReleaseService
         return [];
     }
 
-    public function templateRelease($templateId)
+    public function templateRelease($templateId, $miniProgramAppId = null)
     {
         try {
             //step 1. 获取授权小程序列表
-            $miniProgramList = (new MiniProgram())->getComponentMiniProgramList($this->component->component_id);
-            if (count($miniProgramList) == 0) {
-                throw new UnprocessableEntityHttpException(trans('暂无已绑定的小程序可发版'));
+            if($miniProgramAppId){
+                $miniProgramList[] =  (new MiniProgram())->where('app_id', $miniProgramAppId)->first();
+            }else{
+                $miniProgramList = (new MiniProgram())->getComponentMiniProgramList($this->component->component_id);
+                if (count($miniProgramList) == 0) {
+                    throw new UnprocessableEntityHttpException(trans('暂无已绑定的小程序可发版'));
+                }
             }
-
             $templateList = Arr::pluck($this->templateList(), 'template_id');
             if (!in_array($templateId, $templateList)) {
                 throw new UnprocessableEntityHttpException(trans('模板不存在'));
