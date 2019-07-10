@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Log as LogFacade;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 class Log
@@ -28,6 +29,10 @@ class Log
         $this->log($request, $response);
     }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param $response
+     */
     protected function log($request, $response){
         $duration = $this->stopwatchEvent->getDuration();
         $path = $request->path();
@@ -38,10 +43,16 @@ class Log
         $content = $response->getContent();
 
         $log = "{$ip}: [{$status}] {$method}@{$path} - {$duration}ms";
-        \Log::useDailyFiles(storage_path() . '/logs/api.log');
-        \Log::info($log);
-        \Log::info('REQUEST:' . json_encode($request->all()));
-        \Log::info('HEADER:' . json_encode($request->header()));
-        \Log::info('RESPONSE:' . $content);
+
+        LogFacade::channel('apilog')->info($log);
+        if($request->getContentType() === 'xml'){
+            $body = $request->getContent();
+        }else{
+            $body =  json_encode($request->all());
+        }
+        LogFacade::channel('apilog')->info('REQUEST:' . $body);
+        LogFacade::channel('apilog')->info('HEADER:' . json_encode($request->header()));
+        LogFacade::channel('apilog')->info('RESPONSE:' . $content);
     }
+
 }

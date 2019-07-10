@@ -76,5 +76,11 @@ return [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
+        'apilog' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/api.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
     ],
 ];
