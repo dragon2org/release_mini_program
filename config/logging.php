@@ -82,9 +82,15 @@ return [
             'level' => 'debug',
             'days' => 14,
         ],
-        'ticket' => [
+        'component_server' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/ticket.log'),
+            'path' => storage_path('logs/component_server.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
+        'component_app_server' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/component_app_server.log'),
             'level' => 'debug',
             'days' => 14,
         ],
