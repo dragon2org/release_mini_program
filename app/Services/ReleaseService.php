@@ -28,8 +28,8 @@ use EasyWeChat\Kernel\Messages\Message;
 use EasyWeChat\OpenPlatform\Server\Guard;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Log;
 use RuntimeException;
 
 class ReleaseService
@@ -127,8 +127,8 @@ class ReleaseService
 
     public function server()
     {
+        Log::channel('ticket')->info(request()->getContent());
         $server = $this->openPlatform->server;
-
         $server->push(function ($message) {
 
         }, Guard::EVENT_AUTHORIZED);
@@ -138,10 +138,8 @@ class ReleaseService
         }, Guard::EVENT_UPDATE_AUTHORIZED);
 
         $server->push(MiniProgramUnauthorizedEventMessageHandler::class, Guard::EVENT_UNAUTHORIZED);
-
         // 处理VERIFY_TICKET
         $server->push(function ($message) {
-            Log::info('ComponentVerifyTicket:', $message);
             $this->component->updateVerifyTicket($message['ComponentVerifyTicket']);
         }, Guard::EVENT_COMPONENT_VERIFY_TICKET);
 

@@ -82,5 +82,11 @@ return [
             'level' => 'debug',
             'days' => 14,
         ],
+        'ticket' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ticket.log'),
+            'level' => 'debug',
+            'days' => 14,
+        ],
     ],
 ];
