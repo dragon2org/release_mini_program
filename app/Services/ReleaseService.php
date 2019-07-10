@@ -127,7 +127,6 @@ class ReleaseService
 
     public function server()
     {
-        Log::channel('component_server')->info(request()->getContent());
         $server = $this->openPlatform->server;
         $server->push(function ($message) {
 
@@ -148,7 +147,6 @@ class ReleaseService
 
     public function miniProgramServe()
     {
-        Log::channel('component_app_server')->info(request()->getContent());
         $server = $this->miniProgramApp->server;
 
         $server->push(EventMessageHandler::class, Message::EVENT);
